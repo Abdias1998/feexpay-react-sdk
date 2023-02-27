@@ -7,6 +7,8 @@ export const ChargementPageStyles = createGlobalStyle`
         width:100vw;
         height:100vh;
         position:fixed;
+        top:0px;
+        left:0px;
         background-color:#404040a6;
         z-index:1000000000;
         

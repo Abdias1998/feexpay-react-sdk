@@ -38,6 +38,8 @@ import{jsx as e,jsxs as t,Fragment as a}from"react/jsx-runtime";import i from"re
         margin:0px;
         padding:0px;
         flex-direction:column;
+        top:0px;
+        left:0px;
         
         
     }
@@ -96,7 +98,7 @@ import{jsx as e,jsxs as t,Fragment as a}from"react/jsx-runtime";import i from"re
         width:100%;
         height:100%;
         background-color:#112C56;
-        background-image:url("http://localhost:40/motif_footer.svg");
+        background-image:url("https://api.feexpay.me/api/static/motif_footer.svg");
         background-size:cover;
         background-position:center;
         
@@ -543,6 +545,8 @@ import{jsx as e,jsxs as t,Fragment as a}from"react/jsx-runtime";import i from"re
         width:100vw;
         height:100vh;
         position:fixed;
+        top:0px;
+        left:0px;
         background-color:#404040a6;
         z-index:1000000000;
         

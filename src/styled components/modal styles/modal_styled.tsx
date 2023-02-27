@@ -14,6 +14,8 @@ export const FeexPayModalStylesGlobal = createGlobalStyle`
         margin:0px;
         padding:0px;
         flex-direction:column;
+        top:0px;
+        left:0px;
         
         
     }
@@ -72,7 +74,7 @@ export const FeexPayModalStylesGlobal = createGlobalStyle`
         width:100%;
         height:100%;
         background-color:#112C56;
-        background-image:url("http://localhost:40/motif_footer.svg");
+        background-image:url("https://api.feexpay.me/api/static/motif_footer.svg");
         background-size:cover;
         background-position:center;
         

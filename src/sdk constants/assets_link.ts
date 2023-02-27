@@ -16,5 +16,6 @@ export const CARD_SVG = "https://api.feexpay.me/api/static/svg/creditcard-svgrep
 export const ICON_LOCK = "https://api.feexpay.me/api/static/svg/icons8-lock.svg"
 export const LOADER_GIF = "https://api.feexpay.me/api/static/loader.gif"
 export const LINK_GLOBAL = "https://api.feexpay.me/api"
+export const FOOTER_MOTIF = "https://api.feexpay.me/api/static/motif_footer.svg"
 
 // https://github.com/La-Vedette-Media/feexpay-react-sdk.git

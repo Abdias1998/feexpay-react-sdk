@@ -12,3 +12,4 @@ export declare const CARD_SVG = "https://api.feexpay.me/api/static/svg/creditcar
 export declare const ICON_LOCK = "https://api.feexpay.me/api/static/svg/icons8-lock.svg";
 export declare const LOADER_GIF = "https://api.feexpay.me/api/static/loader.gif";
 export declare const LINK_GLOBAL = "https://api.feexpay.me/api";
+export declare const FOOTER_MOTIF = "https://api.feexpay.me/api/static/motif_footer.svg";
