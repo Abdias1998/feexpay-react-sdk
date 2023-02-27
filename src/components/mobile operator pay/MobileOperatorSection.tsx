@@ -126,7 +126,7 @@ function setnum_exist_true() {
 
            console.log(state);
            
-          await axios.post(`${LINK_GLOBAL}/transactions/requesttopay/externe`,{
+          await axios.post(`${LINK_GLOBAL}/transactions/requesttopay/integration`,{
           phoneNumber:`${state.num_client}`,
           amount:`${state.price}`,
           reseau:`${state.operator_name}`,
@@ -137,7 +137,7 @@ function setnum_exist_true() {
               let i = 0
               const intervale_valid_pay = setInterval(async () => {
                    
-                   const response_getStatus = await axios.get(`${LINK_GLOBAL}/transactions/getrequesttopay/externe/${response.data.reference}`)
+                   const response_getStatus = await axios.get(`${LINK_GLOBAL}/transactions/getrequesttopay/integration/${response.data.reference}`)
                    const status_response = response_getStatus.data.status
                    console.log(response_getStatus.data)
                     

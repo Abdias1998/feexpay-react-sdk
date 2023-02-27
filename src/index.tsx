@@ -54,15 +54,14 @@ const FeexPay: React.FC<Props> = ({ montant , token , id , callback }) => {
   return (
     <>
       <SDKcontexts montant={montant_context} token={token} id={id} callback={callback}>
-      
-        <SectioncontainerStyleWrapper>
+    
           <FeexPayModal
             isOpen={modal_open}
             cancel_modal={modal_cancel}
             cancel_modal_func={() =>cancel_modal_func()}
             name_marchand={name_marchand}
           />
-        </SectioncontainerStyleWrapper>
+   
         <FeexPayButton open_modal={() =>open_modal()} feexVisisbleBtn={visibleFeexBtn}/>
       </SDKcontexts>
     </>
