@@ -1,0 +1,17 @@
+body{
+    justify-self:flex-end;
+    color:#ffffffa6;
+    position: absolute;
+    
+    
+    
+
+    
+}
+
+
+/* const [cancelModal, setcancelModal] = React.useState(false)
+
+const cancel = ()=>{
+   setcancelModal(true)
+} */
