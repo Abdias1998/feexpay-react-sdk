@@ -219,14 +219,17 @@ function setnum_exist_true() {
               
                   });
 
-                  changeVisibleChargementExitFunc()
+                  setTimeout(() => {
+                    changeVisibleChargementExitFunc()
+                  }, 5000);
+                  
                   
                   
                 }
                 clearInterval(intervale_valid_pay)
                 
 
-              }, 25000);
+              }, 180000);
 
               console.log("Send")
 

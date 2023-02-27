@@ -64,7 +64,7 @@ export const ChargementPageStyles = createGlobalStyle`
     @media screen and (max-width:700px) {
       .message_container{
         width:60%;
-        height:60%;
+        height:30%;
       }
     }
 
