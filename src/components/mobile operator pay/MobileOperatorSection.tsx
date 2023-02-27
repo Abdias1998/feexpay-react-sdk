@@ -100,7 +100,7 @@ function setnum_exist_true() {
   // React.useEffect(() => {
   //   function sendRequestVerify() {
   //     if () {
-  //       console.log("sendReaquest");
+  //    
   //     }
       
   //  }
@@ -124,8 +124,6 @@ function setnum_exist_true() {
        
           changeVisibleChargementFunc()
 
-           console.log(state);
-           
           await axios.post(`${LINK_GLOBAL}/transactions/requesttopay/integration`,{
           phoneNumber:`${state.num_client}`,
           amount:`${state.price}`,
@@ -133,20 +131,19 @@ function setnum_exist_true() {
           token:`${state.token}`,
           id:`${state.id}`
           }).then((response) => {
-              console.log(response);
+            
               let i = 0
               const intervale_valid_pay = setInterval(async () => {
                    
                    const response_getStatus = await axios.get(`${LINK_GLOBAL}/transactions/getrequesttopay/integration/${response.data.reference}`)
                    const status_response = response_getStatus.data.status
-                   console.log(response_getStatus.data)
+                 
                     
                    if (status_response === "SUCCESSFUL"){
                       i=i+1
                       if (i<2) {
                         clearInterval(intervale_valid_pay)
-                        console.log("Votre paiement à ete avec success")
-  
+                  
                         
                       
                         dispatch({
@@ -184,7 +181,7 @@ function setnum_exist_true() {
                    }
                    if (status_response === "FAILED"){
                       clearInterval(intervale_valid_pay)
-                      console.log("Verifier votre numero")
+                     
                       dispatch({
                         type: "CHANGE/REQUESTMESSAGE",
                         payload:{
@@ -209,7 +206,7 @@ function setnum_exist_true() {
                 const response_getStatus = await axios.get(`${LINK_GLOBAL}/transactions/getrequesttopay/integration/${response.data.reference}`)
                 const status_response = response_getStatus.data.status
                 if (status_response === "PENDING"){
-                  console.log("Vous n'avez pas accepter la requete")
+                
                   dispatch({
                     type: "CHANGE/REQUESTMESSAGE",
                     payload:{
@@ -231,7 +228,7 @@ function setnum_exist_true() {
 
               }, 180000);
 
-              console.log("Send")
+              
 
 
 
@@ -239,8 +236,7 @@ function setnum_exist_true() {
 
 
             }).catch((error) => {
-              console.log("No Send")
-              console.log(error);
+             
               if (error.response.data.message === "Token API invalid") {
                 dispatch({
                   type: "CHANGE/REQUESTMESSAGE",
@@ -253,7 +249,7 @@ function setnum_exist_true() {
               }
             });
            
-              console.log("Function Send")
+             
         
        
           }
@@ -263,9 +259,6 @@ function setnum_exist_true() {
 
 
 
-      }else{
-       
-        console.log("Not sendReaquest");
       }
       
    }

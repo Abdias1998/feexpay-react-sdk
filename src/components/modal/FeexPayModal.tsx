@@ -84,7 +84,7 @@ export const FeexPayModal: React.FC<Props> = ({
               <MobileOperatorSection
                 changeVisibleChargementFunc={() => {
                   setisVisibleChargement(true);
-                  console.log("Chargement Visible");
+                
                 }}
                 changeVisibleChargementExitFunc={() =>
                   setisVisibleChargement(false)

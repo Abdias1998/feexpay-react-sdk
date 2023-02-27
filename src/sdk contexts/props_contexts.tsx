@@ -15,14 +15,14 @@ let props_init = {};
 
 export const SDKcontexts: React.FC<Props> = ({
   children,
-  montant,
+  amount,
   apiURL,
   token,
   id,
   callback,
 }) => {
   props_init = {
-    price: montant,
+    price: amount,
     apiURL: apiURL,
     token: token,
     id: id,

@@ -114,10 +114,9 @@ export const NumInput: React.FC<Props> = ({
               onChange={(e) => {
                 setnumero_tel(e.target.value);
                 function setWithDispath(e: any) {
-                  // console.log(e.target.value);
+               
                   if (Number.isNaN(parseInt(e.target.value))) {
-                    // console.log("Dispath num vide");
-
+                 
                     dispatch({
                       type: "CHANGE/NUMERO",
                       payload: {

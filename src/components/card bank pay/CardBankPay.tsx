@@ -10,7 +10,7 @@ type Props = {
 
 export const CardBankPay: React.FC<Props> = ({ onChoice }) => {
   function pay() {
-    console.log("Payer");
+    console.log("FeexPayer");
     
   }
   return (

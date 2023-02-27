@@ -7,28 +7,28 @@ import axios from "axios";
 import { LINK_GLOBAL } from "./sdk constants/assets_link";
 
 type Props = {
-  montant:number;
+  amount:number;
   token:string;
   id:string;
   callback:Function;
 };
 
-const FeexPay: React.FC<Props> = ({ montant , token , id , callback }) => {
+const FeexPay: React.FC<Props> = ({ amount , token , id , callback }) => {
   const [modal_open, setmodal_open] = React.useState(false);
   const [modal_cancel, setmodal_cancel] = React.useState(true);
   const [visibleFeexBtn, setvisibleFeexBtn] = React.useState(false)
   const [name_marchand, setname_marchand] = React.useState("")
 
-  const montant_context = montant;
+  const montant_context = amount;
 
   
   function open_modal() {
-    console.log("open_modal");
+  
     setmodal_open(true);
     setmodal_cancel(false);
   }
   function cancel_modal_func() {
-    console.log("cancel_modal");
+   
     setmodal_open(false);
     setmodal_cancel(true);
   }
@@ -53,7 +53,7 @@ const FeexPay: React.FC<Props> = ({ montant , token , id , callback }) => {
   }, [])
   return (
     <>
-      <SDKcontexts montant={montant_context} token={token} id={id} callback={callback}>
+      <SDKcontexts amount={montant_context} token={token} id={id} callback={callback}>
     
           <FeexPayModal
             isOpen={modal_open}
