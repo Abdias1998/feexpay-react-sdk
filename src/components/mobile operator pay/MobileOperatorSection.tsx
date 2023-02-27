@@ -206,7 +206,7 @@ function setnum_exist_true() {
 
 
               setTimeout(async () => {
-                const response_getStatus = await axios.get(`${LINK_GLOBAL}/transactions/getrequesttopay/externe/${response.data.reference}`)
+                const response_getStatus = await axios.get(`${LINK_GLOBAL}/transactions/getrequesttopay/integration/${response.data.reference}`)
                 const status_response = response_getStatus.data.status
                 if (status_response === "PENDING"){
                   console.log("Vous n'avez pas accepter la requete")
