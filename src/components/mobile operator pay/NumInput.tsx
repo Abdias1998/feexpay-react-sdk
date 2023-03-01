@@ -52,15 +52,29 @@ export const NumInput: React.FC<Props> = ({
           setemail_input_error("Entrez votre email")
        }else{
            setemail_input_error("")
+           dispatch({
+            type: "CHANGE/EMAIL",
+            payload: {
+              email: email_input,
+             
+            },
+          });
        }
        if (full_name_input.length === 0) {
           setfull_name_input_error("Entrez votre nom et prenom")
         }else{
           setfull_name_input_error("")
+          dispatch({
+            type: "CHANGE/FULLNAME",
+            payload: {
+              full_name: full_name_input,
+             
+            },
+          });
         }
 
 
-        
+
       if (Number.isNaN(parseInt(numero_tel))) {
         seterrorvisible(true);
         seterrortext("Entrez votre numéro");
@@ -124,7 +138,21 @@ export const NumInput: React.FC<Props> = ({
           className="feexpay_fullname_input feexpay_input_simple feexpay_input_fullname input_simple"
           type="text"
           style={{marginBottom:"0px"}}
-          onChange={(e)=>setfull_name_input(e.target.value)}
+          onChange={(e) => {
+            setfull_name_input(e.target.value);
+            function setWithDispath(e: any) {
+              if (e.target.value.length === 0) {
+                dispatch({
+                  type: "CHANGE/FULLNAME",
+                  payload: {
+                    full_name: "",
+                   
+                  },
+                });
+              }
+            }
+            setWithDispath(e);
+          }}
           placeholder="John Don"
         />
 
@@ -139,7 +167,21 @@ export const NumInput: React.FC<Props> = ({
           type="email"
           style={{marginBottom:"0px"}}
           placeholder="example@gmail.com"
-          onChange={(e)=>setemail_input(e.target.value)}
+          onChange={(e) => {
+            setemail_input(e.target.value);
+            function setWithDispath(e: any) {
+              if (e.target.value.length === 0) {
+                dispatch({
+                  type: "CHANGE/EMAIL",
+                  payload: {
+                    email: "",
+                   
+                  },
+                });
+              }
+            }
+            setWithDispath(e);
+          }}
         />
 
         <div

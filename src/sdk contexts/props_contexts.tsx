@@ -33,6 +33,8 @@ export const SDKcontexts: React.FC<Props> = ({
     stopchargement: false,
     requesttopayinfo:{},
     name_marchand:"",
+    email:"",
+    full_name:"",
     callback:callback
   };
 

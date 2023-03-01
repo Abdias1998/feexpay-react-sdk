@@ -114,7 +114,7 @@ function setnum_exist_true() {
       const operator_string = new String(state.operator_name)
 
 
-      if ((num_client_string.length > 4) && (operator_string.length > 0) && (num_client_exist === true)){
+      if ((num_client_string.length > 4) && (operator_string.length > 0) && (num_client_exist === true) && (state.full_name.length > 0) && (state.email.length > 0 )){
         
 
 
@@ -129,7 +129,9 @@ function setnum_exist_true() {
           amount:`${state.price}`,
           reseau:`${state.operator_name}`,
           token:`${state.token}`,
-          id:`${state.id}`
+          id:`${state.id}`,
+          first_name:`${state.full_name}`,
+          email:`${state.email}`
           }).then((response) => {
             
               let i = 0
