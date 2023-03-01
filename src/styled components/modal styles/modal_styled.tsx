@@ -81,6 +81,28 @@ export const FeexPayModalStylesGlobal = createGlobalStyle`
 
     }
 
+    .secure_by_feexpay{
+        display:flex;
+        flex-direction:row;
+        align-items:center;
+        justify-content:center;
+        margin-bottom:2rem;
+      }
+      .img_lock{
+        width:15px;
+        margin-right:0.2rem;
+
+      }
+    
+      .lock_line{
+        background-color:#112C56;
+        width:6px;
+        height:1px;
+      }
+      .lock_text{
+        font-size:0.7rem;
+      }
+
     @media screen and (max-width:700px) {
         .modal{
             width:100%;

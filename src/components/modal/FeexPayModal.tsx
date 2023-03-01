@@ -4,7 +4,7 @@ import { FeexPayChoiceLocalPay } from "../type pay/FeexPayChoiceLocalPay";
 import { FeexPayChoiceCardBank } from "../type pay/FeexPayChoiceCardBank";
 import { MobileOperatorSection } from "../mobile operator pay/MobileOperatorSection";
 import { FeexPayCancel } from "../type pay/FeexPayCancel";
-import { LOGO_IMG_LINK } from "src/sdk constants/assets_link";
+import { ICON_LOCK, LOGO_IMG_LINK } from "src/sdk constants/assets_link";
 import { CardBankPay } from "../card bank pay/CardBankPay";
 import { ChargementPage } from "../chargement page/ChargementPage";
 import { useAppContext } from "src/sdk contexts/props_contexts";
@@ -93,9 +93,25 @@ export const FeexPayModal: React.FC<Props> = ({
             )}
           </div>
 
+
+          <div className="secure_by_feexpay">
+          <div className="lock_line"></div>
+          <div className="img_lock_container">
+            <img
+              className="img_lock"
+              src={ICON_LOCK}
+              alt="icon lock"
+            />
+          </div>
+          <div className="lock_text">Sécurisé par FeexPay</div>
+        </div>
+
+
           <div className="footer_modal_container">
             <div className="footer_modal"></div>
           </div>
+
+
         </div>
       </div>
     </>

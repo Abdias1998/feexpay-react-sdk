@@ -16,18 +16,6 @@ export const PayButton: React.FC<Props> = ({ pay_func }) => {
         <button onClick={() => pay_func()} className="button_pay">
           <span className="button_text">Payer {state.price} XOF</span>
         </button>
-
-        <div className="secure_by_feexpay">
-          <div className="lock_line"></div>
-          <div className="img_lock_container">
-            <img
-              className="img_lock"
-              src={ICON_LOCK}
-              alt="icon lock"
-            />
-          </div>
-          <div className="lock_text">Sécurisé par FeexPay</div>
-        </div>
       </div>
     </>
   );

@@ -2,7 +2,7 @@ import styled,{createGlobalStyle} from "styled-components"
 
 export const FeexButtonPayStyles = createGlobalStyle`
       .button {
-        background-color:dodgerblue;
+        background-color:#112C56;
         color:white;
         text-align:center;
         padding:10px;
