@@ -30,6 +30,14 @@ export const NumInput: React.FC<Props> = ({
   const [numero_tel, setnumero_tel] = React.useState("");
   const [country, setcountry] = React.useState("");
 
+  const [email_input, setemail_input] = React.useState("");
+  const [full_name_input, setfull_name_input] = React.useState("");
+
+  const [email_input_error, setemail_input_error] = React.useState("");
+  const [full_name_input_error, setfull_name_input_error] = React.useState("");
+
+
+
   function displayFlagInfoContainer() {
     if (displyedFlagInfo === false) {
       setdisplyedFlagInfo(true);
@@ -40,6 +48,19 @@ export const NumInput: React.FC<Props> = ({
 
   React.useEffect(() => {
     function send_pay_form_info() {
+       if (email_input.length === 0) {
+          setemail_input_error("Entrez votre email")
+       }else{
+           setemail_input_error("")
+       }
+       if (full_name_input.length === 0) {
+          setfull_name_input_error("Entrez votre nom et prenom")
+        }else{
+          setfull_name_input_error("")
+        }
+
+
+        
       if (Number.isNaN(parseInt(numero_tel))) {
         seterrorvisible(true);
         seterrortext("Entrez votre numéro");
@@ -56,7 +77,11 @@ export const NumInput: React.FC<Props> = ({
             country: flagChange,
           },
         });
+
+        
       }
+
+
     }
     send_pay_form_info();
   }, [send_pay_form]);
@@ -94,6 +119,34 @@ export const NumInput: React.FC<Props> = ({
     <>
       <NumInputStyles />
       <div className="margin">
+        <label style={{marginBottom:"1.2rem"}}>Full Name</label>
+        <input
+          className="feexpay_fullname_input feexpay_input_simple feexpay_input_fullname input_simple"
+          type="text"
+          style={{marginBottom:"0px"}}
+          onChange={(e)=>setfull_name_input(e.target.value)}
+          placeholder="John Don"
+        />
+
+        <div
+          className="feepay_fullname_error error_text_operator_input"
+          style={{display:"block",marginBottom:"1.5rem"}}
+        >{full_name_input_error}</div>
+
+        <label style={{marginBottom:"1.2rem"}}>E-mail</label>
+        <input
+          className="feexpay_email_input feexpay_input_simple feexpay_input_email input_simple"
+          type="email"
+          style={{marginBottom:"0px"}}
+          placeholder="example@gmail.com"
+          onChange={(e)=>setemail_input(e.target.value)}
+        />
+
+        <div
+          className="feepay_email_error error_text_operator_input"
+          style={{display:"block",marginBottom:"1.5rem"}}
+        >{email_input_error}</div>
+
         <label style={{ marginBottom: "1.2rem" }} htmlFor="input_num">
           Numéro de téléphone
         </label>
@@ -114,9 +167,7 @@ export const NumInput: React.FC<Props> = ({
               onChange={(e) => {
                 setnumero_tel(e.target.value);
                 function setWithDispath(e: any) {
-               
                   if (Number.isNaN(parseInt(e.target.value))) {
-                 
                     dispatch({
                       type: "CHANGE/NUMERO",
                       payload: {

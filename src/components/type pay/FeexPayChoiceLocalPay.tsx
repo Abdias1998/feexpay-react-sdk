@@ -15,6 +15,7 @@ export const FeexPayChoiceLocalPay: React.FC<Props> = ({
 }) => {
   return (
     <FeexPayChoiceLocalPayStyles>
+       
        <div className={"text_container"}>
         <input onClick={()=>choice_local_func()} className="input_choice" type="radio" name="isClicked" id="" />
         <div className="choice_text">Mobile Money</div>

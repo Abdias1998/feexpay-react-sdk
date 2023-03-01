@@ -16,6 +16,7 @@ export const FeexPayChoiceLocalPayStyles = styled.div`
        border:solid 1.5px orangered;
      }
 
+     
      .image_choice{
         display:flex;
         flex-direction:row;

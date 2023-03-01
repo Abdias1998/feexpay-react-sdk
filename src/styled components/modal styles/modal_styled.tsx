@@ -23,7 +23,7 @@ export const FeexPayModalStylesGlobal = createGlobalStyle`
     .modal{
        display:flex;
        flex-direction:column;
-       width:35%;
+       width:30%;
        height:92%;
        background-color:white;
 
@@ -36,19 +36,28 @@ export const FeexPayModalStylesGlobal = createGlobalStyle`
         display:flex;
         flex-direction:row;
         width:100%;
-        margin-bottom:4rem
+        margin-bottom:2rem;
+        box-shadow: 2px 3px 9px -4px rgba(0, 0, 0, 0.397);
+        border-bottom-left-radius:1rem;
+        border-bottom-right-radius:1rem;
+        padding-bottom: 0.5rem;
     }
 
     .modal .header_text{
-        font-size:0.6rem;
+        font-size:0.7rem;
         color:black;
-        width:50%;
+        width:60%;
         text-align:right;
+        padding-right: 1rem;
+        padding-top: 1rem;
+        
         
         
     }
     .modal .logo_container{
-        width:50%;
+        width:40%;
+        padding-top: 1rem;
+        padding-left:1rem;
     }
     .modal .logo_container .logo {
         width:100px;

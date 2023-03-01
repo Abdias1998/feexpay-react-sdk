@@ -2,7 +2,8 @@
  * CONSTANTS images and export assets
  *
  */
-export const LOGO_IMG_LINK = "https://api.feexpay.me/api/static/feexpay_logo-h.png"
+export const LOGO_IMG_LINK = "https://api.feexpay.me/api/static/feexpay_logo.png"
+export const LOGO_TWO_IMG_LINK = "https://api.feexpay.me/api/static/feexpay_logo-h.png"
 export const MASTERCARD_IMG_LINK = "https://api.feexpay.me/api/static/logo_mastercard.svg"
 export const VISACARD_IMG_LINK = "https://api.feexpay.me/api/static/logo_visa.svg"
 export const MTN_IMG_LINK = "https://api.feexpay.me/api/static/logo_mtn.svg"

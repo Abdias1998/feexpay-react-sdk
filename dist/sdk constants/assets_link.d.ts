@@ -1,4 +1,5 @@
-export declare const LOGO_IMG_LINK = "https://api.feexpay.me/api/static/feexpay_logo-h.png";
+export declare const LOGO_IMG_LINK = "https://api.feexpay.me/api/static/feexpay_logo.png";
+export declare const LOGO_TWO_IMG_LINK = "https://api.feexpay.me/api/static/feexpay_logo-h.png";
 export declare const MASTERCARD_IMG_LINK = "https://api.feexpay.me/api/static/logo_mastercard.svg";
 export declare const VISACARD_IMG_LINK = "https://api.feexpay.me/api/static/logo_visa.svg";
 export declare const MTN_IMG_LINK = "https://api.feexpay.me/api/static/logo_mtn.svg";

@@ -4,7 +4,7 @@ import { FeexPayChoiceLocalPay } from "../type pay/FeexPayChoiceLocalPay";
 import { FeexPayChoiceCardBank } from "../type pay/FeexPayChoiceCardBank";
 import { MobileOperatorSection } from "../mobile operator pay/MobileOperatorSection";
 import { FeexPayCancel } from "../type pay/FeexPayCancel";
-import { ICON_LOCK, LOGO_IMG_LINK } from "src/sdk constants/assets_link";
+import { ICON_LOCK, LOGO_IMG_LINK, LOGO_TWO_IMG_LINK } from "src/sdk constants/assets_link";
 import { CardBankPay } from "../card bank pay/CardBankPay";
 import { ChargementPage } from "../chargement page/ChargementPage";
 import { useAppContext } from "src/sdk contexts/props_contexts";
@@ -54,18 +54,20 @@ export const FeexPayModal: React.FC<Props> = ({
         }}
       >
         <div className="modal">
-          <div
-            className="padding_add"
-            style={{ padding: "2rem", height: "94%" }}
-          >
-            <div className="modal_header">
+        <div className="modal_header">
               <div className="logo_container">
-                <img className="logo" src={LOGO_IMG_LINK} alt="feexpay" />
+                <img className="logo" src={LOGO_TWO_IMG_LINK} alt="feexpay" />
               </div>
               <div className="header_text">
                  <div className="marchant_name">MARCHAND : {name_marchand}</div>  <div className="id_info"> ID : {state.id}</div>
               </div>
-            </div>
+          </div>
+
+          <div
+            className="padding_add"
+            style={{paddingLeft:"2rem",paddingRight:"2rem", height: "94%" }}
+          >
+           
 
             {choice_section && (
               <>

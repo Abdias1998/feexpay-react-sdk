@@ -2,8 +2,18 @@ import {createGlobalStyle} from "styled-components"
 
 export const NumInputStyles = createGlobalStyle` 
     .margin{
-        margin-top:3rem;
-        margin-bottom:3rem;
+        margin-top:1.5rem;
+        margin-bottom:1.5rem;
+    }
+    
+    .feexpay_input_simple{
+        border: none;
+        outline:none;
+        border-bottom: solid 1.5px #00000071;
+        padding-bottom:10px;
+        width: 100%;
+        margin-bottom: 1.5rem;
+        background-color: transparent;
     }
     
     .num_operator_card{
