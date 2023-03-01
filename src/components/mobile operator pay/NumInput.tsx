@@ -133,7 +133,7 @@ export const NumInput: React.FC<Props> = ({
     <>
       <NumInputStyles />
       <div className="margin">
-        <label style={{marginBottom:"1.2rem"}}>Full Name</label>
+        <label style={{marginBottom:"1.2rem"}}>Nom Prenom</label>
         <input
           className="feexpay_fullname_input feexpay_input_simple feexpay_input_fullname input_simple"
           type="text"
