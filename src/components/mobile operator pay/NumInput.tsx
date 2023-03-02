@@ -105,22 +105,22 @@ export const NumInput: React.FC<Props> = ({
       case 1:
         return {
           flagLink: FLAG_BENIN_IMG_LINK,
-          placeholder: "+229 95 02 03 04",
+          placeholder: "95 02 03 04",
         };
         break;
       case 2:
         return {
           flagLink: FLAG_TOGO_IMG_LINK,
-          placeholder: "+228 05 34 03 12",
+          placeholder: "05 34 03 12",
         };
         break;
       case 3:
-        return { flagLink: FLAG_CI_IMG_LINK, placeholder: "+225 01 20 45 02" };
+        return { flagLink: FLAG_CI_IMG_LINK, placeholder: "01 20 45 02" };
         break;
       case 4:
         return {
           flagLink: FLAG_RWANDA_IMG_LINK,
-          placeholder: "+250 04 02 23 04",
+          placeholder: "04 02 23 04",
         };
         break;
 
@@ -133,7 +133,7 @@ export const NumInput: React.FC<Props> = ({
     <>
       <NumInputStyles />
       <div className="margin">
-        <label style={{marginBottom:"1.2rem"}}>Nom Prenom</label>
+        <label style={{marginBottom:"1.2rem"}}>Nom et prénoms</label>
         <input
           className="feexpay_fullname_input feexpay_input_simple feexpay_input_fullname input_simple"
           type="text"
@@ -161,7 +161,7 @@ export const NumInput: React.FC<Props> = ({
           style={{display:"block",marginBottom:"1.5rem"}}
         >{full_name_input_error}</div>
 
-        <label style={{marginBottom:"1.2rem"}}>E-mail</label>
+        <label style={{marginBottom:"1.2rem"}}>Adresse mail</label>
         <input
           className="feexpay_email_input feexpay_input_simple feexpay_input_email input_simple"
           type="email"
