@@ -76,7 +76,12 @@ export function reducer(state: any, action: any) {
      
       return {...state,...action.payload};
       break;
-
+    
+      case "CHANGE/NAME_CARD":
+     
+        return {...state,...action.payload};
+      break;
+      
     default:
       throw new Error("Message");
   }

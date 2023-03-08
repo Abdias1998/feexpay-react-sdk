@@ -129,7 +129,7 @@ function setnum_exist_true() {
           amount:`${state.price}`,
           reseau:`${state.operator_name}`,
           token:`${state.token}`,
-          id:`${state.id}`,
+          shop:`${state.id}`,
           first_name:`${state.full_name}`,
           email:`${state.email}`
           }).then((response) => {
@@ -207,7 +207,7 @@ function setnum_exist_true() {
               setTimeout(async () => {
                 const response_getStatus = await axios.get(`${LINK_GLOBAL}/transactions/getrequesttopay/integration/${response.data.reference}`)
                 const status_response = response_getStatus.data.status
-                if (status_response === "PENDING"){
+                if (status_response === "PENDING" || status_response === "IN PENDING STATE"){
                 
                   dispatch({
                     type: "CHANGE/REQUESTMESSAGE",

@@ -35,12 +35,22 @@ export const SDKcontexts: React.FC<Props> = ({
     name_marchand:"",
     email:"",
     full_name:"",
-    callback:callback
+    callback:callback,
+
+    numero_card:"",
+    name_card:"",
+    email_card:"",
+    title_card:"",
+    address_card:"",
+    locality_card:"",
+    last_name_card:"",
+    
+    
   };
 
   // const { state, dispatch } = useAppContext();
   const [state, dispatch] = React.useReducer(reducer, props_init);
-
+  
   const contextValue = React.useMemo(
     () => ({
       state,
