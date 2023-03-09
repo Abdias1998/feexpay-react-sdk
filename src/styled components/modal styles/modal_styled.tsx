@@ -1,7 +1,20 @@
 import {createGlobalStyle} from 'styled-components';
 
 export const FeexPayModalStylesGlobal = createGlobalStyle`
-    
+.feexpay_close_btn{
+    background-color: crimson;
+    border-radius: 5rem;
+    transform: translateX(100%) translateY(-100%);
+    cursor: pointer;
+    height:30px;
+    width: 30px;
+    background-image: url("https://api.feexpay.me/api/static/cross-23.png");
+    background-size: cover;
+    background-position: center;
+    float: right;
+   
+  
+  }
     .modal_container{
         position:fixed;
         display:flex;
@@ -21,7 +34,7 @@ export const FeexPayModalStylesGlobal = createGlobalStyle`
     }
 
     .modal{
-       display:flex;
+       display:grid;
        flex-direction:column;
        width:30%;
        height:92%;
@@ -49,15 +62,18 @@ export const FeexPayModalStylesGlobal = createGlobalStyle`
         width:60%;
         text-align:right;
         padding-right: 1rem;
-        padding-top: 1rem;
+        padding-top: 0.5rem;
+        height:fit-content;
+
         
         
         
     }
     .modal .logo_container{
         width:40%;
-        padding-top: 1rem;
+        padding-top: 0.5rem;
         padding-left:1rem;
+        height:fit-content;
     }
     .modal .logo_container .logo {
         width:100px;
@@ -76,12 +92,13 @@ export const FeexPayModalStylesGlobal = createGlobalStyle`
         align-self:flex-end;
         display:flex;
         align-items:flex-end;
+        justify-self:flex-end;
       
     }
 
     .footer_modal{
         width:100%;
-        height:100%;
+        height:50px;
         background-color:#112C56;
         background-image:url("https://api.feexpay.me/api/static/motif_footer.svg");
         background-size:cover;

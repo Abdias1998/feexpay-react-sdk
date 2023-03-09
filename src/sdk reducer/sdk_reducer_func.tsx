@@ -66,22 +66,18 @@ export function reducer(state: any, action: any) {
       return { ...state, requesttopayinfo: { ...action.payload } };
       break;
 
-    
     case "CHANGE/EMAIL":
-     
-      return {...state,...action.payload};
+      return { ...state, ...action.payload };
       break;
-    
+
     case "CHANGE/FULLNAME":
-     
-      return {...state,...action.payload};
+      return { ...state, ...action.payload };
       break;
-    
-      case "CHANGE/NAME_CARD":
-     
-        return {...state,...action.payload};
+
+    case "CHANGE/NAME_CARD":
+      return { ...state, ...action.payload };
       break;
-      
+
     default:
       throw new Error("Message");
   }

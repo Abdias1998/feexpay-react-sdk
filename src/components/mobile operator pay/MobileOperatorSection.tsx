@@ -7,24 +7,28 @@ import { PayButton } from "../PayButton";
 import { useAppContext } from "src/sdk contexts/props_contexts";
 import axios from "axios";
 type Props = {
-  onChoiceMobile: boolean,
-  changeVisibleChargementFunc : any ,
-  changeVisibleChargementExitFunc : any,
+  onChoiceMobile: boolean;
+  changeVisibleChargementFunc: any;
+  changeVisibleChargementExitFunc: any;
 };
 
-export const MobileOperatorSection: React.FC<Props> = ({ onChoiceMobile , changeVisibleChargementFunc , changeVisibleChargementExitFunc}) => {
+export const MobileOperatorSection: React.FC<Props> = ({
+  onChoiceMobile,
+  changeVisibleChargementFunc,
+  changeVisibleChargementExitFunc,
+}) => {
   const [send_pay_info, setsend_pay_info] = React.useState(false);
   const [operator_mtn, setoperator_mtn] = React.useState("");
   const [operator_moov, setoperator_moov] = React.useState("");
   const [operator, setoperator] = React.useState("");
-  const [chargementPage, setchargementPage] = React.useState(false)
- const [sendRequest, setsendRequest] = React.useState(false)
-  const [errorvisible, seterrorvisible] = React.useState(false)
-  const [errortext, seterrortext] = React.useState("")
+  const [chargementPage, setchargementPage] = React.useState(false);
+  const [sendRequest, setsendRequest] = React.useState(false);
+  const [errorvisible, seterrorvisible] = React.useState(false);
+  const [errortext, seterrortext] = React.useState("");
   const { state, dispatch } = useAppContext();
-  const [num_client_exist, setnum_client_exist] = React.useState(false)
+  const [num_client_exist, setnum_client_exist] = React.useState(false);
 
-  const [operator_exist, setoperator_exist] = React.useState(false)
+  const [operator_exist, setoperator_exist] = React.useState(false);
 
   function payMobile() {
     // send_pay_info(true)
@@ -36,242 +40,184 @@ export const MobileOperatorSection: React.FC<Props> = ({ onChoiceMobile , change
       setsend_pay_info(false);
     }
 
-
-    if (operator === ""){
-         seterrorvisible(true)
-         seterrortext("Choisissez un operateur mobile")
-         dispatch({
-          type: "CHANGE/OPERATOR",
-          payload:{
-             operator_name:""
-          }
-    
-        });
-    }else{
-      seterrorvisible(false)
-      seterrortext("")
-
-
+    if (operator === "") {
+      seterrorvisible(true);
+      seterrortext("Choisissez un operateur mobile");
+      dispatch({
+        type: "CHANGE/OPERATOR",
+        payload: {
+          operator_name: "",
+        },
+      });
+    } else {
+      seterrorvisible(false);
+      seterrortext("");
 
       // STOP DISPATH WHEN MOBILE OPERATOR IS VALIDE
       dispatch({
         type: "CHANGE/OPERATOR",
-        payload:{
-           operator_name:operator
-        }
-  
+        payload: {
+          operator_name: operator,
+        },
       });
       //=========================================
-
-
     }
-
- 
-    
   }
 
   function changeOperatorMoovValue() {
     setoperator_moov("MOOV");
     setoperator_mtn("");
     setoperator("MOOV");
-    setoperator_exist(true)
+    setoperator_exist(true);
   }
 
   function changeOperatorMtnValue() {
     setoperator_moov("");
     setoperator_mtn("MTN");
     setoperator("MTN");
-    setoperator_exist(true)
+    setoperator_exist(true);
   }
 
-  
-
-function setnum_exist_false() {
-  setnum_client_exist(false)
-}
-function setnum_exist_true() {
-  setnum_client_exist(true)
-}
-
-
-
-
+  function setnum_exist_false() {
+    setnum_client_exist(false);
+  }
+  function setnum_exist_true() {
+    setnum_client_exist(true);
+  }
 
   // React.useEffect(() => {
   //   function sendRequestVerify() {
   //     if () {
-  //    
+  //
   //     }
-      
+
   //  }
   // }, [state.operator_name,state.num_client,send_pay_info])
 
-
-
   React.useEffect(() => {
     function sendRequestVerify() {
-      const num_client_string = new String(state.num_client)
-      const operator_string = new String(state.operator_name)
+      const num_client_string = new String(state.num_client);
+      const operator_string = new String(state.operator_name);
 
+      if (
+        num_client_string.length > 4 &&
+        operator_string.length > 0 &&
+        num_client_exist === true &&
+        state.full_name.length > 0 &&
+        state.email.length > 0
+      ) {
+        const sendPayFunc = async () => {
+          changeVisibleChargementFunc();
 
-      if ((num_client_string.length > 4) && (operator_string.length > 0) && (num_client_exist === true) && (state.full_name.length > 0) && (state.email.length > 0 )){
-        
-
-
-        const sendPayFunc = async ()=>{
-
-
-       
-          changeVisibleChargementFunc()
-
-          await axios.post(`${LINK_GLOBAL}/transactions/requesttopay/integration`,{
-          phoneNumber:`${state.num_client}`,
-          amount:`${state.price}`,
-          reseau:`${state.operator_name}`,
-          token:`${state.token}`,
-          shop:`${state.id}`,
-          first_name:`${state.full_name}`,
-          email:`${state.email}`
-          }).then((response) => {
-            
-              let i = 0
+          await axios
+            .post(`${LINK_GLOBAL}/transactions/requesttopay/integration`, {
+              phoneNumber: `${state.num_client}`,
+              amount: `${state.price}`,
+              reseau: `${state.operator_name}`,
+              token: `${state.token}`,
+              shop: `${state.id}`,
+              first_name: `${state.full_name}`,
+              email: `${state.email}`,
+            })
+            .then((response) => {
+              let i = 0;
               const intervale_valid_pay = setInterval(async () => {
-                   
-                   const response_getStatus = await axios.get(`${LINK_GLOBAL}/transactions/getrequesttopay/integration/${response.data.reference}`)
-                   const status_response = response_getStatus.data.status
-                 
-                    
-                   if (status_response === "SUCCESSFUL"){
-                      i=i+1
-                      if (i<2) {
-                        clearInterval(intervale_valid_pay)
-                  
-                        
-                      
-                        dispatch({
-                          type: "CHANGE/REQUESTTOPAYINFO",
-                          payload:{
-                            externalId:response_getStatus.data.externalId,
-                            amount:response_getStatus.data.amount,
-                            status:response_getStatus.data.status,
-                            partyId:response_getStatus.data.payer.partyId,
-                          }
-                    
-                        });
-                        dispatch({
-                          type: "CHANGE/REQUESTMESSAGE",
-                          payload:{
-                            paiement_request_verify_msg: "Paiement effectué",
-                            stopchargement:true
-                          }
-                    
-                        });
-  
-  
-                        setTimeout(() => {
-                           
-                              state.callback()
-                            
-                        }, 2000);
-                      }
-                     
-                      
-                      
+                const response_getStatus = await axios.get(
+                  `${LINK_GLOBAL}/transactions/getrequesttopay/integration/${response.data.reference}`
+                );
+                const status_response = response_getStatus.data.status;
 
-                      
-                      
-                   }
-                   if (status_response === "FAILED"){
-                      clearInterval(intervale_valid_pay)
-                     
-                      dispatch({
-                        type: "CHANGE/REQUESTMESSAGE",
-                        payload:{
-                          paiement_request_verify_msg: "Veuillez verifier votre numero",
-                          stopchargement:true
-                        }
-                  
-                      });
+                if (status_response === "SUCCESSFUL") {
+                  i = i + 1;
+                  if (i < 2) {
+                    clearInterval(intervale_valid_pay);
 
-                      setTimeout(() => {
-                        changeVisibleChargementExitFunc()
-                      }, 2000);
+                    dispatch({
+                      type: "CHANGE/REQUESTTOPAYINFO",
+                      payload: {
+                        externalId: response_getStatus.data.externalId,
+                        amount: response_getStatus.data.amount,
+                        status: response_getStatus.data.status,
+                        partyId: response_getStatus.data.payer.partyId,
+                      },
+                    });
+                    dispatch({
+                      type: "CHANGE/REQUESTMESSAGE",
+                      payload: {
+                        paiement_request_verify_msg: "Paiement effectué",
+                        stopchargement: true,
+                      },
+                    });
 
-                      // changeVisibleChargementExitFunc()
-                     
-                   }
-          
-              }, 5000);
+                    setTimeout(() => {
+                      state.callback();
+                    }, 2000);
+                  }
+                }
+                if (status_response === "FAILED") {
+                  clearInterval(intervale_valid_pay);
 
-
-              setTimeout(async () => {
-                const response_getStatus = await axios.get(`${LINK_GLOBAL}/transactions/getrequesttopay/integration/${response.data.reference}`)
-                const status_response = response_getStatus.data.status
-                if (status_response === "PENDING" || status_response === "IN PENDING STATE"){
-                
                   dispatch({
                     type: "CHANGE/REQUESTMESSAGE",
-                    payload:{
-                      paiement_request_verify_msg: "Vous n'avez pas accepter la requete",
-                      stopchargement:true
-                    }
-              
+                    payload: {
+                      paiement_request_verify_msg:
+                        "Veuillez verifier votre numero",
+                      stopchargement: true,
+                    },
                   });
 
                   setTimeout(() => {
-                    changeVisibleChargementExitFunc()
-                  }, 5000);
-                  
-                  
-                  
+                    changeVisibleChargementExitFunc();
+                  }, 2000);
+
+                  // changeVisibleChargementExitFunc()
                 }
-                clearInterval(intervale_valid_pay)
-                
+              }, 5000);
 
+              setTimeout(async () => {
+                const response_getStatus = await axios.get(
+                  `${LINK_GLOBAL}/transactions/getrequesttopay/integration/${response.data.reference}`
+                );
+                const status_response = response_getStatus.data.status;
+                if (
+                  status_response === "PENDING" ||
+                  status_response === "IN PENDING STATE"
+                ) {
+                  dispatch({
+                    type: "CHANGE/REQUESTMESSAGE",
+                    payload: {
+                      paiement_request_verify_msg:
+                        "Vous n'avez pas accepter la requete",
+                      stopchargement: true,
+                    },
+                  });
+
+                  setTimeout(() => {
+                    changeVisibleChargementExitFunc();
+                  }, 5000);
+                }
+                clearInterval(intervale_valid_pay);
               }, 180000);
-
-              
-
-
-
-
-
-
-            }).catch((error) => {
-             
+            })
+            .catch((error) => {
               if (error.response.data.message === "Token API invalid") {
                 dispatch({
                   type: "CHANGE/REQUESTMESSAGE",
-                  payload:{
-                    paiement_request_verify_msg: "Veuillez contacter l'administrateur du site.",
-                    stopchargement:true
-                  }
-            
+                  payload: {
+                    paiement_request_verify_msg:
+                      "Veuillez contacter l'administrateur du site.",
+                    stopchargement: true,
+                  },
                 });
               }
             });
-           
-             
-        
-       
-          }
+        };
 
-
-          sendPayFunc()
-
-
-
+        sendPayFunc();
       }
-      
-   }
-   sendRequestVerify()
-
-
-
-
-  }, [state.operator_name,state.num_client,send_pay_info])
-
-
+    }
+    sendRequestVerify();
+  }, [state.operator_name, state.num_client, send_pay_info]);
 
   return (
     <>
@@ -280,40 +226,38 @@ function setnum_exist_true() {
         <div className="choice_operator_text">Opérateur mobile</div>
         <div className="choice_operator_img">
           <div className="choice_mtn">
-              <input
-                type="radio"
-                name="operator_name"
-                id=""
-                onChange={() => changeOperatorMtnValue()}
-              />
-              <img
-                className="img_mtn"
-                src={MTN_IMG_LINK}
-                alt="mtn"
-                
-              />
+            <input
+              type="radio"
+              name="operator_name"
+              id=""
+              onChange={() => changeOperatorMtnValue()}
+            />
+            <img className="img_mtn" src={MTN_IMG_LINK} alt="mtn" />
           </div>
 
           <div className="choice_moov">
-              <input
-                type="radio"
-                name="operator_name"
-                id=""
-                onChange={() => changeOperatorMoovValue()}
-              />
-              <img className="img_moov" src={MOOV_IMG_LINK} alt="moov" />
+            <input
+              type="radio"
+              name="operator_name"
+              id=""
+              onChange={() => changeOperatorMoovValue()}
+            />
+            <img className="img_moov" src={MOOV_IMG_LINK} alt="moov" />
           </div>
-          
-         
         </div>
-       
       </div>
-      <div className="error_text_operator" style={{display:errorvisible ? "block" : "none"}}>
-           {errortext}
+      <div
+        className="error_text_operator"
+        style={{ display: errorvisible ? "block" : "none" }}
+      >
+        {errortext}
       </div>
 
-
-      <NumInput send_pay_form={send_pay_info} setnum_exist_true={()=>setnum_exist_true()} setnum_exist_false={()=>setnum_exist_false()}/>
+      <NumInput
+        send_pay_form={send_pay_info}
+        setnum_exist_true={() => setnum_exist_true()}
+        setnum_exist_false={() => setnum_exist_false()}
+      />
       <PayButton pay_func={() => payMobile()} />
     </>
   );

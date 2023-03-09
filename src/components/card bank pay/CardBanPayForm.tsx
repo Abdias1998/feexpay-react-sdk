@@ -8,7 +8,7 @@ type Props = {
   onChoice: boolean;
 };
 
-export const CardBankPayForm: React.FC<Props> = ({ onChoice , send_signal}) => {
+export const CardBankPayForm: React.FC<Props> = ({ onChoice, send_signal }) => {
   const [name_card, setname_card] = React.useState("");
   const [last_name_card, setlast_name_card] = React.useState("");
   const [numero_card, setnumero_card] = React.useState("");
@@ -18,121 +18,98 @@ export const CardBankPayForm: React.FC<Props> = ({ onChoice , send_signal}) => {
   const [address_card, setaddress_card] = React.useState("");
   const [locality_card, setlocality_card] = React.useState("");
 
-  const [name_error, setname_error] = React.useState("")
-  const [email_error, setemail_error] = React.useState("")
-  const [numero_error, setnumero_error] = React.useState("")
-  const [title_card_error, settitle_card_error] = React.useState("")
-  const [localAdress_error, setlocalAdress_error] = React.useState("")
+  const [name_error, setname_error] = React.useState("");
+  const [email_error, setemail_error] = React.useState("");
+  const [numero_error, setnumero_error] = React.useState("");
+  const [title_card_error, settitle_card_error] = React.useState("");
+  const [localAdress_error, setlocalAdress_error] = React.useState("");
 
-  const {state,dispatch} = useAppContext()
+  const { state, dispatch } = useAppContext();
 
-  
- 
-  
   React.useEffect(() => {
     function send_pay_form_info() {
-     
-       
-        if (email_card.trim().length === 0) {
-          setemail_error("Entrez votre email")
-          // console.log("Empty email");
-          }else{
-          setemail_error("")
-          // console.log("Name change");
-          
-            dispatch({
-              type: "CHANGE/NAME_CARD",
-              payload: {
-              
-                email_card:email_card,
-                
-              
-              },
-            });
-          }
-
-
-          if (title_card.trim().length === 0) {
-            settitle_card_error("Entrez votre title")
-            // console.log("Empty title");
-            }else{
-            settitle_card_error("")
-            // console.log("title change");
-            
-              dispatch({
-                type: "CHANGE/NAME_CARD",
-                payload: {
-                
-                  title_card:title_card,
-                  
-                
-                },
-              });
-            }
-
-
-
-          if (numero_card.trim().length === 0 || Number.isNaN(parseInt(numero_card))) {
-            setnumero_error("Entrez votre numéro")
-            // console.log("Empty Num");
-          }else{
-            setnumero_error("")
-            // console.log("num change");
-            
-              dispatch({
-                type: "CHANGE/NAME_CARD",
-                payload: {
-                  numero_card: numero_card,
-                          
-                },
-              });
-          }
-
-      
-       if (name_card.trim().length === 0 || last_name_card.trim().length === 0 ) {
-           setname_error("Entrez votre nom et prénoms")
-          //  console.log("Empty");
-       }else{
-        setname_error("")
+      if (email_card.trim().length === 0) {
+        setemail_error("Entrez votre email");
+        // console.log("Empty email");
+      } else {
+        setemail_error("");
         // console.log("Name change");
-        
-          dispatch({
-            type: "CHANGE/NAME_CARD",
-            payload: {
-              name_card: name_card,
-              last_name_card:last_name_card,
-              
-            
-            },
-          });
-       }
 
+        dispatch({
+          type: "CHANGE/NAME_CARD",
+          payload: {
+            email_card: email_card,
+          },
+        });
+      }
 
+      if (title_card.trim().length === 0) {
+        settitle_card_error("Entrez votre title");
+        // console.log("Empty title");
+      } else {
+        settitle_card_error("");
+        // console.log("title change");
 
+        dispatch({
+          type: "CHANGE/NAME_CARD",
+          payload: {
+            title_card: title_card,
+          },
+        });
+      }
 
+      if (
+        numero_card.trim().length === 0 ||
+        Number.isNaN(parseInt(numero_card))
+      ) {
+        setnumero_error("Entrez votre numéro");
+        // console.log("Empty Num");
+      } else {
+        setnumero_error("");
+        // console.log("num change");
 
+        dispatch({
+          type: "CHANGE/NAME_CARD",
+          payload: {
+            numero_card: numero_card,
+          },
+        });
+      }
 
-       if (address_card.trim().length === 0 || locality_card.trim().length === 0 ) {
-        setlocalAdress_error("Entrez votre adreese et votre localité")
+      if (name_card.trim().length === 0 || last_name_card.trim().length === 0) {
+        setname_error("Entrez votre nom et prénoms");
+        //  console.log("Empty");
+      } else {
+        setname_error("");
+        // console.log("Name change");
+
+        dispatch({
+          type: "CHANGE/NAME_CARD",
+          payload: {
+            name_card: name_card,
+            last_name_card: last_name_card,
+          },
+        });
+      }
+
+      if (
+        address_card.trim().length === 0 ||
+        locality_card.trim().length === 0
+      ) {
+        setlocalAdress_error("Entrez votre adreese et votre localité");
         // console.log("Empty");
-    }else{
-      setlocalAdress_error("")
-    //  console.log("Name change");
-     
-       dispatch({
-         type: "CHANGE/NAME_CARD",
-         payload: {
-           address_card: address_card,
-           locality_card:locality_card,
-           
-         
-         },
-       });
-    }
+      } else {
+        setlocalAdress_error("");
+        //  console.log("Name change");
 
-       
-      
-
+        dispatch({
+          type: "CHANGE/NAME_CARD",
+          payload: {
+            address_card: address_card,
+            locality_card: locality_card,
+          },
+        });
+      }
     }
     send_pay_form_info();
   }, [send_signal]);
@@ -155,21 +132,19 @@ export const CardBankPayForm: React.FC<Props> = ({ onChoice , send_signal}) => {
                 name="last_name"
                 id="last_name"
                 placeholder="Doe"
-                onChange={(e)=>{
-                    setname_card(e.target.value)
-                    function setWithDispath(e: any) {
-                      if (e.target.value.length === 0) {
-                        dispatch({
-                          type: "CHANGE/NAME_CARD",
-                          payload: {
-                            name_card: "",
-                           
-                          },
-                        });
-                      }
+                onChange={(e) => {
+                  setname_card(e.target.value);
+                  function setWithDispath(e: any) {
+                    if (e.target.value.length === 0) {
+                      dispatch({
+                        type: "CHANGE/NAME_CARD",
+                        payload: {
+                          name_card: "",
+                        },
+                      });
                     }
-                    setWithDispath(e);
-                    
+                  }
+                  setWithDispath(e);
                 }}
               />
             </div>
@@ -188,22 +163,20 @@ export const CardBankPayForm: React.FC<Props> = ({ onChoice , send_signal}) => {
                 name="first_name"
                 id="first_name"
                 placeholder="John"
-                onChange={(e)=>{
-                  setlast_name_card(e.target.value)
+                onChange={(e) => {
+                  setlast_name_card(e.target.value);
                   function setWithDispath(e: any) {
                     if (e.target.value.length === 0) {
                       dispatch({
                         type: "CHANGE/NAME_CARD",
                         payload: {
                           last_name_card: "",
-                         
                         },
                       });
                     }
                   }
                   setWithDispath(e);
-                  
-              }}
+                }}
               />
             </div>
           </div>
@@ -215,7 +188,9 @@ export const CardBankPayForm: React.FC<Props> = ({ onChoice , send_signal}) => {
               color: "crimson",
               marginTop: "0.1rem",
             }}
-          >{name_error}</div>
+          >
+            {name_error}
+          </div>
 
           <div className="titulaire_info_container">
             <label className="titulaire_lab" htmlFor="email">
@@ -231,22 +206,20 @@ export const CardBankPayForm: React.FC<Props> = ({ onChoice , send_signal}) => {
                 name="email"
                 id="email"
                 placeholder="Email"
-                onChange={(e)=>{
-                  setemail_card(e.target.value)
+                onChange={(e) => {
+                  setemail_card(e.target.value);
                   function setWithDispath(e: any) {
                     if (e.target.value.length === 0) {
                       dispatch({
                         type: "CHANGE/NAME_CARD",
                         payload: {
                           email_card: "",
-                         
                         },
                       });
                     }
                   }
                   setWithDispath(e);
-                  
-              }}
+                }}
               />
             </div>
             <div
@@ -272,22 +245,18 @@ export const CardBankPayForm: React.FC<Props> = ({ onChoice , send_signal}) => {
                   name="country"
                   className="input_info feexpay_input_countryName"
                   style={{ width: "100%" }}
-                  onChange={(e)=>{
-                    
+                  onChange={(e) => {
                     function setWithDispath(e: any) {
-                        setcountry_card(e.target.value)
-                        dispatch({
-                          type: "CHANGE/NAME_CARD",
-                          payload: {
-                            country_card:e.target.value,
-                           
-                          },
-                        });
-                      
+                      setcountry_card(e.target.value);
+                      dispatch({
+                        type: "CHANGE/NAME_CARD",
+                        payload: {
+                          country_card: e.target.value,
+                        },
+                      });
                     }
                     setWithDispath(e);
-                    
-                }}
+                  }}
                 >
                   <option value="Benin">Benin</option>
                   <option value="Rwanda">Rwanda</option>
@@ -310,22 +279,20 @@ export const CardBankPayForm: React.FC<Props> = ({ onChoice , send_signal}) => {
                   name="phone"
                   id="phone_number"
                   placeholder="Numéro"
-                  onChange={(e)=>{
-                    setnumero_card(e.target.value)
+                  onChange={(e) => {
+                    setnumero_card(e.target.value);
                     function setWithDispath(e: any) {
                       if (e.target.value.length === 0) {
                         dispatch({
                           type: "CHANGE/NAME_CARD",
                           payload: {
-                            numero_card:"",
-                           
+                            numero_card: "",
                           },
                         });
                       }
                     }
                     setWithDispath(e);
-                    
-                }}
+                  }}
                 />
               </div>
             </div>
@@ -355,22 +322,20 @@ export const CardBankPayForm: React.FC<Props> = ({ onChoice , send_signal}) => {
                 name="title"
                 id="title"
                 placeholder="Titre"
-                onChange={(e)=>{
-                  settitle_card(e.target.value)
+                onChange={(e) => {
+                  settitle_card(e.target.value);
                   function setWithDispath(e: any) {
                     if (e.target.value.length === 0) {
                       dispatch({
                         type: "CHANGE/NAME_CARD",
                         payload: {
                           title_card: "",
-                         
                         },
                       });
                     }
                   }
                   setWithDispath(e);
-                  
-              }}
+                }}
               />
             </div>
           </div>
@@ -397,22 +362,20 @@ export const CardBankPayForm: React.FC<Props> = ({ onChoice , send_signal}) => {
                 type="text"
                 name="address1"
                 placeholder="Adresse"
-                onChange={(e)=>{
-                  setaddress_card(e.target.value)
+                onChange={(e) => {
+                  setaddress_card(e.target.value);
                   function setWithDispath(e: any) {
                     if (e.target.value.length === 0) {
                       dispatch({
                         type: "CHANGE/NAME_CARD",
                         payload: {
                           address_card: "",
-                         
                         },
                       });
                     }
                   }
                   setWithDispath(e);
-                  
-              }}
+                }}
               />
             </div>
 
@@ -433,22 +396,20 @@ export const CardBankPayForm: React.FC<Props> = ({ onChoice , send_signal}) => {
                   name="locality"
                   id="locality"
                   placeholder="Localité"
-                  onChange={(e)=>{
-                    setlocality_card(e.target.value)
+                  onChange={(e) => {
+                    setlocality_card(e.target.value);
                     function setWithDispath(e: any) {
                       if (e.target.value.length === 0) {
                         dispatch({
                           type: "CHANGE/NAME_CARD",
                           payload: {
                             locality_card: "",
-                           
                           },
                         });
                       }
                     }
                     setWithDispath(e);
-                    
-                }}
+                  }}
                 />
               </div>
             </div>
@@ -461,7 +422,7 @@ export const CardBankPayForm: React.FC<Props> = ({ onChoice , send_signal}) => {
               marginTop: "0.1rem",
             }}
           >
-             {localAdress_error}
+            {localAdress_error}
           </div>
         </form>
       </div>

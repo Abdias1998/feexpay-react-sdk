@@ -43,7 +43,7 @@ export const CardBankPayFormStyles = createGlobalStyle`
 
 }
 .feexpaycardBankForm .input_info::placeholder{
-   font-size: 0.8rem;
+   font-size: 0.7rem;
 }
 
 .feexpaycardBankForm .input_customer{

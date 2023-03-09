@@ -8,19 +8,18 @@ type Props = {
 export const ChargementPage: React.FC<Props> = ({ isVisible }) => {
   const { state, dispatch } = useAppContext();
   const [visible, setvisible] = React.useState(false);
-  
+
   React.useEffect(() => {
     function changeVisible() {
       if (isVisible === true) {
         setvisible(true);
-        
+
         dispatch({
           type: "CHANGE/REQUESTMESSAGE",
-          payload:{
+          payload: {
             paiement_request_verify_msg: "En attente du paiement.",
-            stopchargement:false
-          }
-    
+            stopchargement: false,
+          },
         });
       }
       if (isVisible === false) {
@@ -36,10 +35,21 @@ export const ChargementPage: React.FC<Props> = ({ isVisible }) => {
         className="chargement_container"
         style={{ display: visible ? "flex" : "none" }}
       >
-        <div className="message_container" style={{backgroundColor:state.paiement_request_verify_msg==="Paiement effectué" ? "green" : "#D45D00"}}>
+        <div
+          className="message_container"
+          style={{
+            backgroundColor:
+              state.paiement_request_verify_msg === "Paiement effectué"
+                ? "green"
+                : "#D45D00",
+          }}
+        >
           {/* <img src={LOADER_GIF} width="10" alt="" style={{display:state.stopchargement ? "none" : "block"}} />
            */}
-           <div className="loader" style={{display:state.stopchargement ? "none" : "block"}}></div>
+          <div
+            className="loader"
+            style={{ display: state.stopchargement ? "none" : "block" }}
+          ></div>
           <div className="request_msg">{state.paiement_request_verify_msg}</div>
         </div>
       </div>
