@@ -1,7 +1,7 @@
 {
-  "name": "@feexpay/react-sdk",
-  "version": "1.3.0",
-  "description": "",
+  "name": "@feexpay-lite/react-sdk",
+  "version": "1.0.0",
+  "description": "Installation",
   "main": "dist/index.js",
   "module": "dist/index.m.js",
   "unpkg": "dist/index.umd.js",
@@ -9,7 +9,7 @@
   "scripts": {
     "build": "rmdir /S /Q dist && microbundle --tsconfig tsconfig.json --no-sourcemap"
   },
-  "author": "FeexPay",
+  "author": "Amedee",
   "license": "ISC",
   "files": [
     "dist"
@@ -19,5 +19,17 @@
     "microbundle": "^0.15.1",
     "react": "^18.2.0",
     "styled-components": "^5.3.6"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LOUGBEGNON/feexpay-lite-react-sdk.git"
+  },
+  "keywords": [
+    "feexpay-lite"
+  ],
+  "bugs": {
+    "url": "https://github.com/LOUGBEGNON/feexpay-lite-react-sdk/issues"
+  },
+  "homepage": "https://github.com/LOUGBEGNON/feexpay-lite-react-sdk#readme"
 }
