@@ -12,9 +12,27 @@ type Props = {
   id:string;
   callback:Function;
   callback_url: string;
+    description: string;
+    callback_info: string;
+    reference: string;
+    fieldsToHide: [];
+    buttonText: string; // Ajoutez la propriété pour le texte du bouton
+    buttonStyles?: React.CSSProperties; // Ajoutez la propriété pour les styles du bouton
 };
 
-const FeexPay: React.FC<Props> = ({ amount , token , id , callback, callback_url }) => {
+const FeexPay: React.FC<Props> = ({
+                                      amount,
+                                      token,
+                                      id,
+                                      callback,
+                                      callback_url,
+                                      description,
+                                      callback_info,
+                                      reference,
+                                      fieldsToHide,
+                                      buttonText,
+                                      buttonStyles
+}) => {
   const [modal_open, setmodal_open] = React.useState(false);
   const [modal_cancel, setmodal_cancel] = React.useState(true);
   const [visibleFeexBtn, setvisibleFeexBtn] = React.useState(false);
@@ -52,14 +70,16 @@ const FeexPay: React.FC<Props> = ({ amount , token , id , callback, callback_url
               setvisibleFeexBtn(false)
             }
          })
-        
-         
      }
      verifyId()
   }, [])
   return (
     <>
-      <SDKcontexts amount={montant_context} token={token} id={id} callback={callback} callback_url={callback_url}>
+      <SDKcontexts amount={montant_context} token={token} id={id}  callback={callback} callback_url={callback_url}
+                   description={description} callback_info={callback_info}
+                   reference={reference} fieldsToHide={fieldsToHide}
+                   buttonText={buttonText} buttonStyles={buttonStyles}
+      >
     
           <FeexPayModal
             isOpen={modal_open}
@@ -69,7 +89,7 @@ const FeexPay: React.FC<Props> = ({ amount , token , id , callback, callback_url
             reference_marchand={reference_marchand}
           />
    
-        <FeexPayButton open_modal={() =>open_modal()} feexVisisbleBtn={visibleFeexBtn}/>
+        <FeexPayButton open_modal={() =>open_modal()} feexVisisbleBtn={visibleFeexBtn} buttonText={buttonText} buttonStyles={buttonStyles}/>
       </SDKcontexts>
     </>
   );

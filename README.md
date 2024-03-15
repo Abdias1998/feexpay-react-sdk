@@ -23,9 +23,9 @@ To init and add the payment button, you add this code in script balise.
 
 ```bash
 <Feexpay
-     token = ‘’/*API KEY*/’’
-      id = ‘’/*ID FOR USER*/ ‘’
-      amount = ‘’/*Montant du paiement à effectuer */‘’
+     token = {’/*API KEY*/’}
+      id = {’/*Shop's id */ ‘}
+      amount = {/*Montant du paiement à effectuer */}
       callback={()=>alert(‘’Pay’’)}
 />
 ```
@@ -34,10 +34,17 @@ token (string): your token API key.
 
 id (string): your shop's id. 
 
-callback (function): Function called back after payment has been made. 
+callback (function): Function called back after payment has been made. This is optional.
 
-amount (int): Amount of payment to be made in X OF.
+callback_url (string): redirect url after payment. This is optional.
 
+amount (int): Amount of payment to be made in XOF.
 
-You can get the shop's id and token API in your account FeexPay in Developer Menu.
+fieldsToHide (array): By example, you can put fieldsToHide={['email', 'full_name']}
+
+buttonText: The text to be displayed on the payment button before the amount. By example buttonText="Payer".
+
+buttonStyles: Sets of css properties to customize the start button. By example: buttonStyles={{ backgroundColor: "red", color: "black", borderRadius: "25px", width: '25%' }}.
+
+You can get the shop's id and token API in your account FeexPay in Developer Menu. You won't need to define both callback and callback_url
 

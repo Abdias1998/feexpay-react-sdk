@@ -28,6 +28,7 @@ export const MobileOperatorSection: React.FC<Props> = ({
   const [operator_mtn, setoperator_mtn] = React.useState("");
   const [operator_moov, setoperator_moov] = React.useState("");
   const [operator, setoperator] = React.useState("");
+  const [operator_error, setoperator_error] = React.useState("");
   const [chargementPage, setchargementPage] = React.useState(false);
   const [sendRequest, setsendRequest] = React.useState(false);
   const [errorvisible, seterrorvisible] = React.useState(false);
@@ -42,6 +43,10 @@ export const MobileOperatorSection: React.FC<Props> = ({
   const [operator_exist, setoperator_exist] = React.useState(false);
   const [currentContent, setCurrentContent] = React.useState("choice_section");
   const [isVisibleChargement, setisVisibleChargement] = React.useState(false);
+  const [iFrame, setiFrame] = React.useState(false);
+  const [urlPay, seturlPay] = React.useState("");
+  const [userInitiatedSubmission, setUserInitiatedSubmission] = React.useState(false);
+  const [init_mobile_money_container, setinit_mobile_money_container] = React.useState(true);
 
 
   function open_modal() {
@@ -51,7 +56,7 @@ export const MobileOperatorSection: React.FC<Props> = ({
   }
 
   function back_button() {
-      console.log("zfregtyutyrgtdf");
+      // console.log("zfregtyutyrgtdf");
       setCurrentContent("choice_section");
       setmodal_open(true);
     setmodal_cancel(false);
@@ -73,6 +78,21 @@ export const MobileOperatorSection: React.FC<Props> = ({
 
   function payMobile() {
     // send_pay_info(true)
+    // console.log("state")
+    // console.log(state)
+    // console.log(state.operator_name)
+    // setoperator(state.operator_name)
+    // console.log("operator")
+    // console.log(operator)
+
+
+
+
+    // console.log('state.operator_name === ""')
+    // console.log(state.operator_name === "")
+    // console.log('operator === ""')
+    // console.log(operator === "")
+
 
     if (send_pay_info === false) {
       setsend_pay_info(true);
@@ -81,26 +101,29 @@ export const MobileOperatorSection: React.FC<Props> = ({
       setsend_pay_info(false);
     }
 
-    if (operator === "") {
+    // console.log("dgrdgfthfthyythjyh")
+
+    if (state.operator_name === "") {
       seterrorvisible(true);
-      seterrortext("Choisissez un operateur mobile");
-      dispatch({
-        type: "CHANGE/OPERATOR",
-        payload: {
-          operator_name: "",
-        },
-      });
+      setoperator_error("Choisissez un operateur mobile");
+      // dispatch({
+      //   type: "CHANGE/OPERATOR",
+      //   payload: {
+      //     operator_name: state.operator_name,
+      //   },
+      // });
     } else {
       seterrorvisible(false);
-      seterrortext("");
+      setoperator_error("");
+      setUserInitiatedSubmission(true);
 
       // STOP DISPATH WHEN MOBILE OPERATOR IS VALIDE
-      dispatch({
-        type: "CHANGE/OPERATOR",
-        payload: {
-          operator_name: operator,
-        },
-      });
+      // dispatch({
+      //   type: "CHANGE/OPERATOR",
+      //   payload: {
+      //     operator_name: operator,
+      //   },
+      // });
       //=========================================
     }
   }
@@ -120,155 +143,230 @@ export const MobileOperatorSection: React.FC<Props> = ({
   }
 
   function setnum_exist_false() {
-    setnum_client_exist(false);
+    // setnum_client_exist(false);
   }
   function setnum_exist_true() {
-    setnum_client_exist(true);
+    // setnum_client_exist(true);
   }
 
-  // React.useEffect(() => {
-  //   function sendRequestVerify() {
-  //     if () {
-  //
-  //     }
+  const sendPayFunc = async () => {
+      changeVisibleChargementFunc();
+    await axios
+        .post(`${LINK_GLOBAL}/transactions/requesttopay/integration`, {
+          phoneNumber: `${state.num_client}`,
+          phoneNumberRight: `${state.num_client_without_code}`,
+          amount: `${state.price}`,
+          reseau: `${state.operator_name}`,
+          token: `${state.token}`,
+          shop: `${state.id}`,
+          first_name: `${state.full_name}`,
+          email: `${state.email}`,
+          reference: `${state.custom_id}`,
+          otp: `${state.code_otp}`,
+          callback_info: `${state.callback_info}`,
+          description: `${state.description}`,
+        })
+        .then((response) => {
+          // console.log("response")
+          console.log(response.data)
+          let i = 0;
+          let reference = (state.operator_name == "MOOV CI" || state.operator_name == "FREE SN" || state.operator_name == 'ORANGE CI' || state.operator_name == 'WAVE CI' || state.operator_name == 'ORANGE BF' || state.operator_name == 'MOOV BF') ? response.data.order_id : response.data.reference;
 
-  //  }
-  // }, [state.operator_name,state.num_client,send_pay_info])
+          if (state.operator_name == "MOOV CI" || state.operator_name == "FREE SN" || state.operator_name == 'ORANGE CI' || state.operator_name == 'WAVE CI' || state.operator_name == 'ORANGE BF' || state.operator_name == 'MOOV BF') {
+            // console.log('je suis dans ce if')
+            changeVisibleChargementExitFunc();
+            // document.getElementById("feexpay_chargement_container").style.display = "none";
+            // document.querySelector(".feexpay_loader").style.display = "none";
+            const urlPay = response.data.payment_url;
+            // console.log(response.data.payment_url)
+            // console.log(urlPay)
+            let counter = 0;
+            // let feexpay_container = document.querySelector(`.feexpay_container`);
+            // const container = document.querySelector('.feexpay_modal_container .padding_add');
+            // if (container) {
+            //   container.style.paddingLeft = '0';
+            //   container.style.paddingRight = '0';
+            // }
 
-  React.useEffect(() => {
-    function sendRequestVerify() {
-      const num_client_string = new String(state.num_client);
-      const operator_string = new String(state.operator_name);
+            seturlPay(urlPay);
+            setmobileMoney_section(false);
+            setinit_mobile_money_container(false);
+            setiFrame(true);
+            // feexpay_container.innerHTML = `<iframe src="${urlPay}" height="600" width="100%" style="border:none;" name="demo"></iframe>`;
+          }
 
-      if (
-        num_client_string.length > 4 &&
-        operator_string.length > 0 &&
-        num_client_exist === true &&
-        state.full_name.length > 0 &&
-        state.email.length > 0
-      ) {
-        const sendPayFunc = async () => {
-          changeVisibleChargementFunc();
+          const intervale_valid_pay = setInterval(async () => {
+            const response_getStatus = await axios.get(
+                `${LINK_GLOBAL}/transactions/getrequesttopay/integration/${reference}`
+            );
+            const status_response = response_getStatus.data.status;
 
-          await axios
-            .post(`${LINK_GLOBAL}/transactions/requesttopay/integration`, {
-              phoneNumber: `${state.num_client}`,
-              amount: `${state.price}`,
-              reseau: `${state.operator_name}`,
-              token: `${state.token}`,
-              shop: `${state.id}`,
-              first_name: `${state.full_name}`,
-              email: `${state.email}`,
-            })
-            .then((response) => {
-              let i = 0;
-              const intervale_valid_pay = setInterval(async () => {
-                const response_getStatus = await axios.get(
-                  `${LINK_GLOBAL}/transactions/getrequesttopay/integration/${response.data.reference}`
-                );
-                const status_response = response_getStatus.data.status;
+            // console.log("status_response")
+            // console.log(status_response)
 
-                if (status_response === "SUCCESSFUL") {
-                  i = i + 1;
-                  if (i < 2) {
-                    clearInterval(intervale_valid_pay);
-
-                    dispatch({
-                      type: "CHANGE/REQUESTTOPAYINFO",
-                      payload: {
-                        externalId: response_getStatus.data.externalId,
-                        amount: response_getStatus.data.amount,
-                        status: response_getStatus.data.status,
-                        partyId: response_getStatus.data.payer.partyId,
-                      },
-                    });
-                    dispatch({
-                      type: "CHANGE/REQUESTMESSAGE",
-                      payload: {
-                        paiement_request_verify_msg: "Paiement effectué",
-                        stopchargement: true,
-                      },
-                    });
-
-                    setTimeout(() => {
-                      if (state.callback && typeof state.callback === "function") {
-                        state.callback();
-                      } else if (state.callback_url !== undefined) {
-                        const url = new URL(state.callback_url);
-                        if (url.searchParams && url.searchParams.toString()) {
-                          state.callback_url = `${state.callback_url}&id_transaction=${response.data.reference}`;
-                        } else {
-                          state.callback_url = `${state.callback_url}?id_transaction=${response.data.reference}`;
-                        }
-                        window.location.href = state.callback_url
-                      }
-                    }, 2000);
-                  }
-                }
-                if (status_response === "FAILED") {
-                  clearInterval(intervale_valid_pay);
-
-                  dispatch({
-                    type: "CHANGE/REQUESTMESSAGE",
-                    payload: {
-                      paiement_request_verify_msg:
-                        "Veuillez verifier votre numero",
-                      stopchargement: true,
-                    },
-                  });
-
-                  setTimeout(() => {
-                    changeVisibleChargementExitFunc();
-                  }, 2000);
-
-                  // changeVisibleChargementExitFunc()
-                }
-              }, 5000);
-
-              setTimeout(async () => {
-                const response_getStatus = await axios.get(
-                  `${LINK_GLOBAL}/transactions/getrequesttopay/integration/${response.data.reference}`
-                );
-                const status_response = response_getStatus.data.status;
-                if (
-                  status_response === "PENDING" ||
-                  status_response === "IN PENDING STATE"
-                ) {
-                  dispatch({
-                    type: "CHANGE/REQUESTMESSAGE",
-                    payload: {
-                      paiement_request_verify_msg:
-                        "Vous n'avez pas accepter la requete",
-                      stopchargement: true,
-                    },
-                  });
-
-                  setTimeout(() => {
-                    changeVisibleChargementExitFunc();
-                  }, 5000);
-                }
+            if (status_response === "SUCCESSFUL" || status_response === "SUCCESS" || status_response === "Successful") {
+              i = i + 1;
+              // console.log("i")
+              // console.log(i)
+              if (i < 2) {
                 clearInterval(intervale_valid_pay);
-              }, 180000);
-            })
-            .catch((error) => {
-              if (error.response.data.message === "Token API invalid") {
+
+                dispatch({
+                  type: "CHANGE/REQUESTTOPAYINFO",
+                  payload: {
+                    externalId: response_getStatus.data.externalId,
+                    amount: response_getStatus.data.amount,
+                    status: response_getStatus.data.status,
+                    partyId: response_getStatus.data.payer.partyId,
+                  },
+                });
                 dispatch({
                   type: "CHANGE/REQUESTMESSAGE",
                   payload: {
-                    paiement_request_verify_msg:
-                      "Veuillez contacter l'administrateur du site.",
+                    paiement_request_verify_msg: "Paiement effectué",
                     stopchargement: true,
                   },
                 });
-              }
-            });
-        };
 
-        sendPayFunc();
+                setTimeout(() => {
+                  if (state.callback && typeof state.callback === "function") {
+                    state.callback();
+                  } else if (state.callback_url !== undefined) {
+                    const url = new URL(state.callback_url);
+                    if (url.searchParams && url.searchParams.toString()) {
+                      state.callback_url = `${state.callback_url}&id_transaction=${response.data.reference}&status=SUCCESSFUL`;
+                    } else {
+                      state.callback_url = `${state.callback_url}?id_transaction=${response.data.reference}&status=SUCCESSFUL`;
+                    }
+                    window.location.href = state.callback_url
+                  }
+                }, 2000);
+              }
+            }
+            if (status_response === "FAILED") {
+              clearInterval(intervale_valid_pay);
+
+              dispatch({
+                type: "CHANGE/REQUESTMESSAGE",
+                payload: {
+                  paiement_request_verify_msg:
+                      "Veuillez verifier votre numero",
+                  stopchargement: true,
+                },
+              });
+
+              setTimeout(() => {
+                changeVisibleChargementExitFunc();
+                // setTimeout(() => {
+                  if (state.callback && typeof state.callback === "function") {
+                    state.callback();
+                  } else if (state.callback_url !== undefined) {
+                    const url = new URL(state.callback_url);
+                    if (url.searchParams && url.searchParams.toString()) {
+                      state.callback_url = `${state.callback_url}&id_transaction=${reference}&status=FAILED`;
+                    } else {
+                      state.callback_url = `${state.callback_url}?id_transaction=${reference}&status=FAILED`;
+                    }
+                    window.location.href = state.callback_url
+                  }
+                // }, 2000);
+              }, 5000);
+
+              // changeVisibleChargementExitFunc()
+            }
+          }, 5000);
+
+          setTimeout(async () => {
+            const response_getStatus = await axios.get(
+                `${LINK_GLOBAL}/transactions/getrequesttopay/integration/${reference}`
+            );
+            const status_response = response_getStatus.data.status;
+            if (
+                status_response === "FAILED" ||
+                status_response === "INPROGRESS" ||
+                status_response === "ACCEPTED" ||
+                status_response === "INITIATED" ||
+                status_response === "PRE_INITIATED" ||
+                status_response === "PENDING" ||
+                status_response === "IN PENDING STATE"
+            ) {
+              dispatch({
+                type: "CHANGE/REQUESTMESSAGE",
+                payload: {
+                  paiement_request_verify_msg:
+                      "Vous n'avez pas accepter la transaction",
+                  stopchargement: true,
+                },
+              });
+
+              setTimeout(() => {
+                changeVisibleChargementExitFunc();
+                // setTimeout(() => {
+                if (state.callback && typeof state.callback === "function") {
+                  state.callback();
+                } else if (state.callback_url !== undefined) {
+                  const url = new URL(state.callback_url);
+                  if (url.searchParams && url.searchParams.toString()) {
+                    state.callback_url = `${state.callback_url}&id_transaction=${reference}&status=FAILED`;
+                  } else {
+                    state.callback_url = `${state.callback_url}?id_transaction=${reference}&status=FAILED`;
+                  }
+                  window.location.href = state.callback_url
+                }
+                // }, 2000);
+              }, 5000);
+            }
+            clearInterval(intervale_valid_pay);
+          }, 180000);
+        })
+        .catch((error) => {
+          if (error.response.data.message === "Token API invalid") {
+            dispatch({
+              type: "CHANGE/REQUESTMESSAGE",
+              payload: {
+                paiement_request_verify_msg:
+                    "Veuillez contacter l'administrateur du site.",
+                stopchargement: true,
+              },
+            });
+          }
+        });
+  };
+
+  React.useEffect(() => {
+    function sendRequestVerify() {
+
+      // console.log("state")
+      // console.log(state)
+
+      console.log( state.num_client.length > 4 &&
+          state.operator_name.length > 0 &&
+          // num_client_exist === true &&
+          state.full_name.length > 0 &&
+          state.email.length > 0 &&
+          state.country_code > 0 &&
+          userInitiatedSubmission)
+
+      if (
+          state.num_client.length > 4 &&
+          state.operator_name.length > 0 &&
+        // num_client_exist === true &&
+        state.full_name.length > 0 &&
+        state.email.length > 0 &&
+          state.country_code > 0 &&
+          userInitiatedSubmission
+      ) {
+
+          // console.log(state.num_client)
+          sendPayFunc();
+          // setUserInitiatedSubmission(false);
+      }
+      else {
+        // console.log("je suis dans le else")
       }
     }
     sendRequestVerify();
-  }, [state.operator_name, state.num_client, send_pay_info]);
+  }, [state.num_client, state.operator_name, state.full_name, state.email, state.country_code, userInitiatedSubmission]);
 
   return (
     <>
@@ -303,50 +401,63 @@ export const MobileOperatorSection: React.FC<Props> = ({
 
 
 {currentContent === "choice_section" && (
-  <>
-  <MobileOperatorSectionStyles />
-  <div className="choice_operator_card">
-    <div className="choice_operator_text">Opérateurs mobiles</div>
-    <div className="choice_operator_img">
-      <div className="choice_mtn">
-        <input
-          type="radio"
-          name="operator_name"
-          id=""
-          onChange={() => changeOperatorMtnValue()}
-        />
-        <img onClick={() => changeOperatorMtnValue()} className="img_mtn" src={MTN_IMG_LINK} alt="mtn" />
-      </div>
+    init_mobile_money_container && (
+        <>
+          <MobileOperatorSectionStyles />
+          {/*<div className="choice_operator_card">*/}
+          {/*<div className="choice_operator_text">Opérateurs mobiles</div>*/}
+          {/*<div className="choice_operator_img">*/}
+          {/*  <div className="choice_mtn">*/}
+          {/*    <input*/}
+          {/*      type="radio"*/}
+          {/*      name="operator_name"*/}
+          {/*      id=""*/}
+          {/*      onChange={() => changeOperatorMtnValue()}*/}
+          {/*    />*/}
+          {/*    <img onClick={() => changeOperatorMtnValue()} className="img_mtn" src={MTN_IMG_LINK} alt="mtn" />*/}
+          {/*  </div>*/}
 
-      <div className="choice_moov">
-        <input
-          type="radio"
-          name="operator_name"
-          id=""
-          onChange={() => changeOperatorMoovValue()}
-        />
-        <img onClick={() => changeOperatorMoovValue()} className="img_moov" src={MOOV_IMG_LINK} alt="moov" />
-      </div>
-    </div>
-  </div>
-  <div
-    className="error_text_operator"
-    style={{ display: errorvisible ? "block" : "none" }}
-  >
-    {errortext}
-  </div>
+          {/*  <div className="choice_moov">*/}
+          {/*    <input*/}
+          {/*      type="radio"*/}
+          {/*      name="operator_name"*/}
+          {/*      id=""*/}
+          {/*      onChange={() => changeOperatorMoovValue()}*/}
+          {/*    />*/}
+          {/*    <img onClick={() => changeOperatorMoovValue()} className="img_moov" src={MOOV_IMG_LINK} alt="moov" />*/}
+          {/*  </div>*/}
+          {/*</div>*/}
+          {/*</div>*/}
+          <div
+              className="error_text_operator"
+              style={{ display: errorvisible ? "block" : "none" }}
+          >
+            {errortext}
+          </div>
 
-  <NumInput
-    send_pay_form={send_pay_info}
-    setnum_exist_true={() => setnum_exist_true()}
-    setnum_exist_false={() => setnum_exist_false()}
-  />
-  <PayButton 
-    pay_func={() => payMobile()} 
-    back_func={() => open_modal()}
-  />
-  </>
+          <NumInput
+              send_pay_form={send_pay_info}
+              setnum_exist_true={() => setnum_exist_true()}
+              setnum_exist_false={() => setnum_exist_false()}
+          />
+          <PayButton
+              pay_func={() => payMobile()}
+              // back_func={() => open_modal()}
+          />
+        </>
+    )
+
   )}
+
+      {iFrame && (
+          <iframe
+              src={urlPay}
+              height="600"
+              width="100%"
+              style={{ border: "none" }}
+              name="demo"
+          ></iframe>
+      )}
       
     </>
   );

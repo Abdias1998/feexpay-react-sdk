@@ -16,14 +16,14 @@ export const FeexPayChoiceLocalPay: React.FC<Props> = ({
   return (
     <FeexPayChoiceLocalPayStyles>
        
-       <div className={"text_container"} onClick={()=>choice_local_func()}>
+       <div className={"text_container"} onClick={()=>choice_local_func()}  style={{ height: "45px" }}>
         <input onClick={()=>choice_local_func()} className="input_choice" type="radio" name="isClicked" id="" />
         <div onClick={()=>choice_local_func()} className="choice_text">Mobile Money</div>
       </div>
-      <div className="image_choice" onClick={()=>choice_local_func()}>
-        <img className="img_mtn" src={MTN_IMG_LINK} alt="" />
-        <img className="img_moov" src={MOOV_IMG_LINK} alt="" />
-      </div>
+      {/*<div className="image_choice" onClick={()=>choice_local_func()}>*/}
+      {/*  <img className="img_mtn" src={MTN_IMG_LINK} alt="" />*/}
+      {/*  <img className="img_moov" src={MOOV_IMG_LINK} alt="" />*/}
+      {/*</div>*/}
     </FeexPayChoiceLocalPayStyles>
   );
 };
