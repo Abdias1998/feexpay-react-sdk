@@ -95,22 +95,22 @@ export const NumInput: React.FC<Props> = ({
       case 1:
         return {
           flagLink: FLAG_BENIN_IMG_LINK,
-          placeholder: "95 02 03 04",
+          placeholder: "95020304",
         };
         break;
       case 2:
         return {
           flagLink: FLAG_TOGO_IMG_LINK,
-          placeholder: "05 34 03 12",
+          placeholder: "05340312",
         };
         break;
       case 3:
-        return { flagLink: FLAG_CI_IMG_LINK, placeholder: "01 20 45 02" };
+        return { flagLink: FLAG_CI_IMG_LINK, placeholder: "01204502" };
         break;
       case 4:
         return {
           flagLink: FLAG_RWANDA_IMG_LINK,
-          placeholder: "04 02 23 04",
+          placeholder: "04022304",
         };
         break;
 

@@ -16,11 +16,11 @@ export const FeexPayChoiceCardBank : React.FC<Props> = ({
 }) => {
   return (
     <FeexPayChoiceLocalPayStyles>
-       <div className={"text_container"}>
+       <div className={"text_container"} onClick={()=>choice_cardBank_func()}>
         <input onClick={()=>choice_cardBank_func()} className="input_choice" type="radio" name="isClicked" id="" />
-        <div className="choice_text">Carte bancaire</div>
+        <div onClick={()=>choice_cardBank_func()} className="choice_text">Cartes bancaires</div>
       </div>
-      <div className="image_choice">
+      <div className="image_choice" onClick={()=>choice_cardBank_func()}>
         <img className={"img_mtn"} src={VISACARD_IMG_LINK} alt="" />
         <img className={"img_moov"} src={MASTERCARD_IMG_LINK} alt="" />
       </div>

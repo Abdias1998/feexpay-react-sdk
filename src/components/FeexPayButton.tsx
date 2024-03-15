@@ -13,8 +13,7 @@ export const FeexPayButton: React.FC<Props> = ({ open_modal , feexVisisbleBtn })
     <>
       <FeexButtonPayStyles />
       <button onClick={() => open_modal()} className="button" style={{display:feexVisisbleBtn ? "flex" : "none"}}>
-        <span className="button_text">PAYER</span><span>{state.price} XOF</span>
-        <img src={LOGO_IMG_LINK} alt="" />
+        <span className="button_text">PAYER </span>  <span>{state.price} XOF</span>
       </button>
     </>
   );

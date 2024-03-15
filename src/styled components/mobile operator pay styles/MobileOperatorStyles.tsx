@@ -8,12 +8,10 @@ export const MobileOperatorSectionStyles = createGlobalStyle`
         flex-direction:row;
         align-items:center;
         justify-content:center;
-        
-
     }
 
     .choice_operator_text{
-         width:60%;
+         width:auto;
          display:flex;
          align-items:center;
          font-weight:700;
@@ -74,7 +72,7 @@ export const MobileOperatorSectionStyles = createGlobalStyle`
            display:flex; 
            align-items:center;
            justify-content:flex-end;  
-           flex-direction:column;
+           /*flex-direction:column;*/
         }
         .choice_mtn{
            display:flex;

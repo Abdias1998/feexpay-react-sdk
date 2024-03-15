@@ -17,12 +17,12 @@ export const CardBankPayFormStyles = createGlobalStyle`
 }
 
 .feexpaycardBankForm .titulaire_input{
-    display:flex;
-    flex-direction:row;
-    width:100%;
-    background-color:white;
-    border-radius:0px;
-    justify-content: inherit;
+   display:flex;
+   flex-direction:row;
+   width:100%;
+   /*background-color:#cfcfcf;*/
+   border-radius:0px;
+   justify-content: inherit;
 }
 .feexpaycardBankForm .titulaire_lab{
    margin-bottom:5px;
@@ -30,16 +30,61 @@ export const CardBankPayFormStyles = createGlobalStyle`
    font-size: 0.8rem;
 }
 
+.feexPayMobilePay .choice_operator_card{
+   width:100%;
+   border-bottom:solid 1.5px #00000071;
+   display:flex;
+   flex-direction:row;
+   align-items:center;
+   justify-content:center;
+}
+
+.color_card_type {
+    border: 1px solid #112C56 !important;
+    border-radius: 2px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.feexPayMobilePay .choice_operator_text{
+    width:60%;
+    display:flex;
+    align-items:center;
+    font-weight:700;
+    font-size:0.8rem;
+}
+
+.feexPayMobilePay .choice_operator_img{
+   display:flex;
+   width:40%;
+   justify-content:flex-end;
+   align-items:center;
+   flex-direction:row;
+
+}
+.feexPayMobilePay .choice_operator_img input{
+   margin-right:0.3rem;
+}
+.feexPayMobilePay .choice_operator_img img{
+   width:45px;
+   padding-top:8px;
+   padding-bottom:8px;
+   
+}
+
+
 
 .feexpaycardBankForm .input_container{
     width:90%;
 }
 .feexpaycardBankForm .input_info{
-   background-color:#cfcfcf;
-   border:none;
-   outline:none;
-   padding:10px;
-   width:100%;
+   background-color:#fffcfc;
+    border:none;
+    outline:none;
+    padding:10px;
+    width:100%;
+    border: 1px solid #5a5a5a69;
+    border-radius: 2px;
 
 }
 .feexpaycardBankForm .input_info::placeholder{
@@ -121,7 +166,8 @@ export const CardBankPayFormStyles = createGlobalStyle`
 .feexpay_modal_container .padding_add{
     padding-left: 2rem;
     padding-right: 2rem;
-    height: 94%;
+    height: 95%;
+    overflow-y: scroll !important;
     
 }
 .feexpay_container_form{
@@ -172,7 +218,7 @@ export const CardBankPayFormStyles = createGlobalStyle`
            
        }
        .feexpay_modal_container .padding_add{
-
+         overflow-y: scroll !important;
            height:fit-content;
            
       }

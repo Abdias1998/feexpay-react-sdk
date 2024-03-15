@@ -14,7 +14,6 @@ export const PayButtonStyles = createGlobalStyle`
           text-align:center;
           padding:10px;
           border:none;
-          width:45%;
           display:flex;
           justify-content:center;
           align-items:center;
@@ -26,21 +25,18 @@ export const PayButtonStyles = createGlobalStyle`
       .button_text{
         font-size:0.8rem;
         font-weight:500;
-       
-        
       }
 
+      .button_back{
+        background-color: #f8f9fa !important;
+        color: #112C56 !important;
+        margin-right: 2px !important;
+        border: 1px solid #112C56 !important;
+    }
 
-
-
-    
       @media screen and (max-width:960px) {
-      
         .button_pay{
           width:100%;
          }
-
-   
     }
-      
 `;

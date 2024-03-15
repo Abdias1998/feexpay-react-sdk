@@ -1,13 +1,13 @@
 {
   "name": "@feexpay/react-sdk",
-  "version": "1.3.0",
+  "version": "1.3.11",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.m.js",
   "unpkg": "dist/index.umd.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rmdir /S /Q dist && microbundle --tsconfig tsconfig.json --no-sourcemap"
+    "build": "rm -r dist && microbundle --tsconfig tsconfig.json --no-sourcemap"
   },
   "author": "FeexPay",
   "license": "ISC",

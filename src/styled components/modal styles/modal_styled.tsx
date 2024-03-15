@@ -15,6 +15,10 @@ export const FeexPayModalStylesGlobal = createGlobalStyle`
    
   
   }
+
+  .width-100 {
+    width: 100% !important;
+}
     .modal_container{
         position:fixed;
         display:flex;
@@ -30,16 +34,14 @@ export const FeexPayModalStylesGlobal = createGlobalStyle`
         top:0px;
         left:0px;
         
-        
     }
 
     .modal{
        display:grid;
        flex-direction:column;
-       width:30%;
+       width:40%;
        height:92%;
-       background-color:white;
-
+       background-color: #f8f9fa !important;
        color:black;
 
       
@@ -53,7 +55,7 @@ export const FeexPayModalStylesGlobal = createGlobalStyle`
         box-shadow: 2px 3px 9px -4px rgba(0, 0, 0, 0.397);
         border-bottom-left-radius:1rem;
         border-bottom-right-radius:1rem;
-        padding-bottom: 0.5rem;
+        height: fit-content;
     }
 
     .modal .header_text{
@@ -97,12 +99,12 @@ export const FeexPayModalStylesGlobal = createGlobalStyle`
     }
 
     .footer_modal{
-        width:100%;
-        height:50px;
-        background-color:#112C56;
-        background-image:url("https://api.feexpay.me/api/static/motif_footer.svg");
-        background-size:cover;
-        background-position:center;
+        width: 100%;
+        height: 30px;
+        background-color: #112C56;
+        background-image: url("https://api.feexpay.me/api/static/motif_footer.svg");
+        background-size: cover;
+        background-position: center;
         
 
     }
@@ -112,7 +114,6 @@ export const FeexPayModalStylesGlobal = createGlobalStyle`
         flex-direction:row;
         align-items:center;
         justify-content:center;
-        margin-bottom:2rem;
       }
       .img_lock{
         width:15px;
@@ -129,21 +130,69 @@ export const FeexPayModalStylesGlobal = createGlobalStyle`
         font-size:0.7rem;
       }
 
-    @media screen and (max-width:700px) {
+      @media (min-width: 320px) {
+        body {
+            color: #626262;
+        }
+    }
+
+
+    
+    
+    @media (min-width: 992px) {
+        
+    }
+
+    @media (min-width: 1200px) {
+        
+    }
+
+    @media (min-width: 650px) and (max-width: 850px) {
+        
         .modal{
-            width:100%;
+            width:75%;
+            height:100%;
+         }
+
+         .feexpaycardBankForm .titulaire_input {
+            width: auto !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        
+    }
+
+    @media (min-width: 950px) and (max-width:1025px) {
+        .modal{
+            width:65%;
+            height:100%;
+        }
+    }
+
+    @media (min-width: 651px) and (max-width:900px) {
+        .modal{
+            width:80%;
             height:100%;
         }
         .footer_modal_container{
             width:100%;
-            
-            
         }
     }
 
-    @media screen and (max-height:850px) and (max-width:700px) {
+    @media (max-width:700px) {
+        .modal_container{
+            /*height:100vh;*/
+            /*width:200vw;*/ 
+        }
+
         .modal{
-            overflow-y:scroll;
+            width:100%;
+            height:100%;
+        }
+
+        .choice_operator_img{
+            flex-direction:column;
         }
         
     }

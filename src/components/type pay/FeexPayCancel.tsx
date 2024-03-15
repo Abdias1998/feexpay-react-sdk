@@ -14,7 +14,7 @@ export const FeexPayCancel: React.FC<Props> = ({
   return (
     <FeexPayCancelStyles>
       <input onClick={()=>onClickCancel()} className="input_choice" type="radio" name="isClicked" id="" />
-      <div className="choice_text">Annuler le paiement</div>
+      <div onClick={()=>onClickCancel()} className="choice_text">Annuler le paiement</div>
     </FeexPayCancelStyles>
   );
 };

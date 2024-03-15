@@ -3,19 +3,26 @@ import { LINK_GLOBAL, MOOV_IMG_LINK } from "src/sdk constants/assets_link";
 import { MTN_IMG_LINK } from "src/sdk constants/assets_link";
 import { MobileOperatorSectionStyles } from "src/styled components/mobile operator pay styles/MobileOperatorStyles";
 import { NumInput } from "./NumInput";
-import { PayButton } from "../PayButton";
+import { PayButton } from "../PayButtonMobile";
+import { PayButtonStyles } from "src/styled components/PayButtonStyles";
 import { useAppContext } from "src/sdk contexts/props_contexts";
 import axios from "axios";
+import { FeexPayCancel } from "../type pay/FeexPayCancel";
+import { FeexPayChoiceCardBank } from "../type pay/FeexPayChoiceCardBank";
+import { FeexPayChoiceLocalPay } from "../type pay/FeexPayChoiceLocalPay";
+import { CardBankPay } from "../card bank pay/CardBankPay";
 type Props = {
   onChoiceMobile: boolean;
   changeVisibleChargementFunc: any;
   changeVisibleChargementExitFunc: any;
+  cancel_modal_func: any;
 };
 
 export const MobileOperatorSection: React.FC<Props> = ({
   onChoiceMobile,
   changeVisibleChargementFunc,
   changeVisibleChargementExitFunc,
+  cancel_modal_func,
 }) => {
   const [send_pay_info, setsend_pay_info] = React.useState(false);
   const [operator_mtn, setoperator_mtn] = React.useState("");
@@ -27,8 +34,42 @@ export const MobileOperatorSection: React.FC<Props> = ({
   const [errortext, seterrortext] = React.useState("");
   const { state, dispatch } = useAppContext();
   const [num_client_exist, setnum_client_exist] = React.useState(false);
-
+  const [choice_section, setchoice_section] = React.useState(true);
+  const [cardBank_section, setcardBank_section] = React.useState(false);
+  const [mobileMoney_section, setmobileMoney_section] = React.useState(false);
+  const [modal_open, setmodal_open] = React.useState(false);
+  const [modal_cancel, setmodal_cancel] = React.useState(true);
   const [operator_exist, setoperator_exist] = React.useState(false);
+  const [currentContent, setCurrentContent] = React.useState("choice_section");
+  const [isVisibleChargement, setisVisibleChargement] = React.useState(false);
+
+
+  function open_modal() {
+    setCurrentContent("modal_section");
+    setmodal_open(true);
+    setmodal_cancel(false);
+  }
+
+  function back_button() {
+      console.log("zfregtyutyrgtdf");
+      setCurrentContent("choice_section");
+      setmodal_open(true);
+    setmodal_cancel(false);
+      setcardBank_section(false);
+      setchoice_section(true);
+      setmobileMoney_section(false);
+  }
+
+  function choice_local_func() {
+    setcardBank_section(false);
+    setchoice_section(false);
+    setmobileMoney_section(true);
+  }
+  function choice_cardBank_func() {
+    setcardBank_section(true);
+    setchoice_section(false);
+    setmobileMoney_section(false);
+  }
 
   function payMobile() {
     // send_pay_info(true)
@@ -150,7 +191,17 @@ export const MobileOperatorSection: React.FC<Props> = ({
                     });
 
                     setTimeout(() => {
-                      state.callback();
+                      if (state.callback && typeof state.callback === "function") {
+                        state.callback();
+                      } else if (state.callback_url !== undefined) {
+                        const url = new URL(state.callback_url);
+                        if (url.searchParams && url.searchParams.toString()) {
+                          state.callback_url = `${state.callback_url}&id_transaction=${response.data.reference}`;
+                        } else {
+                          state.callback_url = `${state.callback_url}?id_transaction=${response.data.reference}`;
+                        }
+                        window.location.href = state.callback_url
+                      }
                     }, 2000);
                   }
                 }
@@ -221,44 +272,82 @@ export const MobileOperatorSection: React.FC<Props> = ({
 
   return (
     <>
-      <MobileOperatorSectionStyles />
-      <div className="choice_operator_card">
-        <div className="choice_operator_text">Opérateur mobile</div>
-        <div className="choice_operator_img">
-          <div className="choice_mtn">
-            <input
-              type="radio"
-              name="operator_name"
-              id=""
-              onChange={() => changeOperatorMtnValue()}
-            />
-            <img className="img_mtn" src={MTN_IMG_LINK} alt="mtn" />
-          </div>
+{currentContent === "modal_section" && (
+      // <div className="choice_operator_card">
+      //   {/* ...le reste du contenu de la section 'choice_section'... */}
+      //   <button onClick={open_modal}>Ouvrir le modal</button>
+      // </div>
+      <>
+        <div className="pay_with">PAYER AVEC :</div>
+        <FeexPayChoiceLocalPay
+          choice_local_func={() => choice_local_func()}
+        />
+        <FeexPayChoiceCardBank
+          choice_cardBank_func={() => choice_cardBank_func()}
+        />
+        <FeexPayCancel onClickCancel={() => cancel_modal_func()} />
+      </>
+    )}
 
-          <div className="choice_moov">
-            <input
-              type="radio"
-              name="operator_name"
-              id=""
-              onChange={() => changeOperatorMoovValue()}
-            />
-            <img className="img_moov" src={MOOV_IMG_LINK} alt="moov" />
-          </div>
-        </div>
-      </div>
-      <div
-        className="error_text_operator"
-        style={{ display: errorvisible ? "block" : "none" }}
-      >
-        {errortext}
+{cardBank_section && <CardBankPay />}
+            {mobileMoney_section && (
+              <MobileOperatorSection
+                changeVisibleChargementFunc={() => {
+                  setisVisibleChargement(true);
+                }}
+                changeVisibleChargementExitFunc={() =>
+                  setisVisibleChargement(false)
+                }
+              />
+            )}
+
+
+{currentContent === "choice_section" && (
+  <>
+  <MobileOperatorSectionStyles />
+  <div className="choice_operator_card">
+    <div className="choice_operator_text">Opérateurs mobiles</div>
+    <div className="choice_operator_img">
+      <div className="choice_mtn">
+        <input
+          type="radio"
+          name="operator_name"
+          id=""
+          onChange={() => changeOperatorMtnValue()}
+        />
+        <img onClick={() => changeOperatorMtnValue()} className="img_mtn" src={MTN_IMG_LINK} alt="mtn" />
       </div>
 
-      <NumInput
-        send_pay_form={send_pay_info}
-        setnum_exist_true={() => setnum_exist_true()}
-        setnum_exist_false={() => setnum_exist_false()}
-      />
-      <PayButton pay_func={() => payMobile()} />
+      <div className="choice_moov">
+        <input
+          type="radio"
+          name="operator_name"
+          id=""
+          onChange={() => changeOperatorMoovValue()}
+        />
+        <img onClick={() => changeOperatorMoovValue()} className="img_moov" src={MOOV_IMG_LINK} alt="moov" />
+      </div>
+    </div>
+  </div>
+  <div
+    className="error_text_operator"
+    style={{ display: errorvisible ? "block" : "none" }}
+  >
+    {errortext}
+  </div>
+
+  <NumInput
+    send_pay_form={send_pay_info}
+    setnum_exist_true={() => setnum_exist_true()}
+    setnum_exist_false={() => setnum_exist_false()}
+  />
+  <PayButton 
+    pay_func={() => payMobile()} 
+    back_func={() => open_modal()}
+  />
+  </>
+  )}
+      
     </>
   );
 };

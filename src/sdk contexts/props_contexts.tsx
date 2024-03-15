@@ -8,7 +8,9 @@ type Props = {
   token: string;
   id: string;
   name_marchand:string;
+  reference_marchand:string;
   callback:Function;
+  callback_url:string;
 };
 
 let props_init = {};
@@ -20,6 +22,7 @@ export const SDKcontexts: React.FC<Props> = ({
   token,
   id,
   callback,
+  callback_url,
 }) => {
   props_init = {
     price: amount,
@@ -29,14 +32,15 @@ export const SDKcontexts: React.FC<Props> = ({
     operator_name: "",
     num_client: "",
     num_client_without_code: "",
-    paiement_request_verify_msg: "En attente du paiement.",
+    paiement_request_verify_msg: "En attente de paiement.",
     stopchargement: false,
     requesttopayinfo:{},
     name_marchand:"",
+    reference_marchand: "",
     email:"",
     full_name:"",
     callback:callback,
-
+    callback_url:callback_url,
     numero_card:"",
     name_card:"",
     email_card:"",
@@ -70,6 +74,6 @@ const Propscontext = React.createContext({
   state: props_init,
   dispatch: () => {},
 });
-console.log(props_init);
+//console.log(props_init);
 
 export const useAppContext = () => React.useContext(Propscontext);

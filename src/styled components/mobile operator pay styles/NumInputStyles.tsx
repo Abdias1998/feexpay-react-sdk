@@ -5,16 +5,21 @@ export const NumInputStyles = createGlobalStyle`
         margin-top:1.5rem;
         margin-bottom:1.5rem;
     }
-    
+
     .feexpay_input_simple{
-        border: none;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
         outline:none;
-        border-bottom: solid 1.5px #00000071;
+        /*border-bottom: solid 1.5px #00000071;*/
         padding-bottom:10px;
-        width: 100%;
+        padding-top:10px;
+        padding-left:10px;
+        width: -webkit-fill-available;
         margin-bottom: 1.5rem;
+        margin-top: 5px;
         background-color: transparent;
     }
+    
     
     .num_operator_card{
         width:100%;
@@ -27,18 +32,24 @@ export const NumInputStyles = createGlobalStyle`
         display:flex;
         flex-direction:row;
         align-items:center;
-        border-bottom:solid 2px black;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        /*border-bottom:solid 2px black;*/
     }
     .flag{
         width:10%;
+        text-align: center !important;
     }
     .input_num{
         border:none !important;
         outline:none !important;
+        background-color: transparent;
         padding:10px !important;
+        width: -webkit-fill-available;
     }
     .flag .img_flag{
         width:25px !important;
+        text-align: center;
     }
 
     .num_flag_container{

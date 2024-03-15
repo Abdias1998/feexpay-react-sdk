@@ -18,7 +18,6 @@ export const FeexButtonPayStyles = createGlobalStyle`
       .button_text{
          font-size:1rem;
          font-weight:800;
-         margin-right:1rem;
       }
       img{
         width:100px;

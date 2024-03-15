@@ -3,6 +3,7 @@ type Props = {
     onChoiceMobile: boolean;
     changeVisibleChargementFunc: any;
     changeVisibleChargementExitFunc: any;
+    cancel_modal_func: any;
 };
 export declare const MobileOperatorSection: React.FC<Props>;
 export {};

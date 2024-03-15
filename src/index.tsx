@@ -11,13 +11,15 @@ type Props = {
   token:string;
   id:string;
   callback:Function;
+  callback_url: string;
 };
 
-const FeexPay: React.FC<Props> = ({ amount , token , id , callback }) => {
+const FeexPay: React.FC<Props> = ({ amount , token , id , callback, callback_url }) => {
   const [modal_open, setmodal_open] = React.useState(false);
   const [modal_cancel, setmodal_cancel] = React.useState(true);
-  const [visibleFeexBtn, setvisibleFeexBtn] = React.useState(false)
-  const [name_marchand, setname_marchand] = React.useState("")
+  const [visibleFeexBtn, setvisibleFeexBtn] = React.useState(false);
+  const [name_marchand, setname_marchand] = React.useState("");
+  const [reference_marchand, setreference_marchand] = React.useState("");
 
   const montant_context = amount;
 
@@ -36,13 +38,17 @@ const FeexPay: React.FC<Props> = ({ amount , token , id , callback }) => {
   React.useEffect(() => {
      async function verifyId() {
         await axios.get(`${LINK_GLOBAL}/shop/${id}/get_shop`).then((response)=>{
-          const data = response.data
-          setname_marchand(data.name)
-          setvisibleFeexBtn(true);
+          const data = response.data;
+          if (data) {
+            setname_marchand(data.name);
+            setreference_marchand(data.reference);
+            setvisibleFeexBtn(true);
+          }
          }).catch((error)=>{
            
             if (error.response.data.message === "Le format de l'id est") {
               setname_marchand("")
+              setreference_marchand("")
               setvisibleFeexBtn(false)
             }
          })
@@ -53,13 +59,14 @@ const FeexPay: React.FC<Props> = ({ amount , token , id , callback }) => {
   }, [])
   return (
     <>
-      <SDKcontexts amount={montant_context} token={token} id={id} callback={callback}>
+      <SDKcontexts amount={montant_context} token={token} id={id} callback={callback} callback_url={callback_url}>
     
           <FeexPayModal
             isOpen={modal_open}
             cancel_modal={modal_cancel}
             cancel_modal_func={() =>cancel_modal_func()}
             name_marchand={name_marchand}
+            reference_marchand={reference_marchand}
           />
    
         <FeexPayButton open_modal={() =>open_modal()} feexVisisbleBtn={visibleFeexBtn}/>

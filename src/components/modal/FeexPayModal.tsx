@@ -1,5 +1,6 @@
 import React from "react";
 import { FeexPayModalStylesGlobal } from "src/styled components/modal styles/modal_styled";
+
 import { FeexPayChoiceLocalPay } from "../type pay/FeexPayChoiceLocalPay";
 import { FeexPayChoiceCardBank } from "../type pay/FeexPayChoiceCardBank";
 import { MobileOperatorSection } from "../mobile operator pay/MobileOperatorSection";
@@ -18,6 +19,7 @@ type Props = {
   cancel_modal: boolean;
   cancel_modal_func: any;
   name_marchand: string;
+  reference_marchand: string;
 };
 
 export const FeexPayModal: React.FC<Props> = ({
@@ -25,6 +27,7 @@ export const FeexPayModal: React.FC<Props> = ({
   cancel_modal,
   cancel_modal_func,
   name_marchand,
+  reference_marchand,
 }) => {
   const [choice_section, setchoice_section] = React.useState(true);
   const [cardBank_section, setcardBank_section] = React.useState(false);
@@ -63,15 +66,15 @@ export const FeexPayModal: React.FC<Props> = ({
               <img className="logo" src={LOGO_TWO_IMG_LINK} alt="feexpay" />
             </div>
             <div className="header_text">
-              <div class="feexpay_close_btn" onClick={()=>cancel_modal_func()}></div>
+              <div className="feexpay_close_btn" onClick={()=>cancel_modal_func()}></div>
               <div className="marchant_name">MARCHAND : {name_marchand}</div>{" "}
-              <div className="id_info"> ID : {state.id}</div>
+              <div className="id_info"> ID : {reference_marchand}</div>
             </div>
           </div>
 
           <div
             className="padding_add"
-            style={{ paddingLeft: "2rem", paddingRight: "2rem", height: "94%" }}
+            style={{ paddingLeft: "2rem", paddingRight: "2rem", height: "94%", overflowY: "scroll" }}
           >
             {choice_section && (
               <>
@@ -104,6 +107,10 @@ export const FeexPayModal: React.FC<Props> = ({
               <img className="img_lock" src={ICON_LOCK} alt="icon lock" />
             </div>
             <div className="lock_text">Sécurisé par FeexPay</div>
+          </div>
+
+          <div className="secure_by_feexpay" style={{ flexDirection: "column" }}>
+            <div className="lock_text">En payant via ce plugin, vous acceptez les <a href={"https://feexpay.me/termesconditions"} target={"_blank"} style={{ color: "#D45D00", textDecoration: "none" }}>conditions générales d'utilisation</a> de FeexPay.</div>
           </div>
 
           <div className="footer_modal_container">
