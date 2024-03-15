@@ -23,13 +23,13 @@
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LOUGBEGNON/feexpay-lite-react-sdk.git"
+    "url": "git+https://github.com/La-Vedette-Media/feexpay-react-sdk.git"
   },
   "keywords": [
-    "feexpay-lite"
+    "feexpay-react-sdk"
   ],
   "bugs": {
-    "url": "https://github.com/LOUGBEGNON/feexpay-lite-react-sdk/issues"
+    "url": "https://github.com/La-Vedette-Media/feexpay-react-sdk/issues"
   },
-  "homepage": "https://github.com/LOUGBEGNON/feexpay-lite-react-sdk#readme"
+  "homepage": "https://github.com/La-Vedette-Media/feexpay-react-sdk#readme"
 }
