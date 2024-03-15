@@ -19,5 +19,17 @@
     "microbundle": "^0.15.1",
     "react": "^18.2.0",
     "styled-components": "^5.3.6"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LOUGBEGNON/feexpay-lite-react-sdk.git"
+  },
+  "keywords": [
+    "feexpay-lite"
+  ],
+  "bugs": {
+    "url": "https://github.com/LOUGBEGNON/feexpay-lite-react-sdk/issues"
+  },
+  "homepage": "https://github.com/LOUGBEGNON/feexpay-lite-react-sdk#readme"
 }
