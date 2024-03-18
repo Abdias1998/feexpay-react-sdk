@@ -22,14 +22,13 @@ export const FeexPayButton: React.FC<Props> = ({
         <FeexButtonPayStyles />
         <button
             onClick={() => open_modal()}
-            className={`button ${buttonClass || ""}`}
+            className={`${buttonClass ? buttonClass : "button"}`}
             style={{
                 display: feexVisisbleBtn ? "flex" : "none",
                 ...buttonStyles, // Fusionner les styles personnalisés avec les styles par défaut
             }}
         >
             <span className="button_text" style={{ marginRight: "5px" }}>{buttonText}</span>
-            <span>  {state.price} XOF</span>
         </button>
     </>
   );

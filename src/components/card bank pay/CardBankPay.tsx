@@ -194,7 +194,9 @@ export const CardBankPay: React.FC<Props> = ({
                 country: `Benin`,
                 phone: `${state.numero_card}`,
                 email: `${state.email_card}`,
-                reference: `${reference}`
+                reference: `${reference}`,
+                callback_info: `${state.callback_info}`,
+                description: `${state.description}`,
               }
             )
             .then((response) => {
