@@ -10,13 +10,14 @@ type Props = {
   amount:number;
   token:string;
   id:string;
-  callback:Function;
-  callback_url: string;
-    description: string;
-    callback_info: string;
-    reference: string;
-    fieldsToHide: [];
-    buttonText: string; // Ajoutez la propriété pour le texte du bouton
+  callback?:Function;
+  callback_url?: string;
+    description?: string;
+    callback_info?: string;
+    reference?: string;
+    fieldsToHide?: [];
+    buttonClass?: string;
+    buttonText?: string; // Ajoutez la propriété pour le texte du bouton
     buttonStyles?: React.CSSProperties; // Ajoutez la propriété pour les styles du bouton
 };
 
@@ -31,7 +32,8 @@ const FeexPay: React.FC<Props> = ({
                                       reference,
                                       fieldsToHide,
                                       buttonText,
-                                      buttonStyles
+                                      buttonStyles,
+                                      buttonClass
 }) => {
   const [modal_open, setmodal_open] = React.useState(false);
   const [modal_cancel, setmodal_cancel] = React.useState(true);
@@ -78,7 +80,7 @@ const FeexPay: React.FC<Props> = ({
       <SDKcontexts amount={montant_context} token={token} id={id}  callback={callback} callback_url={callback_url}
                    description={description} callback_info={callback_info}
                    reference={reference} fieldsToHide={fieldsToHide}
-                   buttonText={buttonText} buttonStyles={buttonStyles}
+                   buttonText={buttonText} buttonStyles={buttonStyles} buttonClass={buttonClass}
       >
     
           <FeexPayModal
@@ -89,7 +91,7 @@ const FeexPay: React.FC<Props> = ({
             reference_marchand={reference_marchand}
           />
    
-        <FeexPayButton open_modal={() =>open_modal()} feexVisisbleBtn={visibleFeexBtn} buttonText={buttonText} buttonStyles={buttonStyles}/>
+        <FeexPayButton open_modal={() =>open_modal()} feexVisisbleBtn={visibleFeexBtn} buttonText={buttonText} buttonStyles={buttonStyles} buttonClass={buttonClass}/>
       </SDKcontexts>
     </>
   );

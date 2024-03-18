@@ -9,6 +9,12 @@ type Props = {
     reference_marchand: string;
     callback: Function;
     callback_url: string;
+    description: string;
+    callback_info: string;
+    reference: string;
+    fieldsToHide: [];
+    buttonText: string;
+    buttonStyles?: React.CSSProperties;
 };
 export declare const SDKcontexts: React.FC<Props>;
 export declare const useAppContext: () => any;

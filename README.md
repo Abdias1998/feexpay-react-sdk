@@ -46,5 +46,7 @@ buttonText: The text to be displayed on the payment button before the amount. By
 
 buttonStyles: Sets of css properties to customize the start button. By example: buttonStyles={{ backgroundColor: "red", color: "black", borderRadius: "25px", width: '25%' }}.
 
-You can get the shop's id and token API in your account FeexPay in Developer Menu. You won't need to define both callback and callback_url
+buttonClass (string): Sets of css class name to customize the start button. By example: buttonClass={'mt-4 text-center'}.
+
+You can get the shop's id and token API in your account FeexPay in Developer Menu. You won't need to define both callback and callback_url.
 

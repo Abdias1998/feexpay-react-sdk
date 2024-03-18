@@ -6,18 +6,23 @@ import { useAppContext } from "src/sdk contexts/props_contexts";
 type Props = {
   open_modal: any;
   feexVisisbleBtn:boolean;
-    buttonText: string; // Propriété pour le texte du bouton
+    buttonClass?: string;
+    buttonText?: string; // Propriété pour le texte du bouton
     buttonStyles?: React.CSSProperties; // Propriété pour les styles du bouton
 };
-export const FeexPayButton: React.FC<Props> = ({ open_modal , feexVisisbleBtn, buttonText,
-                                                   buttonStyles, }) => {
+export const FeexPayButton: React.FC<Props> = ({
+                                                   open_modal,
+                                                   feexVisisbleBtn, buttonText,
+                                                   buttonStyles,
+                                                   buttonClass,
+                                               }) => {
   const {state,dispatch} = useAppContext();
   return (
     <>
         <FeexButtonPayStyles />
         <button
             onClick={() => open_modal()}
-            className="button"
+            className={`button ${buttonClass || ""}`}
             style={{
                 display: feexVisisbleBtn ? "flex" : "none",
                 ...buttonStyles, // Fusionner les styles personnalisés avec les styles par défaut
