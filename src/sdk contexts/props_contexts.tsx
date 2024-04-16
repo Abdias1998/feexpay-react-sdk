@@ -17,6 +17,7 @@ type Props = {
   fieldsToHide: [];
   buttonText: string; // Ajoutez la propriété pour le texte du bouton
   buttonStyles?: React.CSSProperties; // Ajoutez la propriété pour les styles du bouton
+  defaultValueField?: {};
 };
 
 let props_init = {};
@@ -34,7 +35,8 @@ export const SDKcontexts: React.FC<Props> = ({
   callback_url,
                                                fieldsToHide,
                                                buttonText,
-                                               buttonStyles
+                                               buttonStyles,
+                                               defaultValueField,
 }) => {
   props_init = {
     price: amount,
@@ -68,8 +70,8 @@ export const SDKcontexts: React.FC<Props> = ({
     fieldsToHide: fieldsToHide,
     buttonText: buttonText,
     buttonStyles: buttonStyles,
+    defaultValueField: defaultValueField,
   };
-
 
   // const { state, dispatch } = useAppContext();
   const [state, dispatch] = React.useReducer(reducer, props_init);

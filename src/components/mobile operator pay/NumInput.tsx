@@ -41,7 +41,10 @@ export const NumInput: React.FC<Props> = ({
   const [network_select_error, setnetwork_select_error] = React.useState('');
   const [showOTPField, setShowOTPField] = React.useState(false);
   const [selectedCountry, setSelectedCountry] = React.useState('');
+  // const [selectedCountry, setSelectedCountry] = React.useState(state.defaultValueField?.code || '');
   const [selectedNetwork, setSelectedNetwork] = React.useState('');
+  // const [selectedCountry, setSelectedCountry] =
+
 
   function displayFlagInfoContainer() {
     if (displyedFlagInfo === false) {
@@ -52,11 +55,11 @@ export const NumInput: React.FC<Props> = ({
   }
 
   const countries = [
-    { code: '229', name: 'Bénin' },
-    { code: '226', name: 'Burkina-Faso' },
-    { code: '225', name: 'Côte d\'Ivoire' },
-    { code: '221', name: 'Sénégal' },
-    { code: '228', name: 'Togo' },
+    { code: '229', name: 'Bénin', country_code: "BJ" },
+    { code: '226', name: 'Burkina-Faso', country_code: "BF" },
+    { code: '225', name: 'Côte d\'Ivoire', country_code: "CI" },
+    { code: '221', name: 'Sénégal', country_code: "SN" },
+    { code: '228', name: 'Togo', country_code: "TG" },
   ];
 
   const networksByCountry = {
@@ -109,8 +112,6 @@ export const NumInput: React.FC<Props> = ({
 
   const handleNetworkChange = (event) => {
     setSelectedNetwork(event.target.value);
-    // console.log(event.target.value)
-    // console.log(typeof event.target.value)
     dispatch({
       type: "CHANGE/OPERATOR_NAME",
       payload: {
@@ -159,15 +160,9 @@ export const NumInput: React.FC<Props> = ({
       setShowOTPField(false);
     }
 
-    // console.log(event.target.value);
-    // setnetwork_select(event.target.value);
-    // console.log(country);
-    // console.log(state)
     setnetwork_select(event.target.value);
     setcountry_select(country);
-    // console.log("state.operator_name(event.target.value)");
     state.operator_name= event.target.value ;
-    // console.log("state.country_code(country");
     state.country_code = country;
 
     dispatch({
@@ -183,9 +178,42 @@ export const NumInput: React.FC<Props> = ({
         country_code: country,
       },
     });
-
-    // console.log(state)
   };
+
+  React.useEffect(() => {
+    // Vérifier si state.defaultValueField est défini et contient la propriété code
+    if (state.defaultValueField && state.defaultValueField.country_iban) {
+      let countryDefault = state.defaultValueField.country_iban;
+      let country;
+      if (countryDefault === 'BJ') {
+        country = 229;
+      }
+      else if (countryDefault === 'BF') {
+        country = 226;
+      }
+      else if (countryDefault === 'CI') {
+        country = 225;
+      }
+      else if (countryDefault === 'SN') {
+        country = 221;
+      }
+      else if (countryDefault === 'TG') {
+        country = 228;
+      }
+      else {
+        country = 229;
+      }
+
+      dispatch({
+        type: "CHANGE/COUNTRY_CODE",
+        payload: {
+          country_code: country,
+        },
+      });
+
+      setSelectedCountry(country);
+    }
+  }, [state.defaultValueField]);
 
   React.useEffect(() => {
     function send_pay_form_info() {
@@ -200,7 +228,6 @@ export const NumInput: React.FC<Props> = ({
         //   },
         // });
       }
-
 
       if (isFieldHidden("email")) {
         setemail_input("johndoe@gmail.com")
@@ -287,39 +314,6 @@ export const NumInput: React.FC<Props> = ({
   return (
     <>
       <NumInputStyles />
-      {/*<div>*/}
-      {/*  <label htmlFor="monSelect" style={{ marginBottom: "1.2rem" }}>Choisissez un réseau :</label>*/}
-      {/*  <select*/}
-      {/*      className="custom-select"*/}
-      {/*      id="monSelect"*/}
-      {/*      value={network_select}*/}
-      {/*      onChange={handleSelectChange}*/}
-      {/*      name="network"*/}
-      {/*  >*/}
-      {/*    <option value="">Sélectionnez le réseau mobile</option>*/}
-      {/*    <option value="MOOV">MOOV BENIN</option>*/}
-      {/*    <option value="MTN">MTN BENIN</option>*/}
-      {/*    <option value="MOOV CI">MOOV CÔTE D'IVOIRE</option>*/}
-      {/*    <option value="MTN CI">MTN CÔTE D'IVOIRE</option>*/}
-      {/*    <option value="WAVE CI">WAVE D'IVOIRE</option>*/}
-      {/*    <option value="ORANGE CI">ORANGE CÔTE D'IVOIRE</option>*/}
-      {/*    <option value="ORANGE SN">ORANGE SENEGAL</option>*/}
-      {/*    <option value="FREE SN">FREE SENEGAL</option>*/}
-      {/*    <option value="TOGOCOM TG">TOGOCOM</option>*/}
-      {/*    <option value="MOOV TG">MOOV TOGO</option>*/}
-      {/*    <option value="MOOV BF">MOOV BURKINA-FASO</option>*/}
-      {/*    <option value="ORANGE BF">ORANGE BURKINA-FASO</option>*/}
-      {/*    <option value="CELTIIS" hidden disabled>Celtiis Benin</option>*/}
-      {/*    <option value="CORIS MONEY BENIN" hidden disabled>Coris Money Benin</option>*/}
-      {/*  </select>*/}
-
-      {/*  <div*/}
-      {/*      className="feepay_fullname_error error_text_operator_input"*/}
-      {/*      style={{ display: "block", marginBottom: "1.5rem" }}*/}
-      {/*  >*/}
-      {/*    {errortext}*/}
-      {/*  </div>*/}
-      {/*</div>*/}
 
       <div>
         <label htmlFor="countrySelect" style={{ marginBottom: "1rem" }}>Sélectionnez un pays :</label>
@@ -340,7 +334,7 @@ export const NumInput: React.FC<Props> = ({
       </div>
 
 
-      {selectedCountry && (
+      {selectedCountry && networksByCountry[selectedCountry] && (
           <div className="margin" >
             <label htmlFor="networkSelect"  style={{ marginTop: "1rem", marginBottom: "1.2rem" }}>Choisissez un réseau :</label>
             <select
@@ -404,8 +398,6 @@ export const NumInput: React.FC<Props> = ({
             </div>
         )}
 
-
-
         {!isFieldHidden("email") && (
             <div>
               <div>
@@ -440,8 +432,6 @@ export const NumInput: React.FC<Props> = ({
               </div>
             </div>
         )}
-
-
 
         <label htmlFor="input_num">
           Numéro de téléphone

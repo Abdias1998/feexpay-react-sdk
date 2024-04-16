@@ -79,20 +79,6 @@ export const MobileOperatorSection: React.FC<Props> = ({
   function payMobile() {
     // send_pay_info(true)
     // console.log("state")
-    // console.log(state)
-    // console.log(state.operator_name)
-    // setoperator(state.operator_name)
-    // console.log("operator")
-    // console.log(operator)
-
-
-
-
-    // console.log('state.operator_name === ""')
-    // console.log(state.operator_name === "")
-    // console.log('operator === ""')
-    // console.log(operator === "")
-
 
     if (send_pay_info === false) {
       setsend_pay_info(true);
@@ -100,8 +86,6 @@ export const MobileOperatorSection: React.FC<Props> = ({
     if (send_pay_info === true) {
       setsend_pay_info(false);
     }
-
-    // console.log("dgrdgfthfthyythjyh")
 
     if (state.operator_name === "") {
       seterrorvisible(true);
@@ -168,7 +152,7 @@ export const MobileOperatorSection: React.FC<Props> = ({
         })
         .then((response) => {
           // console.log("response")
-          console.log(response.data)
+          // console.log(response.data)
           let i = 0;
           let reference = (state.operator_name == "MOOV CI" || state.operator_name == "FREE SN" || state.operator_name == 'ORANGE CI' || state.operator_name == 'WAVE CI' || state.operator_name == 'ORANGE BF' || state.operator_name == 'MOOV BF') ? response.data.order_id : response.data.reference;
 
@@ -250,7 +234,7 @@ export const MobileOperatorSection: React.FC<Props> = ({
                 type: "CHANGE/REQUESTMESSAGE",
                 payload: {
                   paiement_request_verify_msg:
-                      "Veuillez verifier votre numero",
+                      "Veuillez verifier votre numero ou votre solde.",
                   stopchargement: true,
                 },
               });
@@ -335,9 +319,6 @@ export const MobileOperatorSection: React.FC<Props> = ({
 
   React.useEffect(() => {
     function sendRequestVerify() {
-
-      // console.log("state")
-      // console.log(state)
 
       console.log( state.num_client.length > 4 &&
           state.operator_name.length > 0 &&

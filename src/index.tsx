@@ -19,6 +19,7 @@ type Props = {
     buttonClass?: string;
     buttonText?: string; // Ajoutez la propriété pour le texte du bouton
     buttonStyles?: React.CSSProperties; // Ajoutez la propriété pour les styles du bouton
+    defaultValueField?: {},
 };
 
 const FeexPay: React.FC<Props> = ({
@@ -33,7 +34,8 @@ const FeexPay: React.FC<Props> = ({
                                       fieldsToHide,
                                       buttonText,
                                       buttonStyles,
-                                      buttonClass
+                                      buttonClass,
+                                      defaultValueField,
 }) => {
   const [modal_open, setmodal_open] = React.useState(false);
   const [modal_cancel, setmodal_cancel] = React.useState(true);
@@ -80,7 +82,7 @@ const FeexPay: React.FC<Props> = ({
       <SDKcontexts amount={montant_context} token={token} id={id}  callback={callback} callback_url={callback_url}
                    description={description} callback_info={callback_info}
                    reference={reference} fieldsToHide={fieldsToHide}
-                   buttonText={buttonText} buttonStyles={buttonStyles} buttonClass={buttonClass}
+                   buttonText={buttonText} buttonStyles={buttonStyles} buttonClass={buttonClass} defaultValueField={defaultValueField}
       >
     
           <FeexPayModal

@@ -12,6 +12,7 @@ type Props = {
     buttonClass?: string;
     buttonText?: string;
     buttonStyles?: React.CSSProperties;
+    defaultValueField?: {};
 };
 declare const FeexPay: React.FC<Props>;
 export default FeexPay;

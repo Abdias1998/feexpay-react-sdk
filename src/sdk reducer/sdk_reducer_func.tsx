@@ -9,8 +9,8 @@ export function reducer(state: any, action: any) {
 
 
       case "CHANGE/COUNTRY_CODE":
-        console.log("COUNTRY_CODE")
-        console.log(action.payload)
+        // console.log("COUNTRY_CODE")
+        // console.log(action.payload)
         return {
           ...state,
           country_code: action.payload.country_code
@@ -19,8 +19,8 @@ export function reducer(state: any, action: any) {
 
 
       case "CHANGE/OPERATOR_NAME":
-        console.log("OPERATOR_NAME")
-        console.log(action.payload)
+        // console.log("OPERATOR_NAME")
+        // console.log(action.payload)
         return {
           ...state,
           operator_name: action.payload.operator_name

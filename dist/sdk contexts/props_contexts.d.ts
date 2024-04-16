@@ -15,6 +15,7 @@ type Props = {
     fieldsToHide: [];
     buttonText: string;
     buttonStyles?: React.CSSProperties;
+    defaultValueField?: {};
 };
 export declare const SDKcontexts: React.FC<Props>;
 export declare const useAppContext: () => any;

@@ -23,10 +23,16 @@ To init and add the payment button, you add this code in script balise.
 
 ```bash
 <Feexpay
-     token = {’/*API KEY*/’}
-      id = {’/*Shop's id */ ‘}
-      amount = {/*Montant du paiement à effectuer */}
-      callback={()=>alert(‘’Pay’’)}
+    token = {’/*API KEY*/’}
+    id = {’/*Shop's id */ ‘}
+    amount = {/*Montant du paiement à effectuer */}
+    callback={()=>alert(‘’Pay’’)}
+    description={'description'}
+    callback_url={"https://www.feexpay.me"}
+    callback_info={"callback_info"}
+    buttonText="Payer"
+    buttonClass={"mt-3"}
+    defaultValueField={{'country_iban': "BJ"}}
 />
 ```
 
@@ -47,6 +53,8 @@ buttonText: The text to be displayed on the payment button before the amount. By
 buttonStyles: Sets of css properties to customize the start button. By example: buttonStyles={{ backgroundColor: "red", color: "black", borderRadius: "25px", width: '25%' }}.
 
 buttonClass (string): Sets of css class name to customize the start button. By example: buttonClass={'mt-4 text-center'}.
+
+defaultValueField: object to auto-complete certain fields. By example: defaultValueField={{'country_iban': "BJ"}}
 
 You can get the shop's id and token API in your account FeexPay in Developer Menu. You won't need to define both callback and callback_url.
 
