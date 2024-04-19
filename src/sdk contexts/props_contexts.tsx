@@ -23,21 +23,21 @@ type Props = {
 let props_init = {};
 
 export const SDKcontexts: React.FC<Props> = ({
-  children,
+                                               children,
                                                amount,
                                                apiURL,
                                                token,
                                                id,
-  reference,
+                                               reference,
                                                callback,
                                                description,
                                                callback_info,
-  callback_url,
+                                               callback_url,
                                                fieldsToHide,
                                                buttonText,
                                                buttonStyles,
                                                defaultValueField,
-}) => {
+                                             }) => {
   props_init = {
     price: amount,
     apiURL: apiURL,
@@ -75,19 +75,19 @@ export const SDKcontexts: React.FC<Props> = ({
 
   // const { state, dispatch } = useAppContext();
   const [state, dispatch] = React.useReducer(reducer, props_init);
-  
+
   const contextValue = React.useMemo(
-    () => ({
-      state,
-      dispatch,
-    }),
-    [state, dispatch]
+      () => ({
+        state,
+        dispatch,
+      }),
+      [state, dispatch]
   );
 
   return (
-    <Propscontext.Provider value={contextValue}>
-      {children}
-    </Propscontext.Provider>
+      <Propscontext.Provider value={contextValue}>
+        {children}
+      </Propscontext.Provider>
   );
 };
 

@@ -54,7 +54,7 @@ export const NumInput: React.FC<Props> = ({
     }
   }
 
-  const countries = [
+  let countries = [
     { code: '229', name: 'Bénin', country_code: "BJ" },
     { code: '226', name: 'Burkina-Faso', country_code: "BF" },
     { code: '225', name: 'Côte d\'Ivoire', country_code: "CI" },
@@ -317,20 +317,29 @@ export const NumInput: React.FC<Props> = ({
 
       <div>
         <label htmlFor="countrySelect" style={{ marginBottom: "1rem" }}>Sélectionnez un pays :</label>
-        <select
-            className="custom-select"
-            id="countrySelect"
-            value={selectedCountry}
-            style={{ marginTop: "1rem"}}
-            onChange={handleCountryChange}
-        >
-          <option value="">Choisissez un pays</option>
-          {countries.map(country => (
-              <option key={country.code} value={country.code}>
-                {country.name}
-              </option>
-          ))}
-        </select>
+        {state.defaultValueField?.country_iban ? (
+            <div className="custom-select" style={{ marginTop: "1rem", width: "-webkit-fill-available", height: "auto", display: "flex", alignItems: "center", border: "1px solid #ccc", padding: "0.5rem", borderRadius: "4px" }}>
+              <span style={{ marginLeft: "0.5rem" }}>
+                {countries.find(country => country.country_code === state.defaultValueField.country_iban)?.name}
+              </span>
+            </div>
+
+        ) : (
+            <select
+                className="custom-select"
+                id="countrySelect"
+                value={selectedCountry}
+                style={{ marginTop: "1rem" }}
+                onChange={handleCountryChange}
+            >
+              <option value="">Choisissez un pays</option>
+              {countries.map((country) => (
+                  <option key={country.code} value={country.code}>
+                    {country.name}
+                  </option>
+              ))}
+            </select>
+        )}
       </div>
 
 
