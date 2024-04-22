@@ -471,7 +471,7 @@ export const NumInput: React.FC<Props> = ({
         )}
 
         <label htmlFor="input_num">
-          Numéro de téléphone
+          Numéro de téléphone(sans indicatif)
         </label>
 
         <div className="num_operator_card">
