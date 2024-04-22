@@ -8,7 +8,7 @@ type Props = {
     description?: string;
     callback_info?: string;
     reference?: string;
-    fieldsToHide?: [];
+    fieldsToHide?: string[];
     buttonClass?: string;
     buttonText?: string;
     buttonStyles?: React.CSSProperties;

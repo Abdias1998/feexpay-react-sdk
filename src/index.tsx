@@ -15,7 +15,7 @@ type Props = {
     description?: string;
     callback_info?: string;
     reference?: string;
-    fieldsToHide?: [];
+    fieldsToHide?: string[];
     buttonClass?: string;
     buttonText?: string; // Ajoutez la propriété pour le texte du bouton
     buttonStyles?: React.CSSProperties; // Ajoutez la propriété pour les styles du bouton

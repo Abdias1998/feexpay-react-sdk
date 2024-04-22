@@ -43,8 +43,6 @@ export const NumInput: React.FC<Props> = ({
   const [selectedCountry, setSelectedCountry] = React.useState('');
   // const [selectedCountry, setSelectedCountry] = React.useState(state.defaultValueField?.code || '');
   const [selectedNetwork, setSelectedNetwork] = React.useState('');
-  // const [selectedCountry, setSelectedCountry] =
-
 
   function displayFlagInfoContainer() {
     if (displyedFlagInfo === false) {
@@ -128,7 +126,6 @@ export const NumInput: React.FC<Props> = ({
     }
   };
 
-
   const handleSelectChange = (event) => {
     let country;
 
@@ -184,6 +181,8 @@ export const NumInput: React.FC<Props> = ({
     // Vérifier si state.defaultValueField est défini et contient la propriété code
     if (state.defaultValueField && state.defaultValueField.country_iban) {
       let countryDefault = state.defaultValueField.country_iban;
+      let networkDefault = state.defaultValueField.network ? state.defaultValueField.network.toUpperCase() : state.defaultValueField.network;
+
       let country;
       if (countryDefault === 'BJ') {
         country = 229;
@@ -210,8 +209,30 @@ export const NumInput: React.FC<Props> = ({
           country_code: country,
         },
       });
-
       setSelectedCountry(country);
+
+      // Vérifie si l'utilisateur a choisi Orange Sénégal
+      if (networkDefault === "ORANGE SN" || networkDefault === "ORANGE") {
+        // Affiche le champ OTP
+        setShowOTPField(true);
+      } else {
+        // Cache le champ OTP pour les autres choix
+        setShowOTPField(false);
+      }
+
+      if (networksByCountry[country]) {
+        const networkValue = networksByCountry[country].find(network => network.label === state.defaultValueField.network)?.value;
+        setSelectedNetwork(networkValue || networkDefault);
+        dispatch({
+          type: "CHANGE/OPERATOR_NAME",
+          payload: {
+            operator_name: networkValue,
+          },
+        });
+      }
+      else {
+        setSelectedNetwork(networkDefault);
+      }
     }
   }, [state.defaultValueField]);
 
@@ -323,7 +344,6 @@ export const NumInput: React.FC<Props> = ({
                 {countries.find(country => country.country_code === state.defaultValueField.country_iban)?.name}
               </span>
             </div>
-
         ) : (
             <select
                 className="custom-select"
@@ -344,25 +364,33 @@ export const NumInput: React.FC<Props> = ({
 
 
       {selectedCountry && networksByCountry[selectedCountry] && (
-          <div className="margin" >
-            <label htmlFor="networkSelect"  style={{ marginTop: "1rem", marginBottom: "1.2rem" }}>Choisissez un réseau :</label>
-            <select
-                className="custom-select"
-                id="networkSelect"
-                value={selectedNetwork}
-                style={{ marginTop: "1rem"}}
-                onChange={handleNetworkChange}
-            >
-              <option value="">Sélectionnez le réseau mobile</option>
-              {networksByCountry[selectedCountry].map(network => (
-                  <option key={network.value} value={network.value}>
-                    {network.label}
-                  </option>
-              ))}
-            </select>
+          <div className="margin">
+            <label htmlFor="networkSelect" style={{ marginTop: "1rem", marginBottom: "1.2rem" }}>Choisissez un réseau :</label>
+            {state.defaultValueField?.network ? (
+                <div className="custom-select" style={{ marginTop: "1rem", width: "-webkit-fill-available", height: "auto", display: "flex", alignItems: "center", border: "1px solid #ccc", padding: "0.5rem", borderRadius: "4px" }}>
+                  <span style={{ marginLeft: "0.5rem" }}>
+                    {state.defaultValueField.network}
+                    {/*{networksByCountry[selectedCountry].find(network => network.label === state.defaultValueField.network)?.value}*/}
+                  </span>
+                </div>
+            ) : (
+                <select
+                    className="custom-select"
+                    id="networkSelect"
+                    value={selectedNetwork}
+                    style={{ marginTop: "1rem" }}
+                    onChange={handleNetworkChange}
+                >
+                  <option value="">Sélectionnez le réseau mobile</option>
+                  {networksByCountry[selectedCountry].map(network => (
+                      <option key={network.value} value={network.value}>
+                        {network.label}
+                      </option>
+                  ))}
+                </select>
+            )}
           </div>
       )}
-
       <div
           className="feepay_fullname_error error_text_operator_input"
           style={{ display: "block", marginBottom: "1.5rem" }}
@@ -370,7 +398,7 @@ export const NumInput: React.FC<Props> = ({
         {network_select_error}
       </div>
 
-      <div className="margin" >
+      <div className="margin">
         {!isFieldHidden("full_name") && (
             <div>
               <div>

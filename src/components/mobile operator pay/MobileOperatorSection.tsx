@@ -319,6 +319,8 @@ export const MobileOperatorSection: React.FC<Props> = ({
 
   React.useEffect(() => {
     function sendRequestVerify() {
+      // console.log("state.operator_name")
+      // console.log(state.operator_name)
 
       console.log( state.num_client.length > 4 &&
           state.operator_name.length > 0 &&
@@ -338,9 +340,7 @@ export const MobileOperatorSection: React.FC<Props> = ({
           userInitiatedSubmission
       ) {
 
-          // console.log(state.num_client)
           sendPayFunc();
-          // setUserInitiatedSubmission(false);
       }
       else {
         // console.log("je suis dans le else")
