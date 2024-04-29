@@ -140,16 +140,15 @@ export function reducer(state: any, action: any) {
         break;
 
       case "CHANGE/REQUESTTOPAYINFO":
-        return { ...state, requesttopayinfo: { ...action.payload } };
+        // return { ...state, requesttopayinfo: { ...action.payload } };
+        return state
         break;
 
       case "CHANGE/EMAIL":
-        // console.log('"rfnjhfvhfdnvfghbn')
         return { ...state, ...action.payload };
         break;
 
       case "CHANGE/FULLNAME":
-        // console.log('je me suis gtht')
         return { ...state, ...action.payload };
         break;
 

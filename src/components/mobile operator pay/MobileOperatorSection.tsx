@@ -151,26 +151,14 @@ export const MobileOperatorSection: React.FC<Props> = ({
           description: `${state.description}`,
         })
         .then((response) => {
-          // console.log("response")
-          // console.log(response.data)
           let i = 0;
           let reference = (state.operator_name == "MOOV CI" || state.operator_name == "FREE SN" || state.operator_name == 'ORANGE CI' || state.operator_name == 'WAVE CI' || state.operator_name == 'ORANGE BF' || state.operator_name == 'MOOV BF') ? response.data.order_id : response.data.reference;
 
           if (state.operator_name == "MOOV CI" || state.operator_name == "FREE SN" || state.operator_name == 'ORANGE CI' || state.operator_name == 'WAVE CI' || state.operator_name == 'ORANGE BF' || state.operator_name == 'MOOV BF') {
             // console.log('je suis dans ce if')
             changeVisibleChargementExitFunc();
-            // document.getElementById("feexpay_chargement_container").style.display = "none";
-            // document.querySelector(".feexpay_loader").style.display = "none";
             const urlPay = response.data.payment_url;
-            // console.log(response.data.payment_url)
-            // console.log(urlPay)
             let counter = 0;
-            // let feexpay_container = document.querySelector(`.feexpay_container`);
-            // const container = document.querySelector('.feexpay_modal_container .padding_add');
-            // if (container) {
-            //   container.style.paddingLeft = '0';
-            //   container.style.paddingRight = '0';
-            // }
 
             seturlPay(urlPay);
             setmobileMoney_section(false);
@@ -185,25 +173,20 @@ export const MobileOperatorSection: React.FC<Props> = ({
             );
             const status_response = response_getStatus.data.status;
 
-            // console.log("status_response")
-            // console.log(status_response)
-
             if (status_response === "SUCCESSFUL" || status_response === "SUCCESS" || status_response === "Successful") {
               i = i + 1;
-              // console.log("i")
-              // console.log(i)
               if (i < 2) {
                 clearInterval(intervale_valid_pay);
 
-                dispatch({
-                  type: "CHANGE/REQUESTTOPAYINFO",
-                  payload: {
-                    externalId: response_getStatus.data.externalId,
-                    amount: response_getStatus.data.amount,
-                    status: response_getStatus.data.status,
-                    partyId: response_getStatus.data.payer.partyId,
-                  },
-                });
+                // dispatch({
+                //   type: "CHANGE/REQUESTTOPAYINFO",
+                //   payload: {
+                //     externalId: response_getStatus.data.externalId,
+                //     amount: response_getStatus.data.amount,
+                //     status: response_getStatus.data.status,
+                //     partyId: response_getStatus.data.payer.partyId,
+                //   },
+                // });
                 dispatch({
                   type: "CHANGE/REQUESTMESSAGE",
                   payload: {
@@ -214,7 +197,17 @@ export const MobileOperatorSection: React.FC<Props> = ({
 
                 setTimeout(() => {
                   if (state.callback && typeof state.callback === "function") {
-                    state.callback();
+                    let data = {
+                      reference: response.data.reference,
+                      status: "SUCCESSFUL",
+                      phoneNumber: state.num_client,
+                      full_name: state.full_name,
+                      reseau: state.operator_name,
+                      callback_info: state.callback_info,
+                      description: state.description,
+                      transaction_id: response_getStatus.data.transaction_id,
+                    }
+                    state.callback(data);
                   } else if (state.callback_url !== undefined) {
                     const url = new URL(state.callback_url);
                     if (url.searchParams && url.searchParams.toString()) {
@@ -233,18 +226,27 @@ export const MobileOperatorSection: React.FC<Props> = ({
               dispatch({
                 type: "CHANGE/REQUESTMESSAGE",
                 payload: {
-                  paiement_request_verify_msg:
-                      "Veuillez verifier votre numero ou votre solde.",
+                  paiement_request_verify_msg: "Veuillez verifier votre numero ou votre solde.",
                   stopchargement: true,
                 },
               });
 
               setTimeout(() => {
-                changeVisibleChargementExitFunc();
                 // setTimeout(() => {
                   if (state.callback && typeof state.callback === "function") {
-                    state.callback();
+                    let data = {
+                      reference: reference,
+                      status: "FAILED",
+                      phoneNumber: state.num_client,
+                      full_name: state.full_name,
+                      reseau: state.operator_name,
+                      callback_info: state.callback_info,
+                      description: state.description,
+                      transaction_id: response_getStatus.data.transaction_id,
+                    }
+                    state.callback(data);
                   } else if (state.callback_url !== undefined) {
+                    changeVisibleChargementExitFunc();
                     const url = new URL(state.callback_url);
                     if (url.searchParams && url.searchParams.toString()) {
                       state.callback_url = `${state.callback_url}&id_transaction=${reference}&status=FAILED`;
@@ -277,18 +279,28 @@ export const MobileOperatorSection: React.FC<Props> = ({
               dispatch({
                 type: "CHANGE/REQUESTMESSAGE",
                 payload: {
-                  paiement_request_verify_msg:
-                      "Vous n'avez pas accepter la transaction",
+                  paiement_request_verify_msg: "Vous n'avez pas accepter la transaction",
                   stopchargement: true,
                 },
               });
 
               setTimeout(() => {
-                changeVisibleChargementExitFunc();
                 // setTimeout(() => {
                 if (state.callback && typeof state.callback === "function") {
-                  state.callback();
-                } else if (state.callback_url !== undefined) {
+                  let data = {
+                    reference: reference,
+                    status: "FAILED",
+                    phoneNumber: state.num_client,
+                    full_name: state.full_name,
+                    reseau: state.operator_name,
+                    callback_info: state.callback_info,
+                    description: state.description,
+                    transaction_id: response_getStatus.data.transaction_id,
+                  }
+                  state.callback(data);
+                }
+                else if (state.callback_url !== undefined) {
+                  changeVisibleChargementExitFunc();
                   const url = new URL(state.callback_url);
                   if (url.searchParams && url.searchParams.toString()) {
                     state.callback_url = `${state.callback_url}&id_transaction=${reference}&status=FAILED`;
@@ -439,7 +451,7 @@ export const MobileOperatorSection: React.FC<Props> = ({
               name="demo"
           ></iframe>
       )}
-      
+
     </>
   );
 };
