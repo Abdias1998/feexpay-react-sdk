@@ -334,7 +334,7 @@ export const MobileOperatorSection: React.FC<Props> = ({
       // console.log("state.operator_name")
       // console.log(state.operator_name)
 
-      console.log( state.num_client.length > 4 &&
+      console.log( state.num_client.length > 8 &&
           state.operator_name.length > 0 &&
           // num_client_exist === true &&
           state.full_name.length > 0 &&

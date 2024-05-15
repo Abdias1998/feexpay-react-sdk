@@ -41,7 +41,6 @@ export const NumInput: React.FC<Props> = ({
   const [network_select_error, setnetwork_select_error] = React.useState('');
   const [showOTPField, setShowOTPField] = React.useState(false);
   const [selectedCountry, setSelectedCountry] = React.useState('');
-  // const [selectedCountry, setSelectedCountry] = React.useState(state.defaultValueField?.code || '');
   const [selectedNetwork, setSelectedNetwork] = React.useState('');
 
   function displayFlagInfoContainer() {
@@ -181,6 +180,8 @@ export const NumInput: React.FC<Props> = ({
     // Vérifier si state.defaultValueField est défini et contient la propriété code
     if (state.defaultValueField && state.defaultValueField.country_iban) {
       let countryDefault = state.defaultValueField.country_iban;
+      let nameDefault = state.defaultValueField.name;
+      let emailDefault = state.defaultValueField.email;
       let networkDefault = state.defaultValueField.network ? state.defaultValueField.network.toUpperCase() : state.defaultValueField.network;
 
       let country;
@@ -233,7 +234,27 @@ export const NumInput: React.FC<Props> = ({
       else {
         setSelectedNetwork(networkDefault);
       }
+
+      // Pré remplir le champ full_name avec la valeur définie par défaut
+      dispatch({
+        type: "CHANGE/FULLNAME",
+        payload: {
+          full_name: nameDefault,
+        },
+      });
+      setfull_name_input(nameDefault)
+
+      // Pré remplir le champ email avec la valeur définie par défaut
+      dispatch({
+        type: "CHANGE/EMAIL",
+        payload: {
+          email: emailDefault,
+        },
+      });
+      setemail_input(emailDefault)
     }
+
+    console.log(state)
   }, [state.defaultValueField]);
 
   React.useEffect(() => {
@@ -339,7 +360,7 @@ export const NumInput: React.FC<Props> = ({
       <div>
         <label htmlFor="countrySelect" style={{ marginBottom: "1rem" }}>Sélectionnez un pays :</label>
         {state.defaultValueField?.country_iban ? (
-            <div className="custom-select" style={{ marginTop: "1rem", width: "-webkit-fill-available", height: "auto", display: "flex", alignItems: "center", border: "1px solid #ccc", padding: "0.5rem", borderRadius: "4px" }}>
+            <div className="" style={{ marginTop: "1rem", width: "-webkit-fill-available", height: "auto", display: "flex", alignItems: "center", border: "1px solid #ccc", padding: "0.5rem", borderRadius: "4px" }}>
               <span style={{ marginLeft: "0.5rem" }}>
                 {countries.find(country => country.country_code === state.defaultValueField.country_iban)?.name}
               </span>
@@ -367,105 +388,128 @@ export const NumInput: React.FC<Props> = ({
           <div className="margin">
             <label htmlFor="networkSelect" style={{ marginTop: "1rem", marginBottom: "1.2rem" }}>Choisissez un réseau :</label>
             {state.defaultValueField?.network ? (
-                <div className="custom-select" style={{ marginTop: "1rem", width: "-webkit-fill-available", height: "auto", display: "flex", alignItems: "center", border: "1px solid #ccc", padding: "0.5rem", borderRadius: "4px" }}>
+                <div className="" style={{ marginTop: "1rem", width: "-webkit-fill-available", height: "auto", display: "flex", alignItems: "center", border: "1px solid #ccc", padding: "0.5rem", borderRadius: "4px" }}>
                   <span style={{ marginLeft: "0.5rem" }}>
                     {state.defaultValueField.network}
-                    {/*{networksByCountry[selectedCountry].find(network => network.label === state.defaultValueField.network)?.value}*/}
                   </span>
                 </div>
             ) : (
-                <select
-                    className="custom-select"
-                    id="networkSelect"
-                    value={selectedNetwork}
-                    style={{ marginTop: "1rem" }}
-                    onChange={handleNetworkChange}
-                >
-                  <option value="">Sélectionnez le réseau mobile</option>
-                  {networksByCountry[selectedCountry].map(network => (
-                      <option key={network.value} value={network.value}>
-                        {network.label}
-                      </option>
-                  ))}
-                </select>
+                <div>
+                  <select
+                      className="custom-select"
+                      id="networkSelect"
+                      value={selectedNetwork}
+                      style={{ marginTop: "1rem" }}
+                      onChange={handleNetworkChange}
+                  >
+                    <option value="">Sélectionnez le réseau mobile</option>
+                    {networksByCountry[selectedCountry].map(network => (
+                        <option key={network.value} value={network.value}>
+                          {network.label}
+                        </option>
+                    ))}
+                  </select>
+                  <div
+                      className="feepay_fullname_error error_text_operator_input"
+                      style={{ display: "block", marginBottom: "1.5rem" }}
+                  >
+                    {network_select_error}
+                  </div>
+                </div>
             )}
           </div>
       )}
-      <div
-          className="feepay_fullname_error error_text_operator_input"
-          style={{ display: "block", marginBottom: "1.5rem" }}
-      >
-        {network_select_error}
-      </div>
 
-      <div className="margin">
+
+      <div>
         {!isFieldHidden("full_name") && (
-            <div>
+            <div className="margin" style={{ display: "block", marginBottom: "1.5rem" }}>
               <div>
-                <label >Nom et prénoms</label>
-                <input
-                    autoComplete="off"
-                    className="feexpay_fullname_input feexpay_input_simple feexpay_input_fullname input_simple"
-                    type="text"
-                    style={{ marginBottom: "0px", marginTop: "0.25rem" }}
-                    onChange={(e) => {
-                      setfull_name_input(e.target.value);
-                      function setWithDispath(e: any) {
-                        if (e.target.value.length !== 0) {
-                          dispatch({
-                            type: "CHANGE/FULLNAME",
-                            payload: {
-                              full_name: e.target.value,
-                            },
-                          });
-                        }
-                      }
-                      setWithDispath(e);
-                    }}
-                    placeholder="John Don"
-                />
-              </div>
+                <label>Nom et prénoms</label>
+                {state.defaultValueField?.name ? (
+                    <div className="" style={{ marginTop: "1rem", width: "-webkit-fill-available", height: "auto", display: "flex", alignItems: "center", border: "1px solid #ccc", padding: "0.5rem", borderRadius: "4px" }}>
+                      <span style={{ marginLeft: "0.5rem" }}>
+                        {state.defaultValueField.name}
+                      </span>
+                    </div>
+                ) : (
+                    <div>
+                      <input
+                          autoComplete="off"
+                          className="feexpay_fullname_input feexpay_input_simple feexpay_input_fullname input_simple"
+                          type="text"
+                          style={{ marginBottom: "0px", marginTop: "0.25rem" }}
+                          onChange={(e) => {
+                            setfull_name_input(e.target.value);
+                            function setWithDispath(e: any) {
+                              if (e.target.value.length !== 0) {
+                                dispatch({
+                                  type: "CHANGE/FULLNAME",
+                                  payload: {
+                                    full_name: e.target.value,
+                                  },
+                                });
+                              }
+                            }
+                            setWithDispath(e);
+                          }}
+                          placeholder="John Don"
+                      />
 
-              <div
-                  className="feepay_fullname_error error_text_operator_input"
-                  style={{ display: "block", marginBottom: "1.5rem" }}
-              >
-                {full_name_input_error}
+                      <div
+                          className="feepay_fullname_error error_text_operator_input"
+
+                      >
+                        {full_name_input_error}
+                      </div>
+                    </div>
+                )}
               </div>
             </div>
         )}
 
         {!isFieldHidden("email") && (
-            <div>
+            <div style={{ display: "block", marginBottom: "1.5rem" }}>
               <div>
                 <label>Adresse mail</label>
-                <input
-                    autoComplete="off"
-                    className="feexpay_email_input feexpay_input_simple feexpay_input_email input_simple"
-                    type="email"
-                    style={{ marginBottom: "0px", marginTop: "0.25rem" }}
-                    placeholder="example@gmail.com"
-                    onChange={(e) => {
-                      setemail_input(e.target.value);
-                      function setWithDispath(e: any) {
-                        if (e.target.value.length !== 0) {
-                          dispatch({
-                            type: "CHANGE/EMAIL",
-                            payload: {
-                              email: e.target.value,
-                            },
-                          });
-                        }
-                      }
-                      setWithDispath(e);
-                    }}
-                />
-              </div>
-              <div
-                  className="feepay_email_error error_text_operator_input"
-                  style={{ display: "block", marginBottom: "1.5rem" }}
-              >
-                {email_input_error}
+                {state.defaultValueField?.email ? (
+                    <div className="custom-select" style={{ marginTop: "1rem", width: "-webkit-fill-available", height: "auto", display: "flex", alignItems: "center", border: "1px solid #ccc", padding: "0.5rem", borderRadius: "4px" }}>
+              <span style={{ marginLeft: "0.5rem" }}>
+                {state.defaultValueField.email}
+              </span>
+                    </div>
+                ) : (
+                    <div>
+                      <input
+                          autoComplete="off"
+                          className="feexpay_email_input feexpay_input_simple feexpay_input_email input_simple"
+                          type="email"
+                          style={{ marginBottom: "0px", marginTop: "0.25rem" }}
+                          placeholder="example@gmail.com"
+                          onChange={(e) => {
+                            setemail_input(e.target.value);
+                            function setWithDispath(e: any) {
+                              if (e.target.value.length !== 0) {
+                                dispatch({
+                                  type: "CHANGE/EMAIL",
+                                  payload: {
+                                    email: e.target.value,
+                                  },
+                                });
+                              }
+                            }
+                            setWithDispath(e);
+                          }}
+                      />
+
+                      <div
+                          className="feepay_email_error error_text_operator_input"
+
+                      >
+                        {email_input_error}
+                      </div>
+                    </div>
+                )}
               </div>
             </div>
         )}
