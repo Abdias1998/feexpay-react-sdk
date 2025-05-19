@@ -50,12 +50,8 @@ function App() {
               <p className="text-gray-600">
                 This demo showcases the FeexPay payment integration with:
               </p>
-              <ul className="list-disc pl-5 text-gray-600 space-y-1">
-                <li>Dynamic network detection based on phone number</li>
-                <li>Automatic fee calculation by country and network</li>
-                <li>Real-time transaction status updates</li>
-                <li>Responsive payment interface</li>
-              </ul>
+            
+            
               
               <div className="pt-4">
                 <FeexPayButton 
@@ -65,8 +61,10 @@ function App() {
                   apiToken="fp_HHNoQGt9Vn8KpZoLaBkG3uEeKpLUYBaHUZIZXJE3Xgv0OKG2tK3A7PtlytctikrJ"
                   callbackUrl="https://example.com/callback"
                   mode="LIVE"
-                //   fields_to_hide={["email", "name"]}
+                  fields_to_hide={["email", "name"]}
                   callback={handlePaymentCallback}
+                  buttonText="Payer maintenant"
+                  buttonClass="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 flex items-center justify-center"
                 />
                 
                 {paymentResult && (

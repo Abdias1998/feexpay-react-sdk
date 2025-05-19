@@ -18,6 +18,8 @@ interface FeexPayButtonProps {
   error_callback_url?: string;
   custom_button?: boolean;
   id_custom_button?: string;
+  buttonText?: string;
+  buttonClass?: string;
 }
 
 const FeexPayButton: React.FC<FeexPayButtonProps> = ({
@@ -36,6 +38,8 @@ const FeexPayButton: React.FC<FeexPayButtonProps> = ({
   error_callback_url,
   custom_button = false,
   // id_custom_button is handled at the SDK level, not needed in component
+  buttonText = 'Pay with FeexPay',
+  buttonClass,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { setPaymentConfig } = useFeexPay();
@@ -106,9 +110,9 @@ const FeexPayButton: React.FC<FeexPayButtonProps> = ({
       {!custom_button && (
         <button
           onClick={handlePaymentClick}
-          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 flex items-center justify-center"
+          className={buttonClass || "w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 flex items-center justify-center"}
         >
-          Pay with FeexPay
+          {buttonText}
         </button>
       )}
 
