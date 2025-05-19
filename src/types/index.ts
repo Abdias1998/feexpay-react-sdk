@@ -1,0 +1,38 @@
+export type Network = 'MTN' | 'MOOV' | 'CELTIIS' | 'CORIS' | 'ORANGE' | 'WAVE';
+
+export type Country = 'BENIN' | 'COTE_D_IVOIRE';
+
+export type PaymentMethod = 'MOBILE' | 'CARD' | 'WALLET';
+
+export type PaymentStatus = 'PENDING' | 'SUCCESSFUL' | 'FAILED' | 'TIMEOUT' | 'INSUFFICIENT_FUNDS';
+
+
+
+
+export interface PaymentConfig {
+  amount: number;
+  description: string;
+  shop: string;
+  apiToken: string;
+  callbackUrl?: string;
+  mode?: 'SANDBOX' | 'LIVE';
+  customId?: string;
+  fields_to_hide?: string[];
+  callback?: (response: { reference: string; status: PaymentStatus }) => void;
+  currency?: string;
+  case?: string;
+  callback_info?: Record<string, unknown>;
+  error_callback_url?: string;
+}
+
+export interface Transaction {
+  reference: string;
+  status: PaymentStatus;
+  amount: number;
+  fees: number;
+  total: number;
+  phoneNumber: string;
+  network: Network;
+  country: Country;
+  timestamp: number;
+}
