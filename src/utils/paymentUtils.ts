@@ -1,5 +1,5 @@
 import { Network, Country } from '../types';
-import { BENIN_PREFIXES } from '../constants';
+import { BENIN_PREFIXES, NETWORK_FEES, NETWORK_API_MAPPING } from '../constants';
 
 export const getNetworkByPhonePrefix = (prefix: string): Network | null => {
   if (BENIN_PREFIXES.MTN.includes(prefix)) {
@@ -19,28 +19,38 @@ export const getNetworksForCountry = (country: Country): Network[] => {
       return ['MTN', 'MOOV', 'CELTIIS', 'CORIS'];
     case 'COTE_D_IVOIRE':
       return ['MTN', 'MOOV', 'ORANGE', 'WAVE'];
+    case 'BURKINA_FASO':
+      return ['MOOV', 'ORANGE'];
+    case 'CONGO_BRAZZAVILLE':
+      return ['MTN'];
+    case 'SENEGAL':
+      return ['ORANGE', 'FREE'];
+    case 'TOGO':
+      return ['TOGOCOM', 'MOOV'];
     default:
       return ['MTN', 'MOOV'];
   }
 };
 
 export const calculateFees = (amount: number, country: Country, network: Network): number => {
+  // Récupérer le pourcentage de frais à partir des constantes
+  const countryFees = NETWORK_FEES[country];
   let feePercentage = 0;
   
-  if (country === 'BENIN') {
-    // MTN BENIN, MOOV BENIN, CELTIIS BENIN, CORIS MONEY: 1.7%
-    feePercentage = 0.017;
-  } else if (country === 'COTE_D_IVOIRE') {
-    if (network === 'WAVE') {
-      // WAVE: 3.2%
-      feePercentage = 0.032;
-    } else {
-      // MOOV MONEY, MTN MONEY, ORANGE: 2.9%
-      feePercentage = 0.029;
-    }
+  if (countryFees && countryFees[network]) {
+    feePercentage = countryFees[network];
   }
   
   return Math.round(amount * feePercentage);
+};
+
+// Fonction pour obtenir le code réseau à envoyer à l'API
+export const getNetworkApiCode = (country: Country, network: Network): string => {
+  const mapping = NETWORK_API_MAPPING[country];
+  if (mapping && mapping[network]) {
+    return mapping[network];
+  }
+  return network.toLowerCase(); // Fallback au nom du réseau en minuscules
 };
 
 export const generateRandomId = (): string => {

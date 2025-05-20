@@ -17,8 +17,20 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({ selectedCountry, onCh
         <option value="BENIN">
           🇧🇯 Benin
         </option>
+        <option value="BURKINA_FASO">
+          🇧🇫 Burkina Faso
+        </option>
+        <option value="CONGO_BRAZZAVILLE">
+          🇨🇬 Congo Brazzaville
+        </option>
         <option value="COTE_D_IVOIRE">
           🇨🇮 Côte d'Ivoire
+        </option>
+        <option value="SENEGAL">
+          🇸🇳 Sénégal
+        </option>
+        <option value="TOGO">
+          🇹🇬 Togo
         </option>
       </select>
       <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">

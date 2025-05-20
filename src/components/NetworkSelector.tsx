@@ -31,7 +31,7 @@ const NetworkSelector: React.FC<NetworkSelectorProps> = ({
       >
         {availableNetworks.map((network) => (
           <option key={network} value={network}>
-            {network.replace('_', ' ')} Money
+            {network.replace('_', ' ')}
           </option>
         ))}
       </select>

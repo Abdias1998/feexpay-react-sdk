@@ -1,6 +1,6 @@
-export type Network = 'MTN' | 'MOOV' | 'CELTIIS' | 'CORIS' | 'ORANGE' | 'WAVE';
+export type Network = 'MTN' | 'MOOV' | 'CELTIIS' | 'CORIS' | 'ORANGE' | 'WAVE' | 'FREE' | 'TOGOCOM';
 
-export type Country = 'BENIN' | 'COTE_D_IVOIRE';
+export type Country = 'BENIN' | 'COTE_D_IVOIRE' | 'BURKINA_FASO' | 'CONGO_BRAZZAVILLE' | 'SENEGAL' | 'TOGO';
 
 export type PaymentMethod = 'MOBILE' | 'CARD' | 'WALLET';
 

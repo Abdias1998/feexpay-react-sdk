@@ -3,9 +3,9 @@ import CountrySelector from './CountrySelector';
 import NetworkSelector from './NetworkSelector';
 import StatusModal from './StatusModal';
 import { useFeexPay } from '../context/FeexPayContext';
-import { getNetworkByPhonePrefix } from '../utils/paymentUtils';
+import { getNetworkByPhonePrefix, calculateFees as calculateFeesUtil, getNetworksForCountry } from '../utils/paymentUtils';
 import { Network, PaymentMethod, Country, PaymentStatus } from '../types/index';
-import { requestToPay, checkTransactionStatus } from '../apis/feexPayApi';
+import { requestToPay, checkTransactionStatus, getTransactionDetails } from '../apis/feexPayApi';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -20,6 +20,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
+  const [baseAmount, setBaseAmount] = useState(0);
   const [total, setTotal] = useState(0);
   const [fees, setFees] = useState(0);
   const [transactionReference, setTransactionReference] = useState('');
@@ -38,10 +39,61 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     if (paymentConfig.amount) {
-      calculateFees(paymentConfig.amount, country, network);
+      setBaseAmount(paymentConfig.amount);
+      fetchTransactionDetails(paymentConfig.amount, country, network);
     }
   }, [paymentConfig, country, network]);
 
+  // Fonction pour récupérer les détails de transaction depuis l'API
+  const fetchTransactionDetails = async (amount: number, country: Country, network: Network) => {
+    try {
+      const details = await getTransactionDetails({
+        network,
+        country,
+        amount,
+        shop: paymentConfig.shop,
+        apiToken: paymentConfig.apiToken
+      });
+      
+      console.log('Transaction details:', details);
+      
+      // Si ifFees est true, appliquer les frais retournés par l'API
+      if (details && details.iffees) {
+
+
+        calculateFeesLocally(amount, country, network);
+      } else {
+        // Sinon, pas de frais
+        setFees(0);
+        setTotal(amount);
+      }
+      
+      setBaseAmount(amount);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des détails de transaction:', error);
+      // En cas d'erreur, utiliser le calcul local des frais comme fallback
+      calculateFeesLocally(amount, country, network);
+    }
+  };
+
+  const handleNetworkChange = (newNetwork: Network) => {
+    setNetwork(newNetwork);
+    if (paymentConfig.amount) {
+      fetchTransactionDetails(paymentConfig.amount, country, newNetwork);
+    }
+  };
+
+  const handleCountryChange = (newCountry: Country) => {
+    setCountry(newCountry);
+    // Reset network to first available for the new country
+    const availableNetworks = getNetworksForCountry(newCountry);
+    setNetwork(availableNetworks[0]);
+    
+    if (paymentConfig.amount) {
+      fetchTransactionDetails(paymentConfig.amount, newCountry, availableNetworks[0]);
+    }
+  };
+  
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // let value = e.target.value.replace(/\D/g, '');
     const value = e.target.value;
@@ -66,28 +118,34 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
   };
 
   const getFormattedPhoneNumber = () => {
-    if (country === 'BENIN' && phoneNumber) {
-      return `229${phoneNumber}`;
+    if (!phoneNumber) return phoneNumber;
+    
+    // Ajouter le préfixe international selon le pays
+    switch (country) {
+      case 'BENIN':
+        return `229${phoneNumber}`;
+      case 'COTE_D_IVOIRE':
+        return `225${phoneNumber}`;
+      case 'BURKINA_FASO':
+        return `226${phoneNumber}`;
+      case 'CONGO_BRAZZAVILLE':
+        return `242${phoneNumber}`;
+      case 'SENEGAL':
+        return `221${phoneNumber}`;
+      case 'TOGO':
+        return `228${phoneNumber}`;
+      default:
+        return phoneNumber;
     }
-    return phoneNumber;
   };
 
-  const calculateFees = (amount: number, country: Country, network: Network) => {
-    let feePercentage = 0;
-    
-    if (country === 'BENIN') {
-      feePercentage = 0.017;
-    } else if (country === 'COTE_D_IVOIRE') {
-      if (network === 'WAVE') {
-        feePercentage = 0.032;
-      } else {
-        feePercentage = 0.029;
-      }
-    }
-    
-    const calculatedFees = Math.round(amount * feePercentage);
+  // Fonction de calcul local des frais (utilisée comme fallback si l'API n'est pas disponible)
+  const calculateFeesLocally = (amount: number, country: Country, network: Network) => {
+    // Utiliser la fonction globale qui prend en compte tous les pays
+    const calculatedFees = calculateFeesUtil(amount, country, network);
     setFees(calculatedFees);
     setTotal(amount + calculatedFees);
+    setBaseAmount(amount);
   };
 
   const handlePaymentSubmit = async (e: React.FormEvent) => {
@@ -103,8 +161,9 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
       const formattedPhoneNumber = getFormattedPhoneNumber();
       const response = await requestToPay({
         phoneNumber: formattedPhoneNumber,
-        amount: total,
+        amount: baseAmount, // Envoyer le montant sans frais
         network,
+        country, // Ajout du paramètre country
         description: paymentConfig.description,
         customId: paymentConfig.customId || generateRandomId(),
         shop: paymentConfig.shop,
@@ -154,82 +213,147 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
 
   const startStatusCheck = (ref: string) => {
     let checkCount = 0;
-    const maxChecks = 30;
+    const maxChecks = 30; // 60 secondes (30 * 2000ms)
     
     const intervalId = setInterval(async () => {
       checkCount++;
       
       try {
+        // Vérifier le statut de la transaction avec l'API
         const status = await checkTransactionStatus(ref);
+        console.log(`Transaction status check ${checkCount}:`, status);
         
-        if (status.status === 'SUCCESSFUL') {
-          clearInterval(intervalId);
-          setPaymentStatus('SUCCESSFUL');
-          setStatusMessage('Payment successful! Thank you for your purchase.');
-          setStatusModalOpen(true);
-          setIsLoading(false);
-          
-          // Call the callback function if provided
-          if (paymentConfig.callback) {
-            paymentConfig.callback({
-              reference: transactionReference,
-              status: 'SUCCESSFUL'
-            });
-          }
-          
-          // Redirect to callback URL if provided
-          if (paymentConfig.callbackUrl) {
-            window.location.href = paymentConfig.callbackUrl;
-          }
-        } else if (status.status === 'FAILED') {
-          clearInterval(intervalId);
-          setPaymentStatus('FAILED');
-          setStatusMessage('Payment failed. Please try again or use a different payment method.');
-          setStatusModalOpen(true);
-          setIsLoading(false);
-          
-          // Call the callback function if provided
-          if (paymentConfig.callback) {
-            paymentConfig.callback({
-              reference: transactionReference,
-              status: 'FAILED'
-            });
-          }
-        } else if (status.status === 'INSUFFICIENT_FUNDS') {
-          clearInterval(intervalId);
-          setPaymentStatus('FAILED');
-          setStatusMessage('Insufficient funds. Please try again with a different payment method.');
-          setStatusModalOpen(true);
-          setIsLoading(false);
-          
-          // Call the callback function if provided
-          if (paymentConfig.callback) {
-            paymentConfig.callback({
-              reference: transactionReference,
-              status: 'INSUFFICIENT_FUNDS'
-            });
-          }
-        } else if (checkCount >= maxChecks) {
-          clearInterval(intervalId);
-          setPaymentStatus('TIMEOUT');
-          setStatusMessage('Payment verification timed out. Please check your payment status later.');
-          setStatusModalOpen(true);
-          setIsLoading(false);
-          
-          // Call the callback function if provided
-          if (paymentConfig.callback) {
-            paymentConfig.callback({
-              reference: transactionReference,
-              status: 'TIMEOUT'
-            });
-          }
+        // Déterminer le statut de paiement en fonction de la réponse de l'API
+        const paymentStatus = status.status.toUpperCase() as PaymentStatus;
+        
+        // Gérer les différents statuts possibles
+        switch (paymentStatus) {
+          case 'SUCCESSFUL':
+            clearInterval(intervalId);
+            setPaymentStatus('SUCCESSFUL');
+            setStatusMessage('Paiement réussi ! Merci pour votre achat.');
+            setStatusModalOpen(true);
+            setIsLoading(false);
+            
+            // Appeler la fonction de callback si fournie
+            if (paymentConfig.callback) {
+              paymentConfig.callback({
+                reference: transactionReference,
+                status: paymentStatus
+              });
+            }
+            
+            // Rediriger vers l'URL de callback si fournie
+            if (paymentConfig.callbackUrl) {
+              window.location.href = `${paymentConfig.callbackUrl}?reference=${ref}&status=${paymentStatus}`;
+            }
+            break;
+            
+          case 'FAILED':
+            clearInterval(intervalId);
+            setPaymentStatus('FAILED');
+            setStatusMessage('Le paiement a échoué. Veuillez réessayer ou utiliser une autre méthode de paiement.');
+            setStatusModalOpen(true);
+            setIsLoading(false);
+            
+            // Appeler la fonction de callback si fournie
+            if (paymentConfig.callback) {
+              paymentConfig.callback({
+                reference: transactionReference,
+                status: paymentStatus
+              });
+            }
+            
+            // Rediriger vers l'URL d'erreur si fournie
+            if (paymentConfig.error_callback_url) {
+              window.location.href = `${paymentConfig.error_callback_url}?reference=${ref}&status=${paymentStatus}`;
+            }
+            break;
+            
+          case 'INSUFFICIENT_FUNDS':
+            clearInterval(intervalId);
+            setPaymentStatus('INSUFFICIENT_FUNDS');
+            setStatusMessage('Fonds insuffisants. Veuillez vérifier votre solde et réessayer.');
+            setStatusModalOpen(true);
+            setIsLoading(false);
+            
+            // Appeler la fonction de callback si fournie
+            if (paymentConfig.callback) {
+              paymentConfig.callback({
+                reference: transactionReference,
+                status: paymentStatus
+              });
+            }
+            
+            // Rediriger vers l'URL d'erreur si fournie
+            if (paymentConfig.error_callback_url) {
+              window.location.href = `${paymentConfig.error_callback_url}?reference=${ref}&status=${paymentStatus}`;
+            }
+            break;
+            
+          case 'TIMEOUT':
+            clearInterval(intervalId);
+            setPaymentStatus('TIMEOUT');
+            setStatusMessage('La vérification du paiement a expiré. Veuillez vérifier votre compte pour confirmer le statut.');
+            setStatusModalOpen(true);
+            setIsLoading(false);
+            
+            // Appeler la fonction de callback si fournie
+            if (paymentConfig.callback) {
+              paymentConfig.callback({
+                reference: transactionReference,
+                status: paymentStatus
+              });
+            }
+            break;
+            
+          case 'PENDING':
+            // Continuer à vérifier si le statut est toujours en attente
+            if (checkCount >= maxChecks) {
+              // Après le nombre maximum de vérifications, considérer comme expiré
+              clearInterval(intervalId);
+              setPaymentStatus('TIMEOUT');
+              setStatusMessage('La vérification du paiement a expiré. Veuillez vérifier votre compte pour confirmer le statut.');
+              setStatusModalOpen(true);
+              setIsLoading(false);
+              
+              // Appeler la fonction de callback si fournie
+              if (paymentConfig.callback) {
+                paymentConfig.callback({
+                  reference: transactionReference,
+                  status: 'TIMEOUT'
+                });
+              }
+            }
+            break;
+            
+          default:
+            // Pour tout autre statut non géré explicitement
+            if (checkCount >= maxChecks) {
+              clearInterval(intervalId);
+              setPaymentStatus('FAILED');
+              setStatusMessage(`Statut de paiement non reconnu: ${status.status}. Veuillez contacter le support avec votre numéro de référence.`);
+              setStatusModalOpen(true);
+              setIsLoading(false);
+              
+              // Appeler la fonction de callback si fournie
+              if (paymentConfig.callback) {
+                paymentConfig.callback({
+                  reference: transactionReference,
+                  status: 'FAILED'
+                });
+              }
+            }
+            break;
         }
       } catch (error) {
-        console.error('Status check failed:', error);
+        console.error('Erreur de vérification du statut:', error);
+        
+        // Après le nombre maximum de vérifications, arrêter et afficher une erreur
         if (checkCount >= maxChecks) {
           clearInterval(intervalId);
           setPaymentStatus('FAILED');
-          setStatusMessage('Payment verification failed. Please contact support.');
+          setStatusMessage('La vérification du paiement a échoué. Veuillez contacter le support avec votre numéro de référence.');
           setStatusModalOpen(true);
           setIsLoading(false); 
         }
@@ -370,14 +494,14 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                 <div>
                   <CountrySelector 
                     selectedCountry={country} 
-                    onChange={setCountry} 
+                    onChange={handleCountryChange} 
                   />
                 </div>
                 
                 <div>
                   <NetworkSelector 
                     selectedNetwork={network} 
-                    onChange={setNetwork}
+                    onChange={handleNetworkChange}
                     country={country}
                   />
                 </div>
@@ -403,14 +527,14 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                 </div>
                 <div className="flex justify-between mb-1">
                   <span className="text-sm text-gray-600">Frais* :</span>
-                  <span className="text-sm font-medium">{fees.toLocaleString('fr-FR')} FCFA</span>
+                  <span className="text-sm font-medium">{(fees || 0).toLocaleString('fr-FR')} FCFA</span>
                 </div>
                 <div className="flex justify-between font-bold">
                   <span>Montant Total à payer :</span>
                   <span>{total.toLocaleString('fr-FR')} FCFA</span>
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
-                  *Les frais de transaction sont de {country === 'BENIN' ? '1,7%' : network === 'WAVE' ? '3,2%' : '2,9%'} du montant.
+                  *Les frais de transaction sont de  FCFA du montant.
                 </p>
               </div>
               
