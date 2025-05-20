@@ -59,9 +59,14 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
       
       // Si ifFees est true, appliquer les frais retournés par l'API
       if (details && details.iffees) {
-
-
-        calculateFeesLocally(amount, country, network);
+        // Utiliser les frais calculés à partir du total retourné par l'API
+        if (details.total !== undefined) {
+          const calculatedFees = details.total - amount;
+          setFees(calculatedFees);
+          setTotal(details.total);
+        } else {
+          calculateFeesLocally(amount, country, network);
+        }
       } else {
         // Sinon, pas de frais
         setFees(0);
@@ -527,14 +532,16 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                 </div>
                 <div className="flex justify-between mb-1">
                   <span className="text-sm text-gray-600">Frais* :</span>
-                  <span className="text-sm font-medium">{(fees || 0).toLocaleString('fr-FR')} FCFA</span>
+                  <span className="text-sm font-medium">
+                    {fees > 0 ? `${fees.toLocaleString('fr-FR')} FCFA` : "Aucun frais n'est appliqué"}
+                  </span>
                 </div>
                 <div className="flex justify-between font-bold">
                   <span>Montant Total à payer :</span>
                   <span>{total.toLocaleString('fr-FR')} FCFA</span>
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
-                  *Les frais de transaction sont de  FCFA du montant.
+                  {fees > 0 ? `*Les frais de transaction sont de ${fees.toLocaleString('fr-FR')} FCFA du montant.` : "*Aucun frais n'est appliqué pour cette transaction."}
                 </p>
               </div>
               
