@@ -4,6 +4,7 @@ import NetworkSelector from './NetworkSelector';
 import StatusModal from './StatusModal';
 import { useFeexPay } from '../context/FeexPayContext';
 import { getNetworkByPhonePrefix, calculateFees as calculateFeesUtil, getNetworksForCountry } from '../utils/paymentUtils';
+import { NETWORK_FEES } from '../constants';
 import { Network, PaymentMethod, Country, PaymentStatus } from '../types/index';
 import { requestToPay, checkTransactionStatus, getTransactionDetails } from '../apis/feexPayApi';
 
@@ -23,6 +24,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
   const [baseAmount, setBaseAmount] = useState(0);
   const [total, setTotal] = useState(0);
   const [fees, setFees] = useState(0);
+  const [feePercentage, setFeePercentage] = useState(0);
   const [transactionReference, setTransactionReference] = useState('');
   const [statusModalOpen, setStatusModalOpen] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>('PENDING');
@@ -57,13 +59,21 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
       
       console.log('Transaction details:', details);
       
-      // Si ifFees est true, appliquer les frais retournés par l'API
+      // Si ifFees est true, appliquer les frais calculés à partir du total retourné par l'API
       if (details && details.iffees) {
         // Utiliser les frais calculés à partir du total retourné par l'API
         if (details.total !== undefined) {
           const calculatedFees = details.total - amount;
           setFees(calculatedFees);
           setTotal(details.total);
+          
+          // Récupérer le pourcentage des frais pour l'affichage
+          const countryFees = NETWORK_FEES[country];
+          if (countryFees && countryFees[network]) {
+            setFeePercentage(countryFees[network] * 100);
+          } else {
+            setFeePercentage(0);
+          }
         } else {
           calculateFeesLocally(amount, country, network);
         }
@@ -71,6 +81,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
         // Sinon, pas de frais
         setFees(0);
         setTotal(amount);
+        setFeePercentage(0);
       }
       
       setBaseAmount(amount);
@@ -151,6 +162,14 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
     setFees(calculatedFees);
     setTotal(amount + calculatedFees);
     setBaseAmount(amount);
+    
+    // Récupérer le pourcentage des frais pour l'affichage
+    const countryFees = NETWORK_FEES[country];
+    if (countryFees && countryFees[network]) {
+      setFeePercentage(countryFees[network] * 100);
+    } else {
+      setFeePercentage(0);
+    }
   };
 
   const handlePaymentSubmit = async (e: React.FormEvent) => {
@@ -541,7 +560,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                   <span>{total.toLocaleString('fr-FR')} FCFA</span>
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
-                  {fees > 0 ? `*Les frais de transaction sont de ${fees.toLocaleString('fr-FR')} FCFA du montant.` : "*Aucun frais n'est appliqué pour cette transaction."}
+                  {fees > 0 ? `*Les frais de transaction sont de ${feePercentage.toFixed(1).replace('.', ',')}% du montant.` : "*Aucun frais n'est appliqué pour cette transaction."}
                 </p>
               </div>
               
