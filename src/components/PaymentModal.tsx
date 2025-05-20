@@ -31,14 +31,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>('PENDING');
   const [statusMessage, setStatusMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [step, setStep] = useState(() => {
-    // Skip to step 2 if both email and name fields are hidden
-    const fieldsToHide = paymentConfig.fields_to_hide || [];
-    if (fieldsToHide.includes('email') && fieldsToHide.includes('name')) {
-      return 2;
-    }
-    return 1;
-  });
+  // Pas de système de steps, tout est sur une seule page
 
   useEffect(() => {
     if (paymentConfig.amount) {
@@ -258,26 +251,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  const handleNextStep = () => {
-    const fieldsToHide = paymentConfig.fields_to_hide || [];
-    
-    // Only validate fields that aren't hidden
-    if (step === 1) {
-      const nameRequired = !fieldsToHide.includes('name') && !fullName.trim();
-      const emailRequired = !fieldsToHide.includes('email') && !email.trim();
-      
-      if (nameRequired || emailRequired) {
-        setStatusMessage('Veuillez remplir tous les champs requis');
-        setStatusModalOpen(true);
-        return;
-      }
-    }
-    setStep(2);
-  };
-
-  const handleBackStep = () => {
-    setStep(1);
-  };
+  // Fonctions de navigation entre étapes supprimées car tout est sur une seule page
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
@@ -342,46 +316,47 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
             </div>
           </div>
 
-          {step === 1 ? (
+          <div className="space-y-6">
+            {/* Section Informations Personnelles - conditionnellement affichée */}
+            {!(paymentConfig.fields_to_hide || []).includes('email') || !(paymentConfig.fields_to_hide || []).includes('name') ? (
+              <div className="space-y-4">
+                <h2 className="font-bold text-gray-800 mb-2 flex items-center">
+                  <span className="bg-gray-800 text-white rounded-full w-5 h-5 inline-flex items-center justify-center text-xs mr-2">1</span>
+                  Informations Personnelles
+                </h2>
+                
+                {!(paymentConfig.fields_to_hide || []).includes('name') && (
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="Nom et Prénoms"
+                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                    />
+                  </div>
+                )}
+                
+                {!(paymentConfig.fields_to_hide || []).includes('email') && (
+                  <div>
+                    <input
+                      type="email"
+                      placeholder="Email"
+                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
+                )}
+              </div>
+            ) : null}
+            
+            {/* Section Méthodes de paiement - toujours affichée */}
             <div className="space-y-4">
               <h2 className="font-bold text-gray-800 mb-2 flex items-center">
-                <span className="bg-gray-800 text-white rounded-full w-5 h-5 inline-flex items-center justify-center text-xs mr-2">1</span>
-                Informations Personnelles
-              </h2>
-              
-              <div>
-                <input
-                  type="text"
-                  placeholder="Nom et Prénoms"
-                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                />
-              </div>
-              
-              <div>
-                <input
-                  type="email"
-                  placeholder="Email"
-                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              
-              <div className="pt-4">
-                <button
-                  onClick={handleNextStep}
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-300"
-                >
-                  Continuer
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <h2 className="font-bold text-gray-800 mb-2 flex items-center">
-                <span className="bg-gray-800 text-white rounded-full w-5 h-5 inline-flex items-center justify-center text-xs mr-2">2</span>
+                <span className="bg-gray-800 text-white rounded-full w-5 h-5 inline-flex items-center justify-center text-xs mr-2">
+                  {(paymentConfig.fields_to_hide || []).includes('email') && (paymentConfig.fields_to_hide || []).includes('name') ? '1' : '2'}
+                </span>
                 Méthodes de paiement
               </h2>
               
@@ -435,21 +410,11 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                 </p>
               </div>
               
-              <div className="flex space-x-3 pt-2">
-                <button
-                  onClick={handleBackStep}
-                  className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-md transition-colors duration-300 flex items-center justify-center"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clipRule="evenodd" />
-                  </svg>
-                  Retour
-                </button>
-                
+              <div className="pt-2">
                 <button
                   onClick={handlePaymentSubmit}
                   disabled={isLoading}
-                  className={`flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-300 flex items-center justify-center ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                  className={`w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-300 flex items-center justify-center ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
                 >
                   {isLoading ? (
                     <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -461,7 +426,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                 </button>
               </div>
             </div>
-          )}
+          </div>
           
           <div className="mt-6 text-center text-xs text-gray-500">
             En payant vous me dirigez vers les <span className="underline">conditions générales d'utilisation de FeexPay</span>
