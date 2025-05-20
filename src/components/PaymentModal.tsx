@@ -6,7 +6,8 @@ import { useFeexPay } from '../context/FeexPayContext';
 import { getNetworkByPhonePrefix, calculateFees as calculateFeesUtil, getNetworksForCountry } from '../utils/paymentUtils';
 import { NETWORK_FEES } from '../constants';
 import { Network, PaymentMethod, Country, PaymentStatus } from '../types/index';
-import { requestToPay, checkTransactionStatus, getTransactionDetails } from '../apis/feexPayApi';
+import { getTransactionDetails } from '../apis/feexPayApi';
+import { handlePaymentSubmit as submitPayment, startStatusCheck as checkStatus } from '../utils/paymentHandlers';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -172,81 +173,34 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
-  const handlePaymentSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const formattedPhoneNumber = getFormattedPhoneNumber();
-      const response = await requestToPay({
-        phoneNumber: formattedPhoneNumber,
-        amount: baseAmount, // Envoyer le montant sans frais
-        network,
-        country, // Ajout du paramètre country
-        description: paymentConfig.description,
-        customId: paymentConfig.customId || generateRandomId(),
-        shop: paymentConfig.shop,
-        apiToken: paymentConfig.apiToken
-      });
-      
-      // Vérifier les codes de statut spécifiques
-      if (response.statusCode === "10") {
-        // Code 10: Fonds insuffisants
-        setPaymentStatus('INSUFFICIENT_FUNDS');
-        setStatusMessage('Fonds insuffisants. Veuillez vérifier votre solde et réessayer.');
-        setStatusModalOpen(true);
-        setIsLoading(false);
-        
-        // Appeler la fonction de callback si fournie
-        if (paymentConfig.callback) {
-          paymentConfig.callback({
-            reference: response.reference,
-            status: 'INSUFFICIENT_FUNDS'
-          });
-        }
-        
-        // Rediriger vers l'URL d'erreur si fournie
-        if (paymentConfig.error_callback_url) {
-          window.location.href = `${paymentConfig.error_callback_url}?reference=${response.reference}&status=INSUFFICIENT_FUNDS`;
-        }
-        return;
-      } else if (response.statusCode === "92") {
-        // Code 92: Transaction annulée
-        setPaymentStatus('FAILED');
-        setStatusMessage('La transaction a été annulée. Veuillez réessayer.');
-        setStatusModalOpen(true);
-        setIsLoading(false);
-        
-        // Appeler la fonction de callback si fournie
-        if (paymentConfig.callback) {
-          paymentConfig.callback({
-            reference: response.reference,
-            status: 'FAILED'
-          });
-        }
-        
-        // Rediriger vers l'URL d'erreur si fournie
-        if (paymentConfig.error_callback_url) {
-          window.location.href = `${paymentConfig.error_callback_url}?reference=${response.reference}&status=FAILED`;
-        }
-        return;
+  const handlePaymentSubmit = (e: React.FormEvent) => {
+    const handlerProps = {
+      phoneNumber,
+      baseAmount,
+      network,
+      country,
+      paymentConfig,
+      transactionReference,
+      generateRandomId,
+      setStateCallbacks: {
+        setTransactionReference,
+        setPaymentStatus,
+        setStatusMessage,
+        setStatusModalOpen,
+        setIsLoading
       }
-      
-      setTransactionReference(response.reference);
-      startStatusCheck(response.reference);
-    } catch (error) {
-      
-      console.error('Payment initiation failed:', error);
-      setPaymentStatus('FAILED');
-      setStatusMessage('Le paiement a échoué. Veuillez réessayer.');
-      setStatusModalOpen(true);
-      setIsLoading(false); 
-    }
+    };
+  
+    // Appeler directement submitPayment et gérer la réponse pour appeler handleStatusCheck
+    submitPayment(e, handlerProps, validateForm, getFormattedPhoneNumber)
+      .then((response) => {
+        if (response && response.reference) {
+          handleStatusCheck(response.reference);
+        }
+      })
+      .catch((error) => {
+        console.error('Error in payment submission:', error);
+      });
   };
 
   const validateForm = () => {
@@ -254,20 +208,20 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
     
     // Only validate fullName if it's not hidden
     if (!fieldsToHide.includes('name') && !fullName.trim()) {
-      setStatusMessage('Please enter your full name');
+      setStatusMessage('Veuillez entrer votre nom complet');
       setStatusModalOpen(true);
       return false;
     }
     
     // Only validate email if it's not hidden
     if (!fieldsToHide.includes('email') && (!email.trim() || !email.includes('@'))) {
-      setStatusMessage('Please enter a valid email address');
+      setStatusMessage('Veuillez entrer une adresse email valide');
       setStatusModalOpen(true);
       return false;
     }
     
     if (!phoneNumber.trim() || phoneNumber.length < 8) {
-      setStatusMessage('Please enter a valid phone number');
+      setStatusMessage('Veuillez entrer un numéro de téléphone valide');
       setStatusModalOpen(true);
       return false;
     }
@@ -279,198 +233,28 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
     return `TRX-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
   };
 
-  const startStatusCheck = (ref: string) => {
-    let checkCount = 0;
-    const maxChecks = 30; // 60 secondes (30 * 2000ms)
-    
-    const intervalId = setInterval(async () => {
-      checkCount++;
-      
-      try {
-        // Vérifier le statut de la transaction avec l'API
-        const status = await checkTransactionStatus(ref);
-        console.log(`Transaction status check ${checkCount}:`, status);
-        
-        // Vérifier d'abord les raisons d'échec spécifiques
-        if (status.reason === "LOW_BALANCE_OR_PAYEE_LIMIT_REACHED_OR_NOT_ALLOWED") {
-          clearInterval(intervalId);
-          setPaymentStatus('INSUFFICIENT_FUNDS');
-          setStatusMessage('Fonds insuffisants. Veuillez vérifier votre solde et réessayer.');
-          setStatusModalOpen(true);
-          setIsLoading(false);
-          
-          // Appeler la fonction de callback si fournie
-          if (paymentConfig.callback) {
-            paymentConfig.callback({
-              reference: transactionReference,
-              status: 'INSUFFICIENT_FUNDS'
-            });
-          }
-          
-          // Rediriger vers l'URL d'erreur si fournie
-          if (paymentConfig.error_callback_url) {
-            window.location.href = `${paymentConfig.error_callback_url}?reference=${ref}&status=INSUFFICIENT_FUNDS`;
-          }
-          return;
-        } else if (status.reason === "PAYER NOT FOUND") {
-          clearInterval(intervalId);
-          setPaymentStatus('FAILED');
-          setStatusMessage('Numéro de téléphone non trouvé. Veuillez vérifier le numéro et réessayer.');
-          setStatusModalOpen(true);
-          setIsLoading(false);
-          
-          // Appeler la fonction de callback si fournie
-          if (paymentConfig.callback) {
-            paymentConfig.callback({
-              reference: transactionReference,
-              status: 'FAILED'
-            });
-          }
-          
-          // Rediriger vers l'URL d'erreur si fournie
-          if (paymentConfig.error_callback_url) {
-            window.location.href = `${paymentConfig.error_callback_url}?reference=${ref}&status=FAILED`;
-          }
-          return;
-        }
-        
-        // Si aucune raison spécifique n'est trouvée, déterminer le statut de paiement en fonction de la réponse de l'API
-        const paymentStatus = status.status.toUpperCase() as PaymentStatus;
-        
-        // Gérer les différents statuts possibles
-        switch (paymentStatus) {
-          case 'SUCCESSFUL':
-            clearInterval(intervalId);
-            setPaymentStatus('SUCCESSFUL');
-            setStatusMessage('Paiement réussi ! Merci pour votre achat.');
-            setStatusModalOpen(true);
-            setIsLoading(false);
-            
-            // Appeler la fonction de callback si fournie
-            if (paymentConfig.callback) {
-              paymentConfig.callback({
-                reference: transactionReference,
-                status: paymentStatus
-              });
-            }
-            
-            // Rediriger vers l'URL de callback si fournie
-            if (paymentConfig.callbackUrl) {
-              window.location.href = `${paymentConfig.callbackUrl}?reference=${ref}&status=${paymentStatus}`;
-            }
-            break;
-            
-          case 'FAILED':
-            clearInterval(intervalId);
-            setPaymentStatus('FAILED');
-            setStatusMessage('Le paiement a échoué. Veuillez réessayer ou utiliser une autre méthode de paiement.');
-            setStatusModalOpen(true);
-            setIsLoading(false);
-            
-            // Appeler la fonction de callback si fournie
-            if (paymentConfig.callback) {
-              paymentConfig.callback({
-                reference: transactionReference,
-                status: paymentStatus
-              });
-            }
-            
-            // Rediriger vers l'URL d'erreur si fournie
-            if (paymentConfig.error_callback_url) {
-              window.location.href = `${paymentConfig.error_callback_url}?reference=${ref}&status=${paymentStatus}`;
-            }
-            break;
-            
-          case 'INSUFFICIENT_FUNDS':
-            clearInterval(intervalId);
-            setPaymentStatus('INSUFFICIENT_FUNDS');
-            setStatusMessage('Fonds insuffisants. Veuillez vérifier votre solde et réessayer.');
-            setStatusModalOpen(true);
-            setIsLoading(false);
-            
-            // Appeler la fonction de callback si fournie
-            if (paymentConfig.callback) {
-              paymentConfig.callback({
-                reference: transactionReference,
-                status: paymentStatus
-              });
-            }
-            
-            // Rediriger vers l'URL d'erreur si fournie
-            if (paymentConfig.error_callback_url) {
-              window.location.href = `${paymentConfig.error_callback_url}?reference=${ref}&status=${paymentStatus}`;
-            }
-            break;
-            
-          case 'TIMEOUT':
-            clearInterval(intervalId);
-            setPaymentStatus('TIMEOUT');
-            setStatusMessage('La vérification du paiement a expiré. Veuillez vérifier votre compte pour confirmer le statut.');
-            setStatusModalOpen(true);
-            setIsLoading(false);
-            
-            // Appeler la fonction de callback si fournie
-            if (paymentConfig.callback) {
-              paymentConfig.callback({
-                reference: transactionReference,
-                status: paymentStatus
-              });
-            }
-            break;
-            
-          case 'PENDING':
-            // Continuer à vérifier si le statut est toujours en attente
-            if (checkCount >= maxChecks) {
-              // Après le nombre maximum de vérifications, considérer comme expiré
-              clearInterval(intervalId);
-              setPaymentStatus('TIMEOUT');
-              setStatusMessage('La vérification du paiement a expiré. Veuillez vérifier votre compte pour confirmer le statut.');
-              setStatusModalOpen(true);
-              setIsLoading(false);
-              
-              // Appeler la fonction de callback si fournie
-              if (paymentConfig.callback) {
-                paymentConfig.callback({
-                  reference: transactionReference,
-                  status: 'TIMEOUT'
-                });
-              }
-            }
-            break;
-            
-          default:
-            // Pour tout autre statut non géré explicitement
-            if (checkCount >= maxChecks) {
-              clearInterval(intervalId);
-              setPaymentStatus('FAILED');
-              setStatusMessage(`Statut de paiement non reconnu: ${status.status}. Veuillez contacter le support avec votre numéro de référence.`);
-              setStatusModalOpen(true);
-              setIsLoading(false);
-              
-              // Appeler la fonction de callback si fournie
-              if (paymentConfig.callback) {
-                paymentConfig.callback({
-                  reference: transactionReference,
-                  status: 'FAILED'
-                });
-              }
-            }
-            break;
-        }
-      } catch (error) {
-        console.error('Erreur de vérification du statut:', error);
-        
-        // Après le nombre maximum de vérifications, arrêter et afficher une erreur
-        if (checkCount >= maxChecks) {
-          clearInterval(intervalId);
-          setPaymentStatus('FAILED');
-          setStatusMessage('La vérification du paiement a échoué. Veuillez contacter le support avec votre numéro de référence.');
-          setStatusModalOpen(true);
-          setIsLoading(false); 
-        }
+  // Fonction pour vérifier le statut d'une transaction
+  const handleStatusCheck = (ref: string) => {
+    const handlerProps = {
+      phoneNumber,
+      baseAmount,
+      network,
+      country,
+      paymentConfig,
+      transactionReference,
+      generateRandomId,
+      setStateCallbacks: {
+        setTransactionReference,
+        setPaymentStatus,
+        setStatusMessage,
+        setStatusModalOpen,
+        setIsLoading
       }
-    }, 5000);
+    };
+    
+    checkStatus(ref, handlerProps);
   };
+
 
   if (!isOpen) return null;
 
@@ -483,7 +267,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
       const emailRequired = !fieldsToHide.includes('email') && !email.trim();
       
       if (nameRequired || emailRequired) {
-        setStatusMessage('Please fill in all required personal information fields');
+        setStatusMessage('Veuillez remplir tous les champs requis');
         setStatusModalOpen(true);
         return;
       }
