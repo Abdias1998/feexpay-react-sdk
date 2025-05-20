@@ -16,7 +16,13 @@ interface PaymentModalProps {
 
 const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
   const { paymentConfig } = useFeexPay();
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('MOBILE');
+  // Si case est défini dans paymentConfig, utiliser cette valeur, sinon utiliser 'MOBILE' par défaut
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(() => {
+    if (paymentConfig.case && ['MOBILE', 'CARD', 'WALLET'].includes(paymentConfig.case as string)) {
+      return paymentConfig.case as PaymentMethod;
+    }
+    return 'MOBILE';
+  });
   const [country, setCountry] = useState<Country>('BENIN');
   const [network, setNetwork] = useState<Network>('MTN');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -254,9 +260,9 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
   // Fonctions de navigation entre étapes supprimées car tout est sur une seule page
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md relative">
-        <div className="flex justify-between items-center border-b p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 overflow-hidden">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-md relative max-h-[90vh] flex flex-col">
+        <div className="flex justify-between items-center border-b p-4 flex-shrink-0">
           <div className="flex items-center">
             <div className="h-5 w-5 bg-orange-500 rounded mr-2"></div>
             <span className="text-lg font-bold text-blue-900">FeexPay</span>
@@ -271,50 +277,53 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           </button>
         </div>
 
-        <div className="p-6">
+        <div className="p-6 overflow-y-auto flex-grow">
           <p className="text-sm text-gray-600 text-center mb-4">
             Remplissez les champs suivants pour effectuer votre paiement
           </p>
 
-          <div className="flex justify-center mb-6 border-b pb-4">
-            <div 
-              className={`flex flex-col items-center px-4 py-2 cursor-pointer ${paymentMethod === 'MOBILE' ? 'border-b-2 border-orange-500' : ''}`}
-              onClick={() => setPaymentMethod('MOBILE')}
-            >
-              <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center mb-1">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-orange-500" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M2 3a1 1 0 011-1h14a1 1 0 011 1v14a1 1 0 01-1 1H3a1 1 0 01-1-1V3z" />
-                  <path fillRule="evenodd" d="M14 6h-4v8h4V6z" clipRule="evenodd" />
-                </svg>
+          {/* Afficher les onglets de sélection de méthode de paiement uniquement si case n'est pas défini */}
+          {!paymentConfig.case && (
+            <div className="flex justify-center mb-6 border-b pb-4">
+              <div 
+                className={`flex flex-col items-center px-4 py-2 cursor-pointer ${paymentMethod === 'MOBILE' ? 'border-b-2 border-orange-500' : ''}`}
+                onClick={() => setPaymentMethod('MOBILE')}
+              >
+                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center mb-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-orange-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M2 3a1 1 0 011-1h14a1 1 0 011 1v14a1 1 0 01-1 1H3a1 1 0 01-1-1V3z" />
+                    <path fillRule="evenodd" d="M14 6h-4v8h4V6z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <span className="text-xs font-medium">Mobile Money</span>
               </div>
-              <span className="text-xs font-medium">Mobile Money</span>
-            </div>
 
-            <div 
-              className={`flex flex-col items-center px-4 py-2 cursor-pointer ${paymentMethod === 'CARD' ? 'border-b-2 border-orange-500' : ''}`}
-              onClick={() => setPaymentMethod('CARD')}
-            >
-              <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mb-1">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" />
-                  <path fillRule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clipRule="evenodd" />
-                </svg>
+              <div 
+                className={`flex flex-col items-center px-4 py-2 cursor-pointer ${paymentMethod === 'CARD' ? 'border-b-2 border-orange-500' : ''}`}
+                onClick={() => setPaymentMethod('CARD')}
+              >
+                <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mb-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" />
+                    <path fillRule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <span className="text-xs font-medium">Carte Bancaire</span>
               </div>
-              <span className="text-xs font-medium">Carte Bancaire</span>
-            </div>
 
-            <div 
-              className={`flex flex-col items-center px-4 py-2 cursor-pointer ${paymentMethod === 'WALLET' ? 'border-b-2 border-orange-500' : ''}`}
-              onClick={() => setPaymentMethod('WALLET')}
-            >
-              <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mb-1">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 2a1 1 0 00-1 1v1a1 1 0 002 0V3a1 1 0 00-1-1zM4 4h3a3 3 0 006 0h3a2 2 0 012 2v9a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm2.5 7a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm2.45 4a2.5 2.5 0 10-4.9 0h4.9zM12 9a1 1 0 100 2h3a1 1 0 100-2h-3zm-1 4a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1z" clipRule="evenodd" />
-                </svg>
+              <div 
+                className={`flex flex-col items-center px-4 py-2 cursor-pointer ${paymentMethod === 'WALLET' ? 'border-b-2 border-orange-500' : ''}`}
+                onClick={() => setPaymentMethod('WALLET')}
+              >
+                <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mb-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 2a1 1 0 00-1 1v1a1 1 0 002 0V3a1 1 0 00-1-1zM4 4h3a3 3 0 006 0h3a2 2 0 012 2v9a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm2.5 7a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm2.45 4a2.5 2.5 0 10-4.9 0h4.9zM12 9a1 1 0 100 2h3a1 1 0 100-2h-3zm-1 4a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <span className="text-xs font-medium">Wallet</span>
               </div>
-              <span className="text-xs font-medium">Wallet</span>
             </div>
-          </div>
+          )}
 
           <div className="space-y-6">
             {/* Section Informations Personnelles - conditionnellement affichée */}
@@ -360,35 +369,106 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                 Méthodes de paiement
               </h2>
               
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <CountrySelector 
-                    selectedCountry={country} 
-                    onChange={handleCountryChange} 
-                  />
-                </div>
-                
-                <div>
-                  <NetworkSelector 
-                    selectedNetwork={network} 
-                    onChange={handleNetworkChange}
-                    country={country}
-                  />
-                </div>
-              </div>
+              {/* Formulaire pour Mobile Money */}
+              {paymentMethod === 'MOBILE' && (
+                <>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <CountrySelector 
+                        selectedCountry={country} 
+                        onChange={handleCountryChange} 
+                      />
+                    </div>
+                    
+                    <div>
+                      <NetworkSelector 
+                        selectedNetwork={network} 
+                        onChange={handleNetworkChange}
+                        country={country}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="flex">
+                    <div className="bg-gray-100 px-3 py-2 border border-r-0 rounded-l-md flex items-center justify-center">
+                      <span className="text-gray-600 text-sm">+229</span>
+                    </div>
+                    <input
+                      type="tel"
+                      placeholder="Numéro de téléphone"
+                      className="flex-1 px-4 py-2 border rounded-r-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      value={phoneNumber}
+                      onChange={handlePhoneNumberChange}
+                    />
+                  </div>
+                </>
+              )}
               
-              <div className="flex">
-                <div className="bg-gray-100 px-3 py-2 border border-r-0 rounded-l-md flex items-center justify-center">
-                  <span className="text-gray-600 text-sm">+229</span>
+              {/* Formulaire pour Carte Bancaire */}
+              {paymentMethod === 'CARD' && (
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Numéro de carte</label>
+                    <input
+                      type="text"
+                      placeholder="1234 5678 9012 3456"
+                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Date d'expiration</label>
+                      <input
+                        type="text"
+                        placeholder="MM/AA"
+                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">CVC</label>
+                      <input
+                        type="text"
+                        placeholder="123"
+                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Nom sur la carte</label>
+                    <input
+                      type="text"
+                      placeholder="JEAN DUPONT"
+                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    />
+                  </div>
                 </div>
-                <input
-                  type="tel"
-                  placeholder="Numéro de téléphone"
-                  className="flex-1 px-4 py-2 border rounded-r-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  value={phoneNumber}
-                  onChange={handlePhoneNumberChange}
-                />
-              </div>
+              )}
+              
+              {/* Formulaire pour Wallet */}
+              {paymentMethod === 'WALLET' && (
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Identifiant Wallet</label>
+                    <input
+                      type="text"
+                      placeholder="Votre identifiant wallet"
+                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+                    <input
+                      type="password"
+                      placeholder="Votre mot de passe"
+                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    />
+                  </div>
+                </div>
+              )}
               
               <div className="bg-gray-50 p-4 rounded-md">
                 <div className="flex justify-between mb-1">
@@ -428,7 +508,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
             </div>
           </div>
           
-          <div className="mt-6 text-center text-xs text-gray-500">
+          <div className="mt-6 text-center text-xs text-gray-500 flex-shrink-0">
             En payant vous me dirigez vers les <span className="underline">conditions générales d'utilisation de FeexPay</span>
           </div>
         </div>

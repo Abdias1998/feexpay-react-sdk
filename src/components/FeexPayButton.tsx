@@ -13,6 +13,11 @@ interface FeexPayButtonProps {
   fields_to_hide?: string[];
   callback?: (response: { reference: string; status: string }) => void;
   currency?: string;
+  /**
+   * Spécifie le type de méthode de paiement à afficher dans le modal.
+   * Si défini, le modal n'affichera que le formulaire correspondant à cette méthode.
+   * Valeurs possibles: 'MOBILE', 'CARD', 'WALLET'
+   */
   case?: string;
   callback_info?: Record<string, unknown>;
   error_callback_url?: string;

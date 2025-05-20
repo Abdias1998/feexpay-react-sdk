@@ -66,9 +66,9 @@ function App() {
                   // fields_to_hide={["email", "name"]}
                   callback={handlePaymentCallback}
                   // buttonText="Payer maintenant"
-                  // buttonClass="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 flex items-center justify-center"
+                  buttonClass="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 flex items-center justify-center"
+                case=""
                 />
-                
                
               </div>
             </div>
