@@ -174,13 +174,13 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
 
   const handlePaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     if (!validateForm()) {
       return;
     }
-  
+
     setIsLoading(true);
-  
+
     try {
       const formattedPhoneNumber = getFormattedPhoneNumber();
       const response = await requestToPay({
@@ -194,12 +194,56 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
         apiToken: paymentConfig.apiToken
       });
       
+      // Vérifier les codes de statut spécifiques
+      if (response.statusCode === "10") {
+        // Code 10: Fonds insuffisants
+        setPaymentStatus('INSUFFICIENT_FUNDS');
+        setStatusMessage('Fonds insuffisants. Veuillez vérifier votre solde et réessayer.');
+        setStatusModalOpen(true);
+        setIsLoading(false);
+        
+        // Appeler la fonction de callback si fournie
+        if (paymentConfig.callback) {
+          paymentConfig.callback({
+            reference: response.reference,
+            status: 'INSUFFICIENT_FUNDS'
+          });
+        }
+        
+        // Rediriger vers l'URL d'erreur si fournie
+        if (paymentConfig.error_callback_url) {
+          window.location.href = `${paymentConfig.error_callback_url}?reference=${response.reference}&status=INSUFFICIENT_FUNDS`;
+        }
+        return;
+      } else if (response.statusCode === "92") {
+        // Code 92: Transaction annulée
+        setPaymentStatus('FAILED');
+        setStatusMessage('La transaction a été annulée. Veuillez réessayer.');
+        setStatusModalOpen(true);
+        setIsLoading(false);
+        
+        // Appeler la fonction de callback si fournie
+        if (paymentConfig.callback) {
+          paymentConfig.callback({
+            reference: response.reference,
+            status: 'FAILED'
+          });
+        }
+        
+        // Rediriger vers l'URL d'erreur si fournie
+        if (paymentConfig.error_callback_url) {
+          window.location.href = `${paymentConfig.error_callback_url}?reference=${response.reference}&status=FAILED`;
+        }
+        return;
+      }
+      
       setTransactionReference(response.reference);
       startStatusCheck(response.reference);
     } catch (error) {
+      
       console.error('Payment initiation failed:', error);
       setPaymentStatus('FAILED');
-      setStatusMessage('Payment initiation failed. Please try again.');
+      setStatusMessage('Le paiement a échoué. Veuillez réessayer.');
       setStatusModalOpen(true);
       setIsLoading(false); 
     }
@@ -247,7 +291,50 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
         const status = await checkTransactionStatus(ref);
         console.log(`Transaction status check ${checkCount}:`, status);
         
-        // Déterminer le statut de paiement en fonction de la réponse de l'API
+        // Vérifier d'abord les raisons d'échec spécifiques
+        if (status.reason === "LOW_BALANCE_OR_PAYEE_LIMIT_REACHED_OR_NOT_ALLOWED") {
+          clearInterval(intervalId);
+          setPaymentStatus('INSUFFICIENT_FUNDS');
+          setStatusMessage('Fonds insuffisants. Veuillez vérifier votre solde et réessayer.');
+          setStatusModalOpen(true);
+          setIsLoading(false);
+          
+          // Appeler la fonction de callback si fournie
+          if (paymentConfig.callback) {
+            paymentConfig.callback({
+              reference: transactionReference,
+              status: 'INSUFFICIENT_FUNDS'
+            });
+          }
+          
+          // Rediriger vers l'URL d'erreur si fournie
+          if (paymentConfig.error_callback_url) {
+            window.location.href = `${paymentConfig.error_callback_url}?reference=${ref}&status=INSUFFICIENT_FUNDS`;
+          }
+          return;
+        } else if (status.reason === "PAYER NOT FOUND") {
+          clearInterval(intervalId);
+          setPaymentStatus('FAILED');
+          setStatusMessage('Numéro de téléphone non trouvé. Veuillez vérifier le numéro et réessayer.');
+          setStatusModalOpen(true);
+          setIsLoading(false);
+          
+          // Appeler la fonction de callback si fournie
+          if (paymentConfig.callback) {
+            paymentConfig.callback({
+              reference: transactionReference,
+              status: 'FAILED'
+            });
+          }
+          
+          // Rediriger vers l'URL d'erreur si fournie
+          if (paymentConfig.error_callback_url) {
+            window.location.href = `${paymentConfig.error_callback_url}?reference=${ref}&status=FAILED`;
+          }
+          return;
+        }
+        
+        // Si aucune raison spécifique n'est trouvée, déterminer le statut de paiement en fonction de la réponse de l'API
         const paymentStatus = status.status.toUpperCase() as PaymentStatus;
         
         // Gérer les différents statuts possibles
@@ -552,7 +639,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                 <div className="flex justify-between mb-1">
                   <span className="text-sm text-gray-600">Frais* :</span>
                   <span className="text-sm font-medium">
-                    {fees > 0 ? `${fees.toLocaleString('fr-FR')} FCFA` : "Aucun frais n'est appliqué"}
+                    {fees > 0 ? `${fees.toLocaleString('fr-FR')} FCFA` : "0 FCFA"}
                   </span>
                 </div>
                 <div className="flex justify-between font-bold">

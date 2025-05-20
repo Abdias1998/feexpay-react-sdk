@@ -16,6 +16,8 @@ interface TransactionResponse {
   reference: string;
   status: string;
   message: string;
+  statusCode?: string; // Code de statut pour la requête de paiement
+  reason?: string;    // Raison de l'échec pour la vérification
 }
 
 interface TransactionDetailsParams {
