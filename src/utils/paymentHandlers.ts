@@ -213,7 +213,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps) => {
         case 'SUCCESSFUL':
           clearInterval(intervalId);
           setPaymentStatus('SUCCESSFUL');
-          setStatusMessage('Paiement réussi ! Merci pour votre achat.');
+          setStatusMessage('Paiement réussi !');
           setStatusModalOpen(true);
           setIsLoading(false);
           
