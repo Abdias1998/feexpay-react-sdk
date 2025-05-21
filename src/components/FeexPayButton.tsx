@@ -112,6 +112,7 @@ const FeexPayButton: React.FC<FeexPayButtonProps> = ({
 
   return (
     <div ref={containerRef}>
+     
       {!custom_button && (
         <button
           onClick={handlePaymentClick}
@@ -120,6 +121,7 @@ const FeexPayButton: React.FC<FeexPayButtonProps> = ({
           {buttonText}
         </button>
       )}
+
 
       {isModalOpen && (
         <PaymentModal

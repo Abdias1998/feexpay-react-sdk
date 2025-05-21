@@ -21,7 +21,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
         <input
           type="text"
           placeholder="Nom et Prénoms"
-          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange"
+          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
           required

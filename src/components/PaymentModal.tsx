@@ -260,7 +260,9 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
   // Fonctions de navigation entre étapes supprimées car tout est sur une seule page
 
   return (
+    
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 overflow-hidden">
+      
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md relative max-h-[90vh] flex flex-col">
         <div className="flex justify-between items-center border-b p-4 flex-shrink-0">
           <div className="flex items-center">
@@ -357,7 +359,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                     <input
                       type="text"
                       placeholder="Nom et Prénoms"
-                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange"
+                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                     />
@@ -413,8 +415,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                     </div>
                     <input
                       type="tel"
-                      placeholder="Numéro de téléphone"
-                      className="flex-1 px-4 py-2 border rounded-r-md focus:outline-none focus:ring-2 focus:ring-primary-orange"
+                      placeholder="Numéro de téléphone sans indicatif"
+                      className="flex-1 px-4 py-2 border rounded-r-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
                       value={phoneNumber}
                       onChange={handlePhoneNumberChange}
                     />
@@ -504,7 +506,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                   <span>{total.toLocaleString('fr-FR')} FCFA</span>
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
-                  {fees > 0 ? `*Les frais de transaction sont de ${feePercentage.toFixed(1).replace('.', ',')}% du montant.` : "*Aucun frais n'est appliqué pour cette transaction."}
+                  {fees > 0 ? `*Les frais de transaction sont de ${feePercentage.toFixed(1).replace('.', ',')}% du montant.` : "*Aucun frais de transaction applicable pour cette transaction."}
                 </p>
               </div>
               
@@ -526,8 +528,9 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
             </div>
           </div>
           
-          <div className="mt-6 text-center text-xs text-gray-500 flex-shrink-0">
-            En payant vous me dirigez vers les <span className="underline">conditions générales d'utilisation de FeexPay</span>
+          <div className="mt-6 text-center text-xs text-gray-500 flex-shrink-0 bg-gray-50 w-full p-2">
+        <p className="mt-2">Paiements sécurisés par FeexPay</p>
+        <p className="mt-2">En payant vous me dirigez vers les <a className="text-blue-900" style={{textDecoration: 'underline'}} target="_blank" href="https://feexpay.me/fr/terms-and-conditions">conditions générales d'utilisation de FeexPay</a></p>
           </div>
         </div>
       </div>
