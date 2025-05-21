@@ -6,7 +6,7 @@ import { useFeexPay } from '../context/FeexPayContext';
 import { getNetworkByPhonePrefix, calculateFees as calculateFeesUtil, getNetworksForCountry } from '../utils/paymentUtils';
 import { NETWORK_FEES } from '../constants';
 import { Network, PaymentMethod, Country, PaymentStatus } from '../types/index';
-import { getTransactionDetails } from '../apis/feexPayApi';
+import { getTransactionDetails, requestCardPayment } from '../apis/feexPayApi';
 import { handlePaymentSubmit as submitPayment, startStatusCheck as checkStatus } from '../utils/paymentHandlers';
 
 interface PaymentModalProps {
@@ -28,6 +28,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
+  const [typeCard, setTypeCard] = useState<'VISA' | 'MASTERCARD'>('VISA');
   const [baseAmount, setBaseAmount] = useState(0);
   const [total, setTotal] = useState(0);
   const [fees, setFees] = useState(0);
@@ -172,62 +173,131 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
-  const handlePaymentSubmit = (e: React.FormEvent) => {
-    const handlerProps = {
-      phoneNumber,
-      baseAmount,
-      network,
-      country,
-      paymentConfig,
-      transactionReference,
-      generateRandomId,
-      setStateCallbacks: {
-        setTransactionReference,
-        setPaymentStatus,
-        setStatusMessage,
-        setStatusModalOpen,
-        setIsLoading
-      }
-    };
-  
-    // Appeler directement submitPayment et gérer la réponse pour appeler handleStatusCheck
-    submitPayment(e, handlerProps, validateForm, getFormattedPhoneNumber)
-      .then((response) => {
+  const handlePaymentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    try {
+      // Traitement différent selon le mode de paiement
+      if (paymentMethod === 'CARD') {
+        // Extraire le prénom et le nom
+        const nameParts = fullName.split(' ');
+        const firstName = nameParts[0] || '';
+        const lastName = nameParts.slice(1).join(' ') || '';
+        
+        // Appel API pour le paiement par carte
+        const response = await requestCardPayment({
+          phone: phoneNumber,
+          amount: baseAmount,
+          shop: paymentConfig.shop,
+          first_name: firstName,
+          last_name: lastName,
+          email: email,
+          type_card: typeCard,
+          apiToken: paymentConfig.apiToken
+        });
+        
+        if (response && response.reference) {
+          setTransactionReference(response.reference);
+          handleStatusCheck(response.reference);
+        } else {
+          setPaymentStatus('FAILED');
+          setStatusMessage('La demande de paiement par carte a échoué. Veuillez réessayer.');
+          setStatusModalOpen(true);
+          setIsLoading(false);
+        }
+      } else {
+        // Paiement mobile money (code existant)
+        const handlerProps = {
+          phoneNumber,
+          baseAmount,
+          network,
+          country,
+          paymentConfig,
+          transactionReference,
+          generateRandomId,
+          setStateCallbacks: {
+            setTransactionReference,
+            setPaymentStatus,
+            setStatusMessage,
+            setStatusModalOpen,
+            setIsLoading
+          }
+        };
+        
+        // Appeler submitPayment et gérer la réponse pour appeler handleStatusCheck
+        const response = await submitPayment(e, handlerProps, validateForm, getFormattedPhoneNumber);
         if (response && response.reference) {
           handleStatusCheck(response.reference);
         }
-      })
-      .catch((error) => {
-        console.error('Error in payment submission:', error);
-      });
+      }
+    } catch (error) {
+      console.error('Error in payment submission:', error);
+      setPaymentStatus('FAILED');
+      setStatusMessage('Une erreur est survenue lors du traitement du paiement. Veuillez réessayer.');
+      setStatusModalOpen(true);
+      setIsLoading(false);
+    }
   };
 
   const validateForm = () => {
     const fieldsToHide = paymentConfig.fields_to_hide || [];
     
-    // Only validate fullName if it's not hidden
-    if (!fieldsToHide.includes('name') && !fullName.trim()) {
-      setStatusMessage('Veuillez entrer votre nom complet');
-      setStatusModalOpen(true);
-      return false;
-    }
-    
-    // Only validate email if it's not hidden
-    if (!fieldsToHide.includes('email') && (!email.trim() || !email.includes('@'))) {
-      setStatusMessage('Veuillez entrer une adresse email valide');
-      setStatusModalOpen(true);
-      return false;
-    }
-    
-    if (!phoneNumber.trim() || phoneNumber.length < 8) {
-      setStatusMessage('Veuillez entrer un numéro de téléphone valide');
-      setStatusModalOpen(true);
-      return false;
+    if (paymentMethod === 'MOBILE') {
+      // Validation pour Mobile Money
+      // Valider le nom si non caché
+      if (!fieldsToHide.includes('name') && !fullName.trim()) {
+        setStatusMessage('Veuillez entrer votre nom complet');
+        setStatusModalOpen(true);
+        return false;
+      }
+      
+      // Valider l'email si non caché
+      if (!fieldsToHide.includes('email') && (!email.trim() || !email.includes('@'))) {
+        setStatusMessage('Veuillez entrer une adresse email valide');
+        setStatusModalOpen(true);
+        return false;
+      }
+      
+      // Valider le numéro de téléphone
+      if (!phoneNumber.trim() || phoneNumber.length < 8) {
+        setStatusMessage('Veuillez entrer un numéro de téléphone valide');
+        setStatusModalOpen(true);
+        return false;
+      }
+    } else if (paymentMethod === 'CARD') {
+      // Validation pour Carte Bancaire
+      if (!fullName || fullName.trim().split(' ').length < 2) {
+        setStatusMessage('Veuillez entrer votre nom et prénom complets');
+        setPaymentStatus('FAILED');
+        setStatusModalOpen(true);
+        return false;
+      }
+      
+      if (!email || !email.includes('@')) {
+        setStatusMessage('Veuillez entrer une adresse email valide');
+        setPaymentStatus('FAILED');
+        setStatusModalOpen(true);
+        return false;
+      }
+      
+      if (!phoneNumber) {
+        setStatusMessage('Veuillez entrer un numéro de téléphone valide');
+        setPaymentStatus('FAILED');
+        setStatusModalOpen(true);
+        return false;
+      }
     }
     
     return true;
   };
 
+// ...
   const generateRandomId = () => {
     return `TRX-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
   };
@@ -483,13 +553,15 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Type de carte</label>
                     <select
                       className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                      value={typeCard}
+                      onChange={(e) => setTypeCard(e.target.value as 'VISA' | 'MASTERCARD')}
                     >
                       <option value="VISA">VISA</option>
                       <option value="MASTERCARD">MASTERCARD</option>
                     </select>
                   </div>
 
-                  <div>
+                  {/* <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Numéro de carte</label>
                     <input
                       type="text"
@@ -516,7 +588,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                         className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
                       />
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               )}
               

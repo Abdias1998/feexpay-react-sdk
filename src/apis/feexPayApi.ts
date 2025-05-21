@@ -1,6 +1,18 @@
 import { Network, Country } from '../types/index';
 import { getNetworkApiCode } from '../utils/paymentUtils';
 
+// Type pour les paiements par carte
+interface RequestCardPaymentParams {
+  phone: string;
+  amount: number;
+  shop: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  type_card: 'VISA' | 'MASTERCARD';
+  apiToken: string;
+}
+
 interface RequestToPayParams {
   phoneNumber: string;
   amount: number;
@@ -103,7 +115,7 @@ export const getTransactionDetails = async (params: TransactionDetailsParams): P
     const networkApiCode = getNetworkApiCode(params.country, params.network);
     
     // Préparer les paramètres pour l'API
-    const apiParams = {
+    const requestParams = {
       network: networkApiCode,
       amount: params.amount,
       shop: params.shop
@@ -113,18 +125,58 @@ export const getTransactionDetails = async (params: TransactionDetailsParams): P
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${params.apiToken}`
+        'Authorization': `Bearer ${params.apiToken}`,
       },
-      body: JSON.stringify(apiParams)
+      body: JSON.stringify(requestParams),
     });
-    
+
     if (!response.ok) {
-      throw new Error('Transaction details check failed');
+      throw new Error('Failed to get transaction details');
     }
 
     return await response.json();
   } catch (error) {
     console.error('Transaction details error:', error);
+    throw error;
+  }
+};
+
+/**
+ * Effectue une demande de paiement par carte bancaire
+ * @param params Paramètres pour le paiement par carte
+ * @returns Réponse contenant la référence de transaction et le statut
+ */
+export const requestCardPayment = async (params: RequestCardPaymentParams): Promise<TransactionResponse> => {
+  const apiUrl = 'https://api.feexpay.me/api/transactions/public/initcard';
+  
+  try {
+    const requestParams = {
+      phone: params.phone,
+      amount: params.amount,
+      shop: params.shop,
+      first_name: params.first_name,
+      last_name: params.last_name,
+      email: params.email,
+      type_card: params.type_card,
+      currency: 'XOF' // La devise est toujours XOF pour FeexPay
+    };
+    
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${params.apiToken}`,
+      },
+      body: JSON.stringify(requestParams),
+    });
+
+    if (!response.ok) {
+      throw new Error('Card payment request failed');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Card payment request error:', error);
     throw error;
   }
 };
