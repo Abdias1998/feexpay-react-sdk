@@ -27,7 +27,7 @@ const NetworkSelector: React.FC<NetworkSelectorProps> = ({
       <select
         value={selectedNetwork}
         onChange={(e) => onChange(e.target.value as Network)}
-        className="block w-full px-4 py-2 pr-8 border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-500"
+        className="block w-full px-4 py-2 pr-8 border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
       >
         {availableNetworks.map((network) => (
           <option key={network} value={network}>

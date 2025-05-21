@@ -43,7 +43,7 @@ const FeexPayButton: React.FC<FeexPayButtonProps> = ({
   error_callback_url,
   custom_button = false,
   // id_custom_button is handled at the SDK level, not needed in component
-  buttonText = 'Pay with FeexPay',
+  buttonText = `Payer ${amount} FCFA`,
   buttonClass,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -115,7 +115,7 @@ const FeexPayButton: React.FC<FeexPayButtonProps> = ({
       {!custom_button && (
         <button
           onClick={handlePaymentClick}
-          className={buttonClass || "w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 flex items-center justify-center"}
+          className={buttonClass || "w-full bg-primary-orange hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 flex items-center justify-center"}
         >
           {buttonText}
         </button>

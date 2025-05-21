@@ -32,23 +32,13 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <FeexPayProvider>
-        <div className="w-full max-w-md bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="p-6">
-            <div className="flex justify-center mb-6">
-              <div className="flex items-center">
-                <div className="h-6 w-6 bg-orange-500 rounded mr-2"></div>
-                <span className="text-xl font-bold text-blue-900">FeexPay</span>
-              </div>
-            </div>
+      
             
-            <h1 className="text-xl font-bold text-center text-gray-800 mb-8">
-              Payment Integration Demo
-            </h1>
+            
+          
             
             <div className="space-y-4">
-              <p className="text-gray-600">
-                This demo showcases the FeexPay payment integration with:
-              </p>
+             
             
 
               
@@ -64,16 +54,16 @@ function App() {
                   // callbackUrl="https://example.com/callback"
                   mode="LIVE"
                   fields_to_hide={["email", "name"]}
-                  // callback={handlePaymentCallback}
+                  callback={handlePaymentCallback}
                   // buttonText="Payer maintenant"
-                //   buttonClass="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 flex items-center justify-center"
+                  // buttonClass="bg-primary-blue hover:bg-blue-900 text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 flex items-center justify-center"
                 // case="MOBILE"
                 />
                
               </div>
             </div>
-          </div>
-        </div>
+          
+        
       </FeexPayProvider>
     </div>
   );

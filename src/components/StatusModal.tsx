@@ -88,7 +88,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
       case 'TIMEOUT':
         return 'bg-gray-500 hover:bg-gray-600';
       default:
-        return 'bg-orange-500 hover:bg-orange-600';
+        return 'bg-primary-orange hover:bg-orange-700';
     }
   };
 

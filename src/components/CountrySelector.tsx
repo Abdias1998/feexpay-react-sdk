@@ -12,7 +12,7 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({ selectedCountry, onCh
       <select
         value={selectedCountry}
         onChange={(e) => onChange(e.target.value as Country)}
-        className="block w-full px-4 py-2 pr-8 border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-500"
+        className="block w-full px-4 py-2 pr-8 border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm" 
       >
         <option value="BENIN">
           🇧🇯 Benin

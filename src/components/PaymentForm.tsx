@@ -21,7 +21,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
         <input
           type="text"
           placeholder="Nom et Prénoms"
-          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange"
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
           required
@@ -33,7 +33,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
           type="email"
         
           placeholder="Email"
-          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -42,7 +42,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
       
       <button
         type="submit"
-        className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-300"
+        className="w-full bg-primary-orange hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-md transition-colors duration-300"
       >
         Continuer
       </button>
