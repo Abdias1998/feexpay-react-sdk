@@ -264,8 +264,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md relative max-h-[90vh] flex flex-col">
         <div className="flex justify-between items-center border-b p-4 flex-shrink-0">
           <div className="flex items-center">
-            <div className="h-5 w-5 bg-orange-500 rounded mr-2"></div>
-            <span className="text-lg font-bold text-blue-900">FeexPay</span>
+            {/* <div className="h-5 w-5 bg-orange-500 rounded mr-2"></div> */}
+            {/* <span className="text-lg font-bold text-blue-900">FeexPay</span>
+             */}
+         
+           <img src="../public/logo.png" width="120px" alt="" />
+
           </div>
           <button 
             onClick={onClose}
@@ -284,19 +288,33 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
 
           {/* Afficher les onglets de sélection de méthode de paiement uniquement si case n'est pas défini */}
           {!paymentConfig.case && (
-            <div className="flex justify-center mb-6 border-b pb-4">
+            <div className="flex justify-center mb-6 border-b pb-4 w-fit">
               <div 
                 className={`flex flex-col items-center px-4 py-2 cursor-pointer ${paymentMethod === 'MOBILE' ? 'border-b-2 border-orange-500' : ''}`}
                 onClick={() => setPaymentMethod('MOBILE')}
               >
-                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center mb-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-orange-500" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M2 3a1 1 0 011-1h14a1 1 0 011 1v14a1 1 0 01-1 1H3a1 1 0 01-1-1V3z" />
-                    <path fillRule="evenodd" d="M14 6h-4v8h4V6z" clipRule="evenodd" />
-                  </svg>
+                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center mb-1"   style={{ borderColor: "#D45D00", backgroundColor: "#fff7ed", borderRadius: "4px" }}>
+                <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="#D45D00"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="mb-1"
+  >
+    <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+    <line x1="12" y1="18" x2="12" y2="18" />
+  </svg>
+
                 </div>
                 <span className="text-xs font-medium">Mobile Money</span>
               </div>
+              
+
+              
 
               <div 
                 className={`flex flex-col items-center px-4 py-2 cursor-pointer ${paymentMethod === 'CARD' ? 'border-b-2 border-orange-500' : ''}`}
