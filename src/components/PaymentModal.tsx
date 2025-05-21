@@ -346,8 +346,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           )}
 
           <div className="space-y-6">
-            {/* Section Informations Personnelles - conditionnellement affichée */}
-            {!(paymentConfig.fields_to_hide || []).includes('email') || !(paymentConfig.fields_to_hide || []).includes('name') ? (
+            {/* Section Informations Personnelles - affichée seulement si fields_to_hide ne contient pas à la fois 'email' et 'name' ET si le mode de paiement n'est pas par carte */}
+            {!((paymentConfig.fields_to_hide || []).includes('email') && (paymentConfig.fields_to_hide || []).includes('name')) && paymentMethod !== 'CARD' ? (
               <div className="space-y-4">
                 <h2 className="font-bold text-gray-800 mb-2 flex items-center">
                   <span className="bg-gray-800 text-white rounded-full w-5 h-5 inline-flex items-center justify-center text-xs mr-2">1</span>
@@ -371,7 +371,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                     <input
                       type="email"
                       placeholder="Email"
-                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange"
+                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
@@ -384,7 +384,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
             <div className="space-y-4">
               <h2 className="font-bold text-gray-800 mb-2 flex items-center">
                 <span className="bg-gray-800 text-white rounded-full w-5 h-5 inline-flex items-center justify-center text-xs mr-2">
-                  {(paymentConfig.fields_to_hide || []).includes('email') && (paymentConfig.fields_to_hide || []).includes('name') ? '1' : '2'}
+                  {paymentMethod === 'CARD' || ((paymentConfig.fields_to_hide || []).includes('email') && (paymentConfig.fields_to_hide || []).includes('name')) ? '1' : '2'}
                 </span>
                 Méthodes de paiement
               </h2>
@@ -427,12 +427,74 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
               {/* Formulaire pour Carte Bancaire */}
               {paymentMethod === 'CARD' && (
                 <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+                      <input
+                        type="text"
+                        placeholder="Prénom"
+                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                        value={fullName.split(' ')[0] || ''}
+                        onChange={(e) => {
+                          const lastName = fullName.split(' ').slice(1).join(' ');
+                          setFullName(`${e.target.value} ${lastName}`.trim());
+                        }}
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+                      <input
+                        type="text"
+                        placeholder="Nom"
+                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                        value={fullName.split(' ').slice(1).join(' ') || ''}
+                        onChange={(e) => {
+                          const firstName = fullName.split(' ')[0] || '';
+                          setFullName(`${firstName} ${e.target.value}`.trim());
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input
+                      type="email"
+                      placeholder="exemple@email.com"
+                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                    <input
+                      type="tel"
+                      placeholder="Numéro de téléphone"
+                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Type de carte</label>
+                    <select
+                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                    >
+                      <option value="VISA">VISA</option>
+                      <option value="MASTERCARD">MASTERCARD</option>
+                    </select>
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Numéro de carte</label>
                     <input
                       type="text"
                       placeholder="1234 5678 9012 3456"
-                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange"
+                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
                     />
                   </div>
                   
@@ -442,7 +504,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                       <input
                         type="text"
                         placeholder="MM/AA"
-                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange"
+                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
                       />
                     </div>
                     
@@ -451,18 +513,9 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                       <input
                         type="text"
                         placeholder="123"
-                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange"
+                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
                       />
                     </div>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Nom sur la carte</label>
-                    <input
-                      type="text"
-                      placeholder="JEAN DUPONT"
-                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange"
-                    />
                   </div>
                 </div>
               )}
