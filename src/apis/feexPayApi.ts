@@ -1,6 +1,19 @@
 import { Network, Country } from '../types/index';
 import { getNetworkApiCode } from '../utils/paymentUtils';
 
+// Type pour les paiements Wallet Coris
+interface RequestWalletCorisParams {
+  phoneNumber: string;
+  amount: number;
+  shop: string;
+  email: string;
+  first_name: string;
+  description?: string;
+  reference?: string;
+  otp?: string;
+  apiToken: string;
+}
+
 // Type pour les paiements par carte
 interface RequestCardPaymentParams {
   phone: string;
@@ -177,6 +190,60 @@ export const requestCardPayment = async (params: RequestCardPaymentParams): Prom
     return await response.json();
   } catch (error) {
     console.error('Card payment request error:', error);
+    throw error;
+  }
+};
+
+/**
+ * Effectue une demande de paiement via Wallet Coris
+ * @param params Paramètres pour le paiement Wallet Coris
+ * @returns Réponse contenant la référence de transaction et le statut
+ */
+export const requestWalletCorisPayment = async (params: RequestWalletCorisParams): Promise<TransactionResponse> => {
+  const apiUrl = 'https://api.feexpay.me/api/transactions/requesttopay/integration';
+  
+  try {
+    // Extraire le code pays et le numéro sans indicatif
+    const countryCode = '229'; // Bénin pour Coris
+    const phoneNumberRight = params.phoneNumber.startsWith('+229') 
+      ? params.phoneNumber.substring(4) 
+      : params.phoneNumber.startsWith('229') 
+        ? params.phoneNumber.substring(3) 
+        : params.phoneNumber;
+    
+    const requestParams = {
+      phoneNumber: `229${phoneNumberRight}`,
+      country: countryCode,
+      phoneNumberRight: phoneNumberRight,
+      amount: params.amount.toString(),
+      currency: 'XOF',
+      description: params.description || 'Paiement via FeexPay',
+      email: params.email,
+      first_name: params.first_name,
+      otp: params.otp || '',
+      reference: params.reference || '',
+      reseau: 'CORIS',
+      shop: params.shop,
+      token: params.apiToken
+    };
+    
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestParams),
+    });
+
+    const responseData = await response.json();
+    
+    // Ajouter le code de statut à la réponse pour pouvoir détecter le besoin d'OTP
+    return {
+      ...responseData,
+      statusCode: response.status.toString(),
+    };
+  } catch (error) {
+    console.error('Wallet Coris payment request error:', error);
     throw error;
   }
 };

@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import CountrySelector from './CountrySelector';
 import NetworkSelector from './NetworkSelector';
 import StatusModal from './StatusModal';
+import OTPModal from './OTPModal';
 import { useFeexPay } from '../context/FeexPayContext';
 import { getNetworkByPhonePrefix, calculateFees as calculateFeesUtil, getNetworksForCountry } from '../utils/paymentUtils';
 import { NETWORK_FEES } from '../constants';
 import { Network, PaymentMethod, Country, PaymentStatus } from '../types/index';
-import { getTransactionDetails, requestCardPayment } from '../apis/feexPayApi';
+import { getTransactionDetails, requestCardPayment, requestWalletCorisPayment } from '../apis/feexPayApi';
 import { handlePaymentSubmit as submitPayment, startStatusCheck as checkStatus } from '../utils/paymentHandlers';
 
 interface PaymentModalProps {
@@ -38,6 +39,10 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>('PENDING');
   const [statusMessage, setStatusMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  
+  // États pour la gestion du code OTP (Wallet Coris)
+  const [otpModalOpen, setOtpModalOpen] = useState(false);
+  const [pendingReference, setPendingReference] = useState('');
   // Pas de système de steps, tout est sur une seule page
 
   useEffect(() => {
@@ -48,8 +53,24 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
   }, [paymentConfig, country, network]);
 
   // Fonction pour récupérer les détails de transaction depuis l'API
-  const fetchTransactionDetails = async (amount: number, country: Country, network: Network) => {
+  const fetchTransactionDetails = async (amount: number, country: Country, network: Network, paymentMethodOverride?: PaymentMethod) => {
     try {
+      // Utiliser la méthode de paiement fournie en paramètre ou celle de l'état
+      const currentPaymentMethod = paymentMethodOverride || paymentMethod;
+      
+      // Pour les paiements par carte, appliquer directement les frais de 4,5%
+      if (currentPaymentMethod === 'CARD') {
+        // Appliquer le taux fixe de 4,5% pour les cartes VISA et MASTERCARD
+        const cardFeePercentage = 0.045; // 4,5%
+        const calculatedFees = Math.round(amount * cardFeePercentage);
+        setFees(calculatedFees);
+        setTotal(amount + calculatedFees);
+        setFeePercentage(4.5); // 4,5%
+        setBaseAmount(amount);
+        return;
+      }
+      
+      // Pour les autres méthodes de paiement, interroger l'API
       const details = await getTransactionDetails({
         network,
         country,
@@ -79,10 +100,26 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           calculateFeesLocally(amount, country, network);
         }
       } else {
-        // Sinon, pas de frais
-        setFees(0);
-        setTotal(amount);
-        setFeePercentage(0);
+        // Même si l'API indique qu'il n'y a pas de frais, vérifier si nous devons appliquer des frais minimums
+        // pour les petits montants (inférieurs à 30 FCFA)
+        if (amount <= 30) {
+          const countryFees = NETWORK_FEES[country];
+          if (countryFees && countryFees[network] && countryFees[network] > 0) {
+            // Appliquer un minimum de 1 FCFA de frais pour les petits montants
+            setFees(1);
+            setTotal(amount + 1);
+            setFeePercentage(countryFees[network] * 100);
+          } else {
+            setFees(0);
+            setTotal(amount);
+            setFeePercentage(0);
+          }
+        } else {
+          // Pour les montants plus élevés, respecter la décision de l'API
+          setFees(0);
+          setTotal(amount);
+          setFeePercentage(0);
+        }
       }
       
       setBaseAmount(amount);
@@ -100,14 +137,97 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
+  // Fonction pour réinitialiser tous les champs
+  const resetAllFields = () => {
+    // Réinitialiser les champs communs
+    setFullName('');
+    setEmail('');
+    setPhoneNumber('');
+    
+    // Réinitialiser les champs spécifiques à la carte
+    setTypeCard('VISA');
+  };
+  
+  // Fonction pour gérer le changement de mode de paiement
+  const handlePaymentMethodChange = (method: PaymentMethod) => {
+    // Réinitialiser tous les champs avant de changer de méthode
+    resetAllFields();
+    
+    // Réinitialiser les frais pour éviter qu'ils ne persistent
+    setFees(0);
+    setTotal(paymentConfig.amount || 0);
+    setFeePercentage(0);
+    
+    // Changer la méthode de paiement
+    setPaymentMethod(method);
+    
+    // Traitement spécifique selon la méthode de paiement
+    if (method === 'WALLET') {
+      // Si le mode est Wallet, mettre à jour le réseau en fonction du pays
+      if (country === 'BENIN') {
+        setNetwork('CORIS');
+        if (paymentConfig.amount) {
+          fetchTransactionDetails(paymentConfig.amount, country, 'CORIS', method);
+        }
+      } else if (country === 'COTE_D_IVOIRE') {
+        setNetwork('WAVE');
+        if (paymentConfig.amount) {
+          fetchTransactionDetails(paymentConfig.amount, country, 'WAVE', method);
+        }
+      } else {
+        // Si le pays n'est ni le Bénin ni la Côte d'Ivoire, définir le pays sur Bénin par défaut pour le mode Wallet
+        setCountry('BENIN');
+        setNetwork('CORIS');
+        if (paymentConfig.amount) {
+          fetchTransactionDetails(paymentConfig.amount, 'BENIN', 'CORIS', method);
+        }
+      }
+    } else if (method === 'MOBILE') {
+      // Pour Mobile Money, utiliser le réseau actuel ou le premier réseau disponible pour le pays
+      const availableNetworks = getNetworksForCountry(country);
+      if (availableNetworks.length > 0) {
+        // Vérifier si le réseau actuel est valide pour ce pays
+        if (!availableNetworks.includes(network)) {
+          setNetwork(availableNetworks[0]);
+        }
+        
+        if (paymentConfig.amount) {
+          fetchTransactionDetails(paymentConfig.amount, country, network, method);
+        }
+      }
+    } else if (method === 'CARD') {
+      // Pour les paiements par carte, recalculer les frais avec le taux de 4,5%
+      if (paymentConfig.amount) {
+        fetchTransactionDetails(paymentConfig.amount, country, network, method);
+      }
+    }
+  };
+
   const handleCountryChange = (newCountry: Country) => {
     setCountry(newCountry);
-    // Reset network to first available for the new country
-    const availableNetworks = getNetworksForCountry(newCountry);
-    setNetwork(availableNetworks[0]);
     
-    if (paymentConfig.amount) {
-      fetchTransactionDetails(paymentConfig.amount, newCountry, availableNetworks[0]);
+    // Logique spécifique pour le mode Wallet
+    if (paymentMethod === 'WALLET') {
+      // Définir automatiquement le réseau en fonction du pays pour le mode Wallet
+      if (newCountry === 'BENIN') {
+        setNetwork('CORIS');
+        if (paymentConfig.amount) {
+          fetchTransactionDetails(paymentConfig.amount, newCountry, 'CORIS');
+        }
+      } else if (newCountry === 'COTE_D_IVOIRE') {
+        setNetwork('WAVE');
+        if (paymentConfig.amount) {
+          fetchTransactionDetails(paymentConfig.amount, newCountry, 'WAVE');
+        }
+      }
+    } else {
+      // Comportement normal pour les autres modes de paiement
+      const availableNetworks = getNetworksForCountry(newCountry);
+      setNetwork(availableNetworks[0]);
+      
+      if (paymentConfig.amount) {
+        fetchTransactionDetails(paymentConfig.amount, newCountry, availableNetworks[0]);
+      }
     }
   };
   
@@ -115,7 +235,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
     // let value = e.target.value.replace(/\D/g, '');
     const value = e.target.value;
     
-    if (country === 'BENIN') {
+    // Ne pas changer dynamiquement le réseau si le mode de paiement est WALLET
+    if (country === 'BENIN' && paymentMethod !== 'WALLET') {
       // Remove any existing "01" prefix
       // if (value.startsWith('01')) {
       //   value = value.substring(2);
@@ -158,18 +279,23 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
 
   // Fonction de calcul local des frais (utilisée comme fallback si l'API n'est pas disponible)
   const calculateFeesLocally = (amount: number, country: Country, network: Network) => {
-    // Utiliser la fonction globale qui prend en compte tous les pays
-    const calculatedFees = calculateFeesUtil(amount, country, network);
+    // Utiliser la fonction globale qui prend en compte tous les pays et le type de paiement
+    const calculatedFees = calculateFeesUtil(amount, country, network, paymentMethod, typeCard);
     setFees(calculatedFees);
     setTotal(amount + calculatedFees);
     setBaseAmount(amount);
     
     // Récupérer le pourcentage des frais pour l'affichage
-    const countryFees = NETWORK_FEES[country];
-    if (countryFees && countryFees[network]) {
-      setFeePercentage(countryFees[network] * 100);
+    if (paymentMethod === 'CARD' && (typeCard === 'VISA' || typeCard === 'MASTERCARD')) {
+      // Pour les paiements par carte, afficher 4,5%
+      setFeePercentage(4.5);
     } else {
-      setFeePercentage(0);
+      const countryFees = NETWORK_FEES[country];
+      if (countryFees && countryFees[network]) {
+        setFeePercentage(countryFees[network] * 100);
+      } else {
+        setFeePercentage(0);
+      }
     }
   };
 
@@ -211,7 +337,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           setStatusModalOpen(true);
           setIsLoading(false);
         }
-      } else {
+      } else if (paymentMethod === 'MOBILE') {
         // Paiement mobile money (code existant)
         const handlerProps = {
           phoneNumber,
@@ -235,6 +361,71 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
         if (response && response.reference) {
           handleStatusCheck(response.reference);
         }
+      } else if (paymentMethod === 'WALLET') {
+        // Cas spécifique pour Wallet Coris (Bénin)
+        if (country === 'BENIN' && network === 'CORIS') {
+          try {
+            // Extraire le prénom et le nom
+            const nameParts = fullName.split(' ');
+            const firstName = nameParts[0] || '';
+            
+            // Formater le numéro de téléphone
+            const formattedPhone = phoneNumber.startsWith('+229') ? phoneNumber : `+229${phoneNumber}`;
+            
+            // Appel API pour le paiement Wallet Coris
+            const response = await requestWalletCorisPayment({
+              phoneNumber: formattedPhone,
+              amount: baseAmount,
+              shop: paymentConfig.shop,
+              email: email,
+              first_name: firstName,
+              description: 'Paiement via FeexPay',
+              apiToken: paymentConfig.apiToken
+            });
+            
+            // Si le statut est 201, afficher le modal OTP
+            if (response.statusCode === '201' ) {
+              setPendingReference(response.reference);
+              setOtpModalOpen(true);
+              setIsLoading(false);
+            } else {
+              setPaymentStatus('FAILED');
+              setStatusMessage('La demande de paiement a échoué. Veuillez réessayer.');
+              setStatusModalOpen(true);
+              setIsLoading(false);
+            }
+          } catch (error) {
+            console.error('Error in Coris Wallet payment:', error);
+            setPaymentStatus('FAILED');
+            setStatusMessage('Une erreur est survenue lors du traitement du paiement. Veuillez réessayer.');
+            setStatusModalOpen(true);
+            setIsLoading(false);
+          }
+        } else {
+          // Pour les autres pays/réseaux, utiliser le même traitement que Mobile Money
+          const handlerProps = {
+            phoneNumber,
+            baseAmount,
+            network,
+            country,
+            paymentConfig,
+            transactionReference,
+            generateRandomId,
+            setStateCallbacks: {
+              setTransactionReference,
+              setPaymentStatus,
+              setStatusMessage,
+              setStatusModalOpen,
+              setIsLoading
+            }
+          };
+          
+          // Appeler submitPayment et gérer la réponse pour appeler handleStatusCheck
+          const response = await submitPayment(e, handlerProps, validateForm, getFormattedPhoneNumber);
+          if (response && response.reference) {
+            handleStatusCheck(response.reference);
+          }
+        }
       }
     } catch (error) {
       console.error('Error in payment submission:', error);
@@ -248,8 +439,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
   const validateForm = () => {
     const fieldsToHide = paymentConfig.fields_to_hide || [];
     
-    if (paymentMethod === 'MOBILE') {
-      // Validation pour Mobile Money
+    if (paymentMethod === 'MOBILE' || paymentMethod === 'WALLET') {
+      // Validation pour Mobile Money et Wallet (même validation)
       // Valider le nom si non caché
       if (!fieldsToHide.includes('name') && !fullName.trim()) {
         setStatusMessage('Veuillez entrer votre nom complet');
@@ -267,6 +458,13 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
       // Valider le numéro de téléphone
       if (!phoneNumber.trim() || phoneNumber.length < 8) {
         setStatusMessage('Veuillez entrer un numéro de téléphone valide');
+        setStatusModalOpen(true);
+        return false;
+      }
+      
+      // Pour le mode Wallet, vérifier que le pays est soit Bénin soit Côte d'Ivoire
+      if (paymentMethod === 'WALLET' && country !== 'BENIN' && country !== 'COTE_D_IVOIRE') {
+        setStatusMessage('Seuls le Bénin (Coris) et la Côte d\'Ivoire (Wave) sont supportés pour les paiements Wallet');
         setStatusModalOpen(true);
         return false;
       }
@@ -302,7 +500,87 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
     return `TRX-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
   };
 
-  // Fonction pour vérifier le statut d'une transaction
+  // Fonction pour gérer la soumission du code OTP
+  const handleOTPSubmit = async (otp: string) => {
+    setIsLoading(true);
+    
+    try {
+      // Extraire le prénom et le nom
+      const nameParts = fullName.split(' ');
+      const firstName = nameParts[0] || '';
+      
+      // Formater le numéro de téléphone
+      const formattedPhone = phoneNumber.startsWith('+229') ? phoneNumber : `+229${phoneNumber}`;
+      
+      // Appel API pour le paiement Wallet Coris avec OTP
+      const response = await requestWalletCorisPayment({
+        phoneNumber: formattedPhone,
+        amount: baseAmount,
+        shop: paymentConfig.shop,
+        email: email,
+        first_name: firstName,
+        description: 'Paiement via FeexPay',
+        reference: pendingReference,
+        otp: otp,
+        apiToken: paymentConfig.apiToken
+      });
+      
+      // Fermer le modal OTP
+      setOtpModalOpen(false);
+      
+      console.log('OTP submission response:', response);
+      
+      // Exploiter la réponse de l'API
+      if (response.reference) {
+        // Vérifier le statut de la transaction dans la réponse
+        if (response.status === 'SUCCESSFUL' || response.status === 'SUCCESS') {
+          // Transaction réussie
+          setPaymentStatus('SUCCESSFUL');
+          setStatusMessage('Paiement effectué avec succès!');
+          setStatusModalOpen(true);
+          setIsLoading(false);
+          
+          // Redirection si une URL de succès est configurée
+          if (paymentConfig.callbackUrl) {
+            setTimeout(() => {
+              window.location.href = `${paymentConfig.callbackUrl}?reference=${response.reference}&status=success`;
+            }, 2000);
+          }
+        } else if (response.status === 'PENDING') {
+          // Transaction en attente, continuer avec la vérification du statut
+          setTransactionReference(response.reference);
+          handleStatusCheck(response.reference);
+        } else {
+          // Transaction échouée avec un statut connu
+          setPaymentStatus('FAILED');
+          setStatusMessage(response.message || 'La transaction a échoué. Veuillez réessayer.');
+          setStatusModalOpen(true);
+          setIsLoading(false);
+          
+          // Redirection si une URL d'erreur est configurée
+          if (paymentConfig.error_callback_url) {
+            setTimeout(() => {
+              window.location.href = `${paymentConfig.error_callback_url}?reference=${response.reference}&status=failed&reason=${encodeURIComponent(response.message || 'Unknown error')}`;
+            }, 2000);
+          }
+        }
+      } else {
+        // Aucune référence dans la réponse
+        setPaymentStatus('FAILED');
+        setStatusMessage(response.message || 'La confirmation du paiement a échoué. Veuillez réessayer.');
+        setStatusModalOpen(true);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error('Error in OTP submission:', error);
+      setPaymentStatus('FAILED');
+      setStatusMessage('Une erreur est survenue lors de la confirmation du paiement. Veuillez réessayer.');
+      setStatusModalOpen(true);
+      setIsLoading(false);
+      setOtpModalOpen(false);
+    }
+  };
+  
   const handleStatusCheck = (ref: string) => {
     const handlerProps = {
       phoneNumber,
@@ -363,7 +641,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
             <div className="flex justify-center mb-6 border-b pb-4 w-fit">
               <div 
                 className={`flex flex-col items-center px-4 py-2 cursor-pointer ${paymentMethod === 'MOBILE' ? 'border-b-2 border-orange-500' : ''}`}
-                onClick={() => setPaymentMethod('MOBILE')}
+                onClick={() => handlePaymentMethodChange('MOBILE')}
               >
                 <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center mb-1"   style={{ borderColor: "#D45D00", backgroundColor: "#fff7ed", borderRadius: "4px" }}>
                 <svg
@@ -390,7 +668,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
 
               <div 
                 className={`flex flex-col items-center px-4 py-2 cursor-pointer ${paymentMethod === 'CARD' ? 'border-b-2 border-orange-500' : ''}`}
-                onClick={() => setPaymentMethod('CARD')}
+                onClick={() => handlePaymentMethodChange('CARD')}
               >
                 <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mb-1">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
@@ -403,7 +681,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
 
               <div 
                 className={`flex flex-col items-center px-4 py-2 cursor-pointer ${paymentMethod === 'WALLET' ? 'border-b-2 border-orange-500' : ''}`}
-                onClick={() => setPaymentMethod('WALLET')}
+                onClick={() => handlePaymentMethodChange('WALLET')}
               >
                 <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mb-1">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
@@ -592,27 +870,55 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                 </div>
               )}
               
-              {/* Formulaire pour Wallet */}
+              {/* Formulaire pour Wallet - Utilise la même interface que Mobile Money */}
               {paymentMethod === 'WALLET' && (
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Identifiant Wallet</label>
-                    <input
-                      type="text"
-                      placeholder="Votre identifiant wallet"
-                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange"
-                    />
+                <>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Pays</label>
+                      <select
+                        value={country}
+                        onChange={(e) => handleCountryChange(e.target.value as Country)}
+                        className="block w-full px-4 py-2 pr-8 border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                      >
+                        <option value="BENIN">Bénin (Coris)</option>
+                        <option value="COTE_D_IVOIRE">Côte d'Ivoire (Wave)</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Réseau</label>
+                      <select
+                        value={network}
+                        onChange={(e) => handleNetworkChange(e.target.value as Network)}
+                        className="block w-full px-4 py-2 pr-8 border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                        disabled
+                      >
+                        {country === 'BENIN' && (
+                          <option value="CORIS">Coris</option>
+                        )}
+                        {country === 'COTE_D_IVOIRE' && (
+                          <option value="WAVE">Wave</option>
+                        )}
+                      </select>
+                    </div>
                   </div>
                   
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+                  <div className="flex">
+                    <div className="bg-gray-100 px-3 py-2 border border-r-0 rounded-l-md flex items-center justify-center">
+                      <span className="text-gray-600 text-sm">
+                        {country === 'BENIN' ? '+229' : country === 'COTE_D_IVOIRE' ? '+225' : ''}
+                      </span>
+                    </div>
                     <input
-                      type="password"
-                      placeholder="Votre mot de passe"
-                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange"
+                      type="tel"
+                      placeholder="Numéro de téléphone sans indicatif"
+                      className="flex-1 px-4 py-2 border rounded-r-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                      value={phoneNumber}
+                      onChange={handlePhoneNumberChange}
                     />
                   </div>
-                </div>
+                </>
               )}
               
               <div className="bg-gray-50 p-4 rounded-md">
@@ -673,6 +979,17 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
         onClose={() => setStatusModalOpen(false)}
         status={paymentStatus}
         message={statusMessage}
+      />
+      
+      {/* Modal pour la saisie du code OTP pour Wallet Coris */}
+      <OTPModal
+        isOpen={otpModalOpen}
+        onClose={() => {
+          setOtpModalOpen(false);
+          setIsLoading(false);
+        }}
+        onSubmit={handleOTPSubmit}
+        reference={pendingReference}
       />
     </div>
   );

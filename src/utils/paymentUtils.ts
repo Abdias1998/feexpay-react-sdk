@@ -32,8 +32,16 @@ export const getNetworksForCountry = (country: Country): Network[] => {
   }
 };
 
-export const calculateFees = (amount: number, country: Country, network: Network): number => {
-  // Récupérer le pourcentage de frais à partir des constantes
+
+
+export const calculateFees = (amount: number, country: Country, network: Network, paymentMethod?: 'MOBILE' | 'CARD' | 'WALLET', cardType?: 'VISA' | 'MASTERCARD'): number => {
+  // Pour les paiements par carte VISA ou MASTERCARD, appliquer un taux fixe de 4,5%
+  if (paymentMethod === 'CARD' && (cardType === 'VISA' || cardType === 'MASTERCARD')) {
+    const cardFeePercentage = 0.045; // 4,5%
+    return Math.round(amount * cardFeePercentage);
+  }
+  
+  // Récupérer le pourcentage de frais à partir des constantes pour les autres méthodes de paiement
   const countryFees = NETWORK_FEES[country];
   let feePercentage = 0;
   
@@ -41,7 +49,16 @@ export const calculateFees = (amount: number, country: Country, network: Network
     feePercentage = countryFees[network];
   }
   
-  return Math.round(amount * feePercentage);
+  // Calculer les frais basés sur le pourcentage
+  const calculatedFees = amount * feePercentage;
+  
+  // Pour les petits montants (inférieurs à 30 FCFA), appliquer un minimum de frais
+  if (amount <= 30 && calculatedFees < 1 && feePercentage > 0) {
+    // Appliquer un minimum de 1 FCFA de frais pour les petits montants
+    return 1;
+  }
+  
+  return Math.round(calculatedFees);
 };
 
 // Fonction pour obtenir le code réseau à envoyer à l'API
