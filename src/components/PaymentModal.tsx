@@ -86,19 +86,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
       // Utiliser la méthode de paiement fournie en paramètre ou celle de l'état
       const currentPaymentMethod = paymentMethodOverride || paymentMethod;
       
-      // Pour les paiements par carte, appliquer directement les frais de 4,5%
-      if (currentPaymentMethod === 'CARD') {
-        // Appliquer le taux fixe de 4,5% pour les cartes VISA et MASTERCARD
-        const cardFeePercentage = 0.045; // 4,5%
-        const calculatedFees = Math.round(amount * cardFeePercentage);
-        setFees(calculatedFees);
-        setTotal(amount + calculatedFees);
-        setFeePercentage(4.5); // 4,5%
-        setBaseAmount(amount);
-        return;
-      }
-      
-      // Pour les autres méthodes de paiement, interroger l'API
+      // Pour toutes les méthodes de paiement, interroger l'API
       const details = await getTransactionDetails({
         network,
         country,
@@ -118,14 +106,20 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           setTotal(details.total);
           
           // Récupérer le pourcentage des frais pour l'affichage
-          const countryFees = NETWORK_FEES[country];
-          if (countryFees && countryFees[network]) {
-            setFeePercentage(countryFees[network] * 100);
+          if (currentPaymentMethod === 'CARD') {
+            // Pour les cartes, afficher le pourcentage standard de 4,5%
+            setFeePercentage(4.5);
           } else {
-            setFeePercentage(0);
+            // Pour les autres méthodes, utiliser le pourcentage des constantes
+            const countryFees = NETWORK_FEES[country];
+            if (countryFees && countryFees[network]) {
+              setFeePercentage(countryFees[network] * 100);
+            } else {
+              setFeePercentage(0);
+            }
           }
         } else {
-          calculateFeesLocally(amount, country, network);
+          calculateFeesLocally(amount, country, network, currentPaymentMethod);
         }
       } else {
         // Même si l'API indique qu'il n'y a pas de frais, vérifier si nous devons appliquer des frais minimums
@@ -154,7 +148,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
     } catch (error) {
       console.error('Erreur lors de la récupération des détails de transaction:', error);
       // En cas d'erreur, utiliser le calcul local des frais comme fallback
-      calculateFeesLocally(amount, country, network);
+      calculateFeesLocally(amount, country, network, paymentMethodOverride);
     }
   };
 
@@ -306,9 +300,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
   };
 
   // Fonction de calcul local des frais (utilisée comme fallback si l'API n'est pas disponible)
-  const calculateFeesLocally = (amount: number, country: Country, network: Network) => {
+  const calculateFeesLocally = (amount: number, country: Country, network: Network, paymentMethodOverride?: PaymentMethod) => {
+    // Utiliser la méthode de paiement fournie en paramètre ou celle de l'état
+    const currentPaymentMethod = paymentMethodOverride || paymentMethod;
+    
     // Utiliser la fonction globale qui prend en compte tous les pays et le type de paiement
-    const calculatedFees = calculateFeesUtil(amount, country, network, paymentMethod, typeCard);
+    const calculatedFees = calculateFeesUtil(amount, country, network, currentPaymentMethod, typeCard);
     setFees(calculatedFees);
     setTotal(amount + calculatedFees);
     setBaseAmount(amount);

@@ -46,11 +46,11 @@ function App() {
                 <FeexPayButton 
                   amount={100}
                   description="Test Payment"
-                  shop="671a774c706593edb3dc4ab2"
-                  apiToken="fp_HHNoQGt9Vn8KpZoLaBkG3uEeKpLUYBaHUZIZXJE3Xgv0OKG2tK3A7PtlytctikrJ"
+                  // shop="671a774c706593edb3dc4ab2"
+                  // apiToken="fp_HHNoQGt9Vn8KpZoLaBkG3uEeKpLUYBaHUZIZXJE3Xgv0OKG2tK3A7PtlytctikrJ"
                   
-                  // shop="67039ee09a5a46e953703504"
-                  // apiToken="fp_uJsZXJz75CZ0OtJ0RTPKsIK5ivz9XwT2kuobGV0AzU1IfCqU9e4jCRYDzfvVA9te"
+                  shop="67039ee09a5a46e953703504"
+                  apiToken="fp_uJsZXJz75CZ0OtJ0RTPKsIK5ivz9XwT2kuobGV0AzU1IfCqU9e4jCRYDzfvVA9te"
                   // callbackUrl="https://example.com/callback"
                   mode="LIVE"
                   fields_to_hide={["email", "name"]}
