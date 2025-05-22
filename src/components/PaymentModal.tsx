@@ -45,12 +45,40 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
   const [pendingReference, setPendingReference] = useState('');
   // Pas de système de steps, tout est sur une seule page
 
+  // Effet pour initialiser le montant et les frais
   useEffect(() => {
     if (paymentConfig.amount) {
       setBaseAmount(paymentConfig.amount);
       fetchTransactionDetails(paymentConfig.amount, country, network);
     }
   }, [paymentConfig, country, network]);
+  
+  // Effet pour initialiser correctement le réseau lorsque le mode de paiement est WALLET
+  useEffect(() => {
+    // Si le mode de paiement initial est WALLET, configurer correctement le réseau
+    if (paymentMethod === 'WALLET') {
+      if (country === 'BENIN') {
+        setNetwork('CORIS');
+        if (paymentConfig.amount) {
+          fetchTransactionDetails(paymentConfig.amount, country, 'CORIS', paymentMethod);
+        }
+      } else if (country === 'COTE_D_IVOIRE') {
+        setNetwork('WAVE');
+        if (paymentConfig.amount) {
+          fetchTransactionDetails(paymentConfig.amount, country, 'WAVE', paymentMethod);
+        }
+      } else {
+        // Si le pays n'est ni le Bénin ni la Côte d'Ivoire, définir le pays sur Bénin par défaut pour le mode Wallet
+        setCountry('BENIN');
+        setNetwork('CORIS');
+        if (paymentConfig.amount) {
+          fetchTransactionDetails(paymentConfig.amount, 'BENIN', 'CORIS', paymentMethod);
+        }
+      }
+    }
+    // Nous utilisons un tableau de dépendances vide car nous voulons que cet effet s'exécute uniquement à l'initialisation
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Fonction pour récupérer les détails de transaction depuis l'API
   const fetchTransactionDetails = async (amount: number, country: Country, network: Network, paymentMethodOverride?: PaymentMethod) => {
