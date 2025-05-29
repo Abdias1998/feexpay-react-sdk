@@ -38,7 +38,7 @@ export const calculateFees = (amount: number, country: Country, network: Network
   // Pour les paiements par carte VISA ou MASTERCARD, appliquer un taux fixe de 4,5%
   if (paymentMethod === 'CARD' && (cardType === 'VISA' || cardType === 'MASTERCARD')) {
     const cardFeePercentage = 0.045; // 4,5%
-    return Math.round(amount * cardFeePercentage);
+    return Math.ceil(amount * cardFeePercentage);
   }
   
   // Récupérer le pourcentage de frais à partir des constantes pour les autres méthodes de paiement
@@ -58,7 +58,7 @@ export const calculateFees = (amount: number, country: Country, network: Network
     return 1;
   }
   
-  return Math.round(calculatedFees);
+  return Math.ceil(calculatedFees);
 };
 
 // Fonction pour obtenir le code réseau à envoyer à l'API

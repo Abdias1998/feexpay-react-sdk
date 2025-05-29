@@ -95,7 +95,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
         apiToken: paymentConfig.apiToken
       });
       
-      console.log('Transaction details:', details);
+      // console.log('Transaction details:', details);
       
       // Si ifFees est true, appliquer les frais calculés à partir du total retourné par l'API
       if (details && details.iffees) {
@@ -553,7 +553,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
       // Fermer le modal OTP
       setOtpModalOpen(false);
       
-      console.log('OTP submission response:', response);
+      // console.log('OTP submission response:', response);
       
       // Exploiter la réponse de l'API
       if (response.reference) {
@@ -637,24 +637,33 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 overflow-hidden">
       
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md relative max-h-[90vh] flex flex-col">
-        <div className="flex justify-between items-center border-b p-4 flex-shrink-0">
-          <div className="flex items-center">
-            {/* <div className="h-5 w-5 bg-primary-orange rounded mr-2"></div> */}
-            {/* <span className="text-lg font-bold text-blue-900">FeexPay</span>
-             */}
-         
-           <img src="../public/logo.png" width="120px" alt="" />
 
-          </div>
-          <button 
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
+
+      <div className="flex justify-between items-center p-4 flex-shrink-0">
+  {/* Conteneur vide pour équilibrer le flex */}
+  <div className="w-6"></div> 
+  
+  {/* Ligne gauche - épaisseur 1px (par défaut) */}
+  <hr className="w-[40%] border-t-[1px] border-gray-200" />
+  
+  {/* Logo centré */}
+  <div className="flex justify-center flex-grow">
+    <img src="../public/logo.png" width="140px" alt="" />
+  </div>
+  
+  {/* Ligne droite - épaisseur personnalisée (ex: 2px) */}
+  <hr className="w-[40%] border-t-[1px] border-gray-200" />
+  
+  {/* Bouton de fermeture */}
+  <button 
+    onClick={onClose}
+    className="text-gray-500 hover:text-gray-700"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  </button>
+</div>  
 
         <div className="p-6 overflow-y-auto flex-grow">
           <p className="text-sm text-gray-600 text-center mb-4">
@@ -663,60 +672,47 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
 
           {/* Afficher les onglets de sélection de méthode de paiement uniquement si case n'est pas défini */}
           {!paymentConfig.case && (
-            <div className="flex justify-center mb-6 border-b pb-4 w-fit">
-              <div 
-                className={`flex flex-col items-center px-4 py-2 cursor-pointer ${paymentMethod === 'MOBILE' ? 'border-b-2 border-orange-500' : ''}`}
-                onClick={() => handlePaymentMethodChange('MOBILE')}
-              >
-                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center mb-1"   style={{ borderColor: "#D45D00", backgroundColor: "#fff7ed", borderRadius: "4px" }}>
-                <svg
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="#D45D00"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className="mb-1"
-  >
-    <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
-    <line x1="12" y1="18" x2="12" y2="18" />
-  </svg>
-
-                </div>
-                <span className="text-xs font-medium">Mobile Money</span>
-              </div>
-              
-
-              
-
-              <div 
-                className={`flex flex-col items-center px-4 py-2 cursor-pointer ${paymentMethod === 'CARD' ? 'border-b-2 border-orange-500' : ''}`}
-                onClick={() => handlePaymentMethodChange('CARD')}
-              >
-                <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mb-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" />
-                    <path fillRule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <span className="text-xs font-medium">Carte Bancaire</span>
-              </div>
-
-              <div 
-                className={`flex flex-col items-center px-4 py-2 cursor-pointer ${paymentMethod === 'WALLET' ? 'border-b-2 border-orange-500' : ''}`}
-                onClick={() => handlePaymentMethodChange('WALLET')}
-              >
-                <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mb-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 2a1 1 0 00-1 1v1a1 1 0 002 0V3a1 1 0 00-1-1zM4 4h3a3 3 0 006 0h3a2 2 0 012 2v9a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm2.5 7a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm2.45 4a2.5 2.5 0 10-4.9 0h4.9zM12 9a1 1 0 100 2h3a1 1 0 100-2h-3zm-1 4a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <span className="text-xs font-medium">Wallet</span>
-              </div>
-            </div>
-          )}
+       <div className="flex justify-center mb-6 border-b pb-4 w-fit gap-2">
+    {[
+      { label: 'Mobile Money', value: 'MOBILE', icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#D45D00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+          <line x1="12" y1="18" x2="12" y2="18" />
+        </svg>
+      )},
+      { label: 'Carte Bancaire', value: 'CARD', icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" />
+          <path fillRule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clipRule="evenodd" />
+        </svg>
+      )},
+      { label: 'Wallet', value: 'WALLET', icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M10 2a1 1 0 00-1 1v1a1 1 0 002 0V3a1 1 0 00-1-1zM4 4h3a3 3 0 006 0h3a2 2 0 012 2v9a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm2.5 7a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm2.45 4a2.5 2.5 0 10-4.9 0h4.9zM12 9a1 1 0 100 2h3a1 1 0 100-2h-3zm-1 4a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1z" clipRule="evenodd" />
+        </svg>
+      )}
+    ].map(({ label, value, icon }) => {
+      const isSelected = paymentMethod === value;
+      return (
+        <div
+        key={value}
+        className={`flex flex-col items-center px-4 py-2 cursor-pointer rounded border ${
+          isSelected
+            ? 'bg-[#fff7ed] border-[#D45D00]'
+            : 'bg-white border-[#D45D00]'
+        }`}
+        onClick={() => handlePaymentMethodChange(value as PaymentMethod)}
+      >
+        <div className="w-8 h-8 rounded-full flex items-center justify-center mb-1">
+          {icon}
+        </div>
+        <span className="text-xs font-medium">{label}</span>
+      </div>
+      
+      );
+    })}
+  </div>
+)}
 
           <div className="space-y-6">
             {/* Section Informations Personnelles - affichée seulement si fields_to_hide ne contient pas à la fois 'email' et 'name' ET si le mode de paiement n'est pas par carte */}
@@ -732,7 +728,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                     <input
                       type="text"
                       placeholder="Nom et Prénoms"
-                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                      className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                     />
@@ -744,7 +740,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                     <input
                       type="email"
                       placeholder="Email"
-                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                      className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
@@ -759,8 +755,9 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                 <span className="bg-gray-800 text-white rounded-full w-5 h-5 inline-flex items-center justify-center text-xs mr-2">
                   {paymentMethod === 'CARD' || ((paymentConfig.fields_to_hide || []).includes('email') && (paymentConfig.fields_to_hide || []).includes('name')) ? '1' : '2'}
                 </span>
-                Méthodes de paiement
+               {paymentMethod === 'CARD' ? 'Paiement par Carte Bancaire' : 'Méthodes de paiement'}
               </h2>
+           
               
               {/* Formulaire pour Mobile Money */}
               {paymentMethod === 'MOBILE' && (
@@ -784,12 +781,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                   
                   <div className="flex">
                     <div className="bg-gray-100 px-3 py-2 border border-r-0 rounded-l-md flex items-center justify-center">
-                      <span className="text-gray-600 text-sm">+229</span>
+                      <span className="text-gray-600 text-xs">+229</span>
                     </div>
                     <input
                       type="tel"
                       placeholder="Numéro de téléphone sans indicatif"
-                      className="flex-1 px-4 py-2 border rounded-r-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                      className="flex-1 px-2 py-2 border rounded-r-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
                       value={phoneNumber}
                       onChange={handlePhoneNumberChange}
                     />
@@ -806,7 +803,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                       <input
                         type="text"
                         placeholder="Prénom"
-                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                        className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
                         value={fullName.split(' ')[0] || ''}
                         onChange={(e) => {
                           const lastName = fullName.split(' ').slice(1).join(' ');
@@ -820,7 +817,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                       <input
                         type="text"
                         placeholder="Nom"
-                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                        className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
                         value={fullName.split(' ').slice(1).join(' ') || ''}
                         onChange={(e) => {
                           const firstName = fullName.split(' ')[0] || '';
@@ -835,7 +832,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                     <input
                       type="email"
                       placeholder="exemple@email.com"
-                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                      className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
@@ -845,8 +842,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
                     <input
                       type="tel"
-                      placeholder="Numéro de téléphone"
-                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                      placeholder="Numéro de téléphone avec indicatif"
+                      className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
                       value={phoneNumber}
                       onChange={(e) => setPhoneNumber(e.target.value)}
                     />
@@ -855,7 +852,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Type de carte</label>
                     <select
-                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                      className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
                       value={typeCard}
                       onChange={(e) => setTypeCard(e.target.value as 'VISA' | 'MASTERCARD')}
                     >
@@ -904,7 +901,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                       <select
                         value={country}
                         onChange={(e) => handleCountryChange(e.target.value as Country)}
-                        className="block w-full px-4 py-2 pr-8 border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                        className="block w-full px-2 py-2 pr-8 border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
                       >
                         <option value="BENIN">Bénin (Coris)</option>
                         <option value="COTE_D_IVOIRE">Côte d'Ivoire (Wave)</option>
@@ -916,7 +913,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                       <select
                         value={network}
                         onChange={(e) => handleNetworkChange(e.target.value as Network)}
-                        className="block w-full px-4 py-2 pr-8 border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                        className="block w-full px-2 py-2 pr-8 border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
                         disabled
                       >
                         {country === 'BENIN' && (
@@ -938,7 +935,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                     <input
                       type="tel"
                       placeholder="Numéro de téléphone sans indicatif"
-                      className="flex-1 px-4 py-2 border rounded-r-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                      className="flex-1 px-2 py-2 border rounded-r-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
                       value={phoneNumber}
                       onChange={handlePhoneNumberChange}
                     />
@@ -994,7 +991,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           
           <div className="mt-6 text-center text-xs text-gray-500 flex-shrink-0 bg-gray-50 w-full p-2">
         <p className="mt-2">Paiements sécurisés par FeexPay</p>
-        <p className="mt-2">En payant vous me dirigez vers les <a className="text-blue-900" style={{textDecoration: 'underline'}} target="_blank" href="https://feexpay.me/fr/terms-and-conditions">conditions générales d'utilisation de FeexPay</a></p>
+        <p className="mt-2">En payant par ce plugin, vous acceptez les <a className="text-blue-900" style={{textDecoration: 'underline'}} target="_blank" href="https://feexpay.me/fr/terms-and-conditions">conditions générales d'utilisation de FeexPay</a></p>
           </div>
         </div>
       </div>

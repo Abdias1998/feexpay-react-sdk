@@ -160,7 +160,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps) => {
     try {
       // Vérifier le statut de la transaction avec l'API
       const status = await checkTransactionStatus(ref);
-      console.log(`Transaction status check ${checkCount}:`, status);
+      // console.log(`Transaction status check ${checkCount}:`, status);
       
       // Vérifier d'abord les raisons d'échec spécifiques
       if (status.reason === "LOW_BALANCE_OR_PAYEE_LIMIT_REACHED_OR_NOT_ALLOWED") {

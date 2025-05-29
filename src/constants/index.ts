@@ -41,28 +41,28 @@ export const NETWORK_API_MAPPING = {
   BENIN: {
     MTN: 'MTN',
     MOOV: 'MOOV',
-    CELTIIS: 'CELTIIS_BJ',
+    CELTIIS: 'CELTIIS BJ',
     CORIS: 'CORIS'
   },
   COTE_D_IVOIRE: {
-    MTN: 'MTN_CI',
-    MOOV: 'MOOV_CI',
-    ORANGE: 'ORANGE_CI',
-    WAVE: 'WAVE_CI'
+    MTN: 'MTN CI',
+    MOOV: 'MOOV CI',
+    ORANGE: 'ORANGE CI',
+    WAVE: 'WAVE CI'
   },
   BURKINA_FASO: {
-    MOOV: 'MOOV_BF',
-    ORANGE: 'ORANGE_BF'
+    MOOV: 'MOOV BF',
+    ORANGE: 'ORANGE BF'
   },
   CONGO_BRAZZAVILLE: {
-    MTN: 'MTN_CG'
+    MTN: 'MTN CG'
   },
   SENEGAL: {
-    ORANGE: 'ORANGE_SN',
-    FREE: 'FREE_SN'
+    ORANGE: 'ORANGE SN',
+    FREE: 'FREE SN'
   },
   TOGO: {
-    TOGOCOM: 'TOGOCOM_TG',
-    MOOV: 'MOOV_TG'
+    TOGOCOM: 'TOGOCOM TG',
+    MOOV: 'MOOV TG'
   }
 };

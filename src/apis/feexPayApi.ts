@@ -64,18 +64,18 @@ export const requestToPay = async (params: RequestToPayParams): Promise<Transact
   // Convertir le réseau au format attendu par l'API
   const networkApiCode = getNetworkApiCode(params.country, params.network);
   
-  const apiUrl = `https://api.feexpay.me/api/transactions/public/requesttopay/${networkApiCode}`;
+  const apiUrl = `https://api.feexpay.me/api/transactions/requesttopay/integration`;
   
   try {
     // Créer une copie des paramètres sans le pays (non attendu par l'API)
     const apiParams = {
       phoneNumber: params.phoneNumber,
       amount: params.amount,
-      network: networkApiCode, // Utiliser le code réseau mappé
+      reseau: networkApiCode,
       description: params.description,
       customId: params.customId,
       shop: params.shop,
-      apiToken: params.apiToken
+      token: params.apiToken
     };
     
     const response = await fetch(apiUrl, {
@@ -244,6 +244,24 @@ export const requestWalletCorisPayment = async (params: RequestWalletCorisParams
     };
   } catch (error) {
     console.error('Wallet Coris payment request error:', error);
+    throw error;
+  }
+};
+
+
+export const getShop = async (apiToken: string): Promise<TransactionResponse> => {
+  const apiUrl = `https://api.feexpay.me/api/shop/${apiToken}/get_shop`;
+  
+  try {
+    const response = await fetch(apiUrl);
+    
+    if (!response.ok) {
+      throw new Error('Shop retrieval failed');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Shop retrieval error:', error);
     throw error;
   }
 };

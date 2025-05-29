@@ -22,7 +22,7 @@ const FeexPaySDK = {
     const targetElement = document.getElementById(targetElementId);
     
     if (!targetElement) {
-      console.error(`FeexPay: Target element with ID "${targetElementId}" not found`);
+      // console.error(`FeexPay: Target element with ID "${targetElementId}" not found`);
       return;
     }
 
@@ -64,7 +64,7 @@ const FeexPaySDK = {
           targetElement.dispatchEvent(event);
         });
       } else {
-        console.error(`FeexPay: Custom button with ID "${config.id_custom_button}" not found`);
+        // console.error(`FeexPay: Custom button with ID "${config.id_custom_button}" not found`);
       }
     }
 
