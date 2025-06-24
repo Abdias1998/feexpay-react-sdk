@@ -48,6 +48,7 @@ export interface TransactionResponse {
   callback_info?: Record<string, unknown>;
   message?: string;
   statusCode?: string;
+  payment_url?: string;
 }
 
 interface TransactionDetailsParams {

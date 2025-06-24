@@ -4,10 +4,11 @@ import NetworkSelector from './NetworkSelector';
 import StatusModal from './StatusModal';
 import OTPModal from './OTPModal';
 import { useFeexPay } from '../context/FeexPayContext';
-import { getNetworkByPhonePrefix, calculateFees as calculateFeesUtil, getNetworksForCountry } from '../utils/paymentUtils';
+import { getNetworksForCountry, getNetworkByPhonePrefix, calculateFees as calculateFeesUtil, getNetworkApiCode } from '../utils/paymentUtils';
 import { NETWORK_FEES } from '../constants';
 import { Network, PaymentMethod, Country, PaymentStatus } from '../types/index';
-import { getTransactionDetails, requestCardPayment, requestWalletCorisPayment } from '../apis/feexPayApi';
+import { getTransactionDetails, requestCardPayment, requestToPay, requestWalletCorisPayment } from '../apis/feexPayApi';
+
 import { handlePaymentSubmit as submitPayment, startStatusCheck as checkStatus } from '../utils/paymentHandlers';
 import HeaderBar from './HeaderBar';
 
@@ -45,6 +46,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
   // États pour la gestion du code OTP (Wallet Coris)
   const [otpModalOpen, setOtpModalOpen] = useState(false);
   const [pendingReference, setPendingReference] = useState('');
+  const [iframeUrl, setIframeUrl] = useState<string | null>(null);
   // Pas de système de steps, tout est sur une seule page
 
   // Effet pour initialiser le montant et les frais
@@ -350,15 +352,50 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
     }
   }, [paymentMethod, typeCard]);
 
+
   const handlePaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
-    
+
     setIsLoading(true);
-    
+
+    const iframeNetworks: string[] = ['MOOV CI', 'ORANGE CI', 'MOOV BF', 'ORANGE BF', 'FREE SN', 'WAVE CI'];
+    const networkApiCode = getNetworkApiCode(country, network);
+
+    if (iframeNetworks.includes(networkApiCode)) {
+      try {
+        const response = await requestToPay({
+          phoneNumber: getFormattedPhoneNumber(),
+          amount: baseAmount,
+          network,
+          country,
+          description: paymentConfig.description || 'Payment',
+          customId: generateRandomId(),
+          shop: paymentConfig.shop,
+          apiToken: paymentConfig.apiToken,
+        });
+
+        if (response.payment_url) {
+          setIframeUrl(response.payment_url);
+        } else {
+          // Fallback to status check if no payment_url is provided
+          setTransactionReference(response.reference);
+          handleStatusCheck(response.reference);
+        }
+      } catch (error) {
+        console.error('Payment error:', error);
+        setPaymentStatus('FAILED');
+        setStatusMessage('Le paiement a échoué. Veuillez réessayer.');
+        setStatusModalOpen(true);
+      } finally {
+        setIsLoading(false);
+      }
+      return;
+    }
+
     try {
       // Traitement différent selon le mode de paiement
       if (paymentMethod === 'CARD') {
@@ -397,8 +434,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           country,
           paymentConfig,
           transactionReference,
-          generateRandomId,
-          setStateCallbacks: {
+          generateRandomId,          setStateCallbacks: {
             setTransactionReference,
             setPaymentStatus,
             setStatusMessage,
@@ -594,7 +630,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           // Redirection si une URL de succès est configurée
           if (paymentConfig.callbackUrl) {
             setTimeout(() => {
-              window.location.href = `${paymentConfig.callbackUrl}?reference=${response.reference}`;
+              window.location.href = `${paymentConfig.callbackUrl}?ref=${response.reference}`;
             }, 2000);
           }
         } else if (response.status === 'PENDING') {
@@ -611,7 +647,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           // Redirection si une URL d'erreur est configurée
           if (paymentConfig.error_callback_url) {
             setTimeout(() => {
-              window.location.href = `${paymentConfig.error_callback_url}?reference=${response.reference}`;
+              window.location.href = `${paymentConfig.error_callback_url}?ref=${response.reference}`;
             }, 2000);
           }
         }
@@ -783,162 +819,6 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                         country={country}
                       />
                     </div>
-                  </div>
-                  
-                  <div className="flex">
-                    <div className="bg-gray-100 px-3 py-2 border border-r-0 rounded-l-md flex items-center justify-center">
-                      <span className="text-gray-600 text-xs">+229</span>
-                    </div>
-                    <input
-                      type="tel"
-                      placeholder="Numéro de téléphone sans indicatif"
-                      className="flex-1 px-2 py-2 border rounded-r-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
-                      value={phoneNumber}
-                      onChange={handlePhoneNumberChange}
-                    />
-                  </div>
-                </>
-              )}
-              
-              {/* Formulaire pour Carte Bancaire */}
-              {(paymentMethod === 'CARD') && (
-                <div className="space-y-4">
-                  <p className="text-red-500 text-md">Les paiements par cartes sont momentanément indisponibles.</p>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
-                      <input
-                        type="text"
-                        placeholder="Prénom"
-                        className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
-                        value={fullName.split(' ')[0] || ''}
-                        onChange={(e) => {
-                          const lastName = fullName.split(' ').slice(1).join(' ');
-                          setFullName(`${e.target.value} ${lastName}`.trim());
-                        }}
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
-                      <input
-                        type="text"
-                        placeholder="Nom"
-                        className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
-                        value={fullName.split(' ').slice(1).join(' ') || ''}
-                        onChange={(e) => {
-                          const firstName = fullName.split(' ')[0] || '';
-                          setFullName(`${firstName} ${e.target.value}`.trim());
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input
-                      type="email"
-                      placeholder="exemple@email.com"
-                      className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
-                    <input
-                      type="tel"
-                      placeholder="Numéro de téléphone avec indicatif"
-                      className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Type de carte</label>
-                    <select
-                      className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
-                      value={typeCard}
-                      onChange={(e) => setTypeCard(e.target.value as 'VISA' | 'MASTERCARD')}
-                    >
-                      <option value="VISA">VISA</option>
-                      <option value="MASTERCARD">MASTERCARD</option>
-                    </select>
-                  </div>
-
-                  {/* <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Numéro de carte</label>
-                    <input
-                      type="text"
-                      placeholder="1234 5678 9012 3456"
-                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
-                    />
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Date d'expiration</label>
-                      <input
-                        type="text"
-                        placeholder="MM/AA"
-                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">CVC</label>
-                      <input
-                        type="text"
-                        placeholder="123"
-                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
-                      />
-                    </div>
-                  </div> */}
-                </div>
-              )}
-              
-              {/* Formulaire pour Wallet - Utilise la même interface que Mobile Money */}
-              {paymentMethod === 'WALLET' && (
-                <>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Pays</label>
-                      <select
-                        value={country}
-                        onChange={(e) => handleCountryChange(e.target.value as Country)}
-                        className="block w-full px-2 py-2 pr-8 border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
-                      >
-                        <option value="BENIN">Bénin (Coris)</option>
-                        <option value="COTE_D_IVOIRE">Côte d'Ivoire (Wave)</option>
-                      </select>
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Réseau</label>
-                      <select
-                        value={network}
-                        onChange={(e) => handleNetworkChange(e.target.value as Network)}
-                        className="block w-full px-2 py-2 pr-8 border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
-                        disabled
-                      >
-                        {country === 'BENIN' && (
-                          <option value="CORIS">Coris</option>
-                        )}
-                        {country === 'COTE_D_IVOIRE' && (
-                          <option value="WAVE">Wave</option>
-                        )}
-                      </select>
-                    </div>
-                  </div>
-                  
-                  <div className="flex">
-                    <div className="bg-gray-100 px-3 py-2 border border-r-0 rounded-l-md flex items-center justify-center">
-                      <span className="text-gray-600 text-sm">
-                        {country === 'BENIN' ? '+229' : country === 'COTE_D_IVOIRE' ? '+225' : ''}
-                      </span>
-                    </div>
                     <input
                       type="tel"
                       placeholder="Numéro de téléphone sans indicatif"
@@ -1002,6 +882,15 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
       </div>
+
+      {iframeUrl && (
+        <div className="feexpay-iframe-modal">
+          <div className="feexpay-iframe-content">
+            <button onClick={() => setIframeUrl(null)} className="feexpay-iframe-close-button">&times;</button>
+            <iframe src={iframeUrl} title="Payment Gateway" width="100%" height="100%" frameBorder="0"></iframe>
+          </div>
+        </div>
+      )}
 
       <StatusModal 
         isOpen={statusModalOpen}
