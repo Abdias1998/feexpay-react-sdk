@@ -59,6 +59,7 @@ function App() {
                   // buttonClass="bg-primary-blue hover:bg-blue-900 text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 flex items-center justify-center"
                 case=""
                 currency="XOF"
+                callback_info={{description:"Test Payment",fullname:"John Doe",email:"john.doe@example.com",phone:"12345678"}}
                 />
                
               </div>

@@ -28,14 +28,13 @@ export interface PaymentConfig {
     transaction_id: string;
     message: string;
     amount: number;
-    email: string;
     currency: string;
   }) => void;
   currency?: string;
   case?: string;
   callback_info?: Record<string, unknown> | string | unknown[];
   error_callback_url?: string;
-  email?: string;
+
 }
 
 

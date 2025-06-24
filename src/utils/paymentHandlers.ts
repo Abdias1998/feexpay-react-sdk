@@ -80,22 +80,23 @@ export const handlePaymentSubmit = async (
       if (paymentConfig.callback) {
         paymentConfig.callback({
           reference: response.reference,
-          status: 'INSUFFICIENT_FUNDS',
+          status: 'FAILED',
           phoneNumber: formattedPhoneNumber,
           reseau: network,
           callback_info:paymentConfig.callback_info ,
           description: paymentConfig.description,
           transaction_id: response.reference,
-          message: response.message,
+          message:"Le paiement a échoué. Veuillez vérifier votre solde et réessayer.",
           amount: paymentConfig.amount,
-          email: paymentConfig.email,
+          
           currency: paymentConfig.currency ,
+    
         });
       }
       
       // Rediriger vers l'URL d'erreur si fournie
       if (paymentConfig.error_callback_url) {
-        window.location.href = `${paymentConfig.error_callback_url}?reference=${response.reference}&status=INSUFFICIENT_FUNDS`;
+        window.location.href = `${paymentConfig.error_callback_url}?ref=${response.reference}&status=INSUFFICIENT_FUNDS`;
       }
       return;
     } else if (response.statusCode === "92") {
@@ -110,21 +111,22 @@ export const handlePaymentSubmit = async (
         paymentConfig.callback({
           reference: response.reference,
           status: 'FAILED',
-          phoneNumber:formattedPhoneNumber,
+          phoneNumber: formattedPhoneNumber,
           reseau: network,
-          callback_info: paymentConfig.callback_info,
+          callback_info:paymentConfig.callback_info ,
           description: paymentConfig.description,
-          transaction_id: response.transaction_id,
-          message: response.message,
-          amount: response.amount,
-          email: response.email,
-          currency: response.currency,
+          transaction_id: response.reference,
+          message:"La transaction a été annulée. Veuillez réessayer.",
+          amount: paymentConfig.amount,
+          
+          currency: paymentConfig.currency ,
+    
         });
       }
       
       // Rediriger vers l'URL d'erreur si fournie
       if (paymentConfig.error_callback_url) {
-        window.location.href = `${paymentConfig.error_callback_url}?reference=${response.reference}&status=FAILED`;
+        window.location.href = `${paymentConfig.error_callback_url}?ref=${response.reference}&status=FAILED`;
       }
       return;
     }
@@ -150,7 +152,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
   
   const {
     paymentConfig,
-        setStateCallbacks
+    setStateCallbacks
   } = props;
 
   const {
@@ -180,22 +182,23 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
         if (paymentConfig.callback) {
           paymentConfig.callback({
             reference: status.reference,
-            status: 'INSUFFICIENT_FUNDS',
+            status: 'FAILED',
             phoneNumber: getFormattedPhoneNumber(),
             reseau: network,
-            callback_info: paymentConfig.callback_info,
+            callback_info:paymentConfig.callback_info ,
             description: paymentConfig.description,
-            transaction_id: status.transaction_id,
-            message: status.message,
-            amount: status.amount,
-            email: status.email,
-            currency: status.currency,
+            transaction_id: status.reference,
+            message:"Le paiement a échoué. Veuillez vérifier votre solde et réessayer.",
+            amount: paymentConfig.amount,
+            
+            currency: paymentConfig.currency ,
+    
           });
         }
         
         // Rediriger vers l'URL d'erreur si fournie
         if (paymentConfig.error_callback_url) {
-          window.location.href = `${paymentConfig.error_callback_url}?reference=${ref}&status=INSUFFICIENT_FUNDS`;
+          window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}&status=INSUFFICIENT_FUNDS`;
         }
         return;
       } else if (status.reason === "PAYER NOT FOUND") {
@@ -212,19 +215,19 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
             status: 'FAILED',
             phoneNumber: getFormattedPhoneNumber(),
             reseau: network,
-            callback_info: paymentConfig.callback_info,
+            callback_info:paymentConfig.callback_info ,
             description: paymentConfig.description,
-            transaction_id: status.transaction_id,
-            message: status.message,
-            amount: status.amount,
-            email: status.email,
-            currency: status.currency,
+            transaction_id: status.reference,
+            message:"Le paiement a echoué. Veuillez vérifier le numéro et réessayer.",
+            amount: paymentConfig.amount,
+            
+            currency: paymentConfig.currency ,
           });
         }
         
         // Rediriger vers l'URL d'erreur si fournie
         if (paymentConfig.error_callback_url) {
-          window.location.href = `${paymentConfig.error_callback_url}?reference=${ref}&status=FAILED`;
+          window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}&status=FAILED`;
         }
         return;
       }
@@ -248,19 +251,19 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
               status: paymentStatus,
               phoneNumber: getFormattedPhoneNumber(),
               reseau: network,
-              callback_info: paymentConfig.callback_info,
+              callback_info:paymentConfig.callback_info ,
               description: paymentConfig.description,
-              transaction_id: status.transaction_id,
-              message: status.message,
-              amount: status.amount,
-              email: status.email,
-              currency: status.currency,
+              transaction_id: status.reference,
+              message:"La transaction a été effectuée avec succès.",
+              amount: paymentConfig.amount,
+              
+              currency: paymentConfig.currency ,
             });
           }
           
           // Rediriger vers l'URL de callback si fournie
           if (paymentConfig.callbackUrl) {
-            window.location.href = `${paymentConfig.callbackUrl}?reference=${ref}&status=${paymentStatus}`;
+            window.location.href = `${paymentConfig.callbackUrl}?ref=${ref}&status=${paymentStatus}`;
           }
           break;
           
@@ -278,19 +281,20 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
               status: paymentStatus,
               phoneNumber: getFormattedPhoneNumber(),
               reseau: network,
-              callback_info: paymentConfig.callback_info,
+              callback_info:paymentConfig.callback_info ,
               description: paymentConfig.description,
-              transaction_id: status.transaction_id,
-              message: status.message,
-              amount: status.amount,
-              email: status.email,
-              currency: status.currency,
+              transaction_id: status.reference,
+              message:"Le paiement a échoué. Veuillez réessayer ou utiliser une autre méthode de paiement.",
+              amount: paymentConfig.amount,
+              
+              currency: paymentConfig.currency ,
+             
             });
           }
           
           // Rediriger vers l'URL d'erreur si fournie
           if (paymentConfig.error_callback_url) {
-            window.location.href = `${paymentConfig.error_callback_url}?reference=${ref}&status=${paymentStatus}`;
+            window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}&status=${paymentStatus}`;
           }
           break;
           
@@ -308,19 +312,19 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
               status: paymentStatus,
               phoneNumber: getFormattedPhoneNumber(),
               reseau: network,
-              callback_info: paymentConfig.callback_info,
+              callback_info:paymentConfig.callback_info ,
               description: paymentConfig.description,
-              transaction_id: status.transaction_id,
-              message: status.message,
-              amount: status.amount,
-              email: status.email,
-              currency: status.currency,
+              transaction_id: status.reference,
+              message:"Le paiement a échoué. Veuillez vérifier votre solde et réessayer.",
+              amount: paymentConfig.amount,
+              
+              currency: paymentConfig.currency ,
             });
           }
           
           // Rediriger vers l'URL d'erreur si fournie
           if (paymentConfig.error_callback_url) {
-            window.location.href = `${paymentConfig.error_callback_url}?reference=${ref}&status=${paymentStatus}`;
+            window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}&status=${paymentStatus}`;
           }
           break;
           
@@ -338,19 +342,19 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
               status: paymentStatus,
               phoneNumber: getFormattedPhoneNumber(),
               reseau: network,
-              callback_info: paymentConfig.callback_info,
+              callback_info:paymentConfig.callback_info ,
               description: paymentConfig.description,
-              transaction_id: status.transaction_id,
-              message: status.message,
-              amount: status.amount,
-              email: status.email,
-              currency: status.currency,
+              transaction_id: status.reference,
+              message:"La vérification du paiement a expiré. Veuillez vérifier votre compte pour confirmer le statut.",
+              amount: paymentConfig.amount,
+              
+              currency: paymentConfig.currency 
             });
           }
           
           // Rediriger vers l'URL d'erreur si fournie
           if (paymentConfig.error_callback_url) {
-            window.location.href = `${paymentConfig.error_callback_url}?reference=${ref}&status=${paymentStatus}`;
+            window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}&status=${paymentStatus}`;
           }
           break;
           
@@ -370,19 +374,20 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
                 status: 'TIMEOUT',
                 phoneNumber: getFormattedPhoneNumber(),
                 reseau: network,
-                callback_info: paymentConfig.callback_info,
+                callback_info:paymentConfig.callback_info ,
                 description: paymentConfig.description,
-                transaction_id: status.transaction_id,
-                message: status.message,
-                amount: status.amount,
-                email: status.email,
-                currency: status.currency,
+                transaction_id: status.reference,
+                message:"La vérification du paiement a expiré. Veuillez vérifier votre compte pour confirmer le statut.",
+                amount: paymentConfig.amount,
+                
+                currency: paymentConfig.currency ,
+             
               });
             }
             
             // Rediriger vers l'URL d'erreur si fournie
             if (paymentConfig.error_callback_url) {
-              window.location.href = `${paymentConfig.error_callback_url}?reference=${ref}&status=TIMEOUT`;
+              window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}&status=TIMEOUT`;
             }
           }
           break;
@@ -392,38 +397,35 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
           if (checkCount >= maxChecks) {
             clearInterval(intervalId);
             setPaymentStatus('TIMEOUT');
-            setStatusMessage('La vérification du paiement a expiré. Veuillez vérifier votre compte pour confirmer le statut.');
+            setStatusMessage('Le statut de la transaction est inconnu après plusieurs tentatives.');
             setStatusModalOpen(true);
             setIsLoading(false);
             
-            // Appeler la fonction de callback si fournie
             if (paymentConfig.callback) {
               paymentConfig.callback({
-                reference: status.reference,
+                reference: ref,
                 status: 'TIMEOUT',
                 phoneNumber: getFormattedPhoneNumber(),
                 reseau: network,
                 callback_info: paymentConfig.callback_info,
                 description: paymentConfig.description,
-                transaction_id: status.transaction_id,
-                message: status.message,
-                amount: status.amount,
-                email: status.email,
-                currency: status.currency,
+                transaction_id: ref,
+                message: 'Le statut de la transaction est inconnu après plusieurs tentatives.',
+                amount: paymentConfig.amount,
+                
+                currency: paymentConfig.currency,
+                
               });
             }
-            
-            // Rediriger vers l'URL d'erreur si fournie
+
             if (paymentConfig.error_callback_url) {
-              window.location.href = `${paymentConfig.error_callback_url}?reference=${ref}&status=TIMEOUT`;
+              window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}&status=TIMEOUT`;
             }
           }
           break;
       }
     } catch (error) {
-      console.error('Error checking transaction status:', error);
-      
-      // En cas d'erreur lors de la vérification, continuer à vérifier jusqu'à atteindre le nombre maximum de vérifications
+      console.error(`Status check failed for ref ${ref}:`, error);
       if (checkCount >= maxChecks) {
         clearInterval(intervalId);
         setPaymentStatus('TIMEOUT');
@@ -431,7 +433,6 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
         setStatusModalOpen(true);
         setIsLoading(false);
 
-        // Appeler la fonction de callback si fournie
         if (paymentConfig.callback) {
           paymentConfig.callback({
             reference: ref,
@@ -440,21 +441,24 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
             reseau: network,
             callback_info: paymentConfig.callback_info,
             description: paymentConfig.description,
-            transaction_id: undefined,
-            message: 'Error checking transaction status',
+            transaction_id: ref,
+            message: 'La vérification du paiement a échoué après plusieurs tentatives.',
             amount: paymentConfig.amount,
-            email: paymentConfig.email,
+            
             currency: paymentConfig.currency,
           });
         }
-        
-        // Rediriger vers l'URL d'erreur si fournie
+
         if (paymentConfig.error_callback_url) {
-          window.location.href = `${paymentConfig.error_callback_url}?reference=${ref}&status=TIMEOUT`;
+          window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}&status=TIMEOUT`;
         }
       }
     }
-  }, 2000); // Vérifier toutes les 2 secondes
-  
-  return intervalId;
+  }, 2000);
+
+  return () => {
+    clearInterval(intervalId);
+  };
 };
+    
+
