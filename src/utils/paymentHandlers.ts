@@ -96,7 +96,7 @@ export const handlePaymentSubmit = async (
       
       // Rediriger vers l'URL d'erreur si fournie
       if (paymentConfig.error_callback_url) {
-        window.location.href = `${paymentConfig.error_callback_url}?ref=${response.reference}&status=INSUFFICIENT_FUNDS`;
+        window.location.href = `${paymentConfig.error_callback_url}?ref=${response.reference}`;
       }
       return;
     } else if (response.statusCode === "92") {
@@ -126,7 +126,7 @@ export const handlePaymentSubmit = async (
       
       // Rediriger vers l'URL d'erreur si fournie
       if (paymentConfig.error_callback_url) {
-        window.location.href = `${paymentConfig.error_callback_url}?ref=${response.reference}&status=FAILED`;
+        window.location.href = `${paymentConfig.error_callback_url}?ref=${response.reference}`;
       }
       return;
     }
@@ -198,7 +198,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
         
         // Rediriger vers l'URL d'erreur si fournie
         if (paymentConfig.error_callback_url) {
-          window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}&status=INSUFFICIENT_FUNDS`;
+          window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}`;
         }
         return;
       } else if (status.reason === "PAYER NOT FOUND") {
@@ -227,7 +227,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
         
         // Rediriger vers l'URL d'erreur si fournie
         if (paymentConfig.error_callback_url) {
-          window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}&status=FAILED`;
+          window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}`;
         }
         return;
       }
@@ -263,7 +263,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
           
           // Rediriger vers l'URL de callback si fournie
           if (paymentConfig.callbackUrl) {
-            window.location.href = `${paymentConfig.callbackUrl}?ref=${ref}&status=${paymentStatus}`;
+            window.location.href = `${paymentConfig.callbackUrl}?ref=${ref}`;
           }
           break;
           
@@ -294,7 +294,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
           
           // Rediriger vers l'URL d'erreur si fournie
           if (paymentConfig.error_callback_url) {
-            window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}&status=${paymentStatus}`;
+            window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}`;
           }
           break;
           
@@ -324,7 +324,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
           
           // Rediriger vers l'URL d'erreur si fournie
           if (paymentConfig.error_callback_url) {
-            window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}&status=${paymentStatus}`;
+            window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}`;
           }
           break;
           
@@ -354,7 +354,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
           
           // Rediriger vers l'URL d'erreur si fournie
           if (paymentConfig.error_callback_url) {
-            window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}&status=${paymentStatus}`;
+            window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}`;
           }
           break;
           
@@ -387,7 +387,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
             
             // Rediriger vers l'URL d'erreur si fournie
             if (paymentConfig.error_callback_url) {
-              window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}&status=TIMEOUT`;
+              window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}`;
             }
           }
           break;
@@ -419,7 +419,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
             }
 
             if (paymentConfig.error_callback_url) {
-              window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}&status=TIMEOUT`;
+              window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}`;
             }
           }
           break;
@@ -450,7 +450,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
         }
 
         if (paymentConfig.error_callback_url) {
-          window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}&status=TIMEOUT`;
+          window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}`;
         }
       }
     }
