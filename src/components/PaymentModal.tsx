@@ -702,7 +702,16 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
       
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md relative max-h-[90vh] flex flex-col">
 
-
+      {iframeUrl && (
+        <div className="absolute inset-0 bg-white z-10 rounded-lg overflow-hidden">
+          <iframe
+            src={iframeUrl}
+            className="w-full h-full border-0"
+            title="Payment Gateway"
+            allow="payment"
+          ></iframe>
+        </div>
+      )}
 
 <HeaderBar shop={paymentConfig.shop} onClose={onClose} />
 
@@ -883,14 +892,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
         </div>
       </div>
 
-      {iframeUrl && (
-        <div className="feexpay-iframe-modal">
-          <div className="feexpay-iframe-content">
-            <button onClick={() => setIframeUrl(null)} className="feexpay-iframe-close-button">&times;</button>
-            <iframe src={iframeUrl} title="Payment Gateway" width="100%" height="100%" frameBorder="0"></iframe>
-          </div>
-        </div>
-      )}
+
 
       <StatusModal 
         isOpen={statusModalOpen}
