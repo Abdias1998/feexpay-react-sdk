@@ -9,6 +9,7 @@ import { NETWORK_FEES } from '../constants';
 import { Network, PaymentMethod, Country, PaymentStatus } from '../types/index';
 import { getTransactionDetails, requestCardPayment, requestWalletCorisPayment } from '../apis/feexPayApi';
 import { handlePaymentSubmit as submitPayment, startStatusCheck as checkStatus } from '../utils/paymentHandlers';
+import HeaderBar from './HeaderBar';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -24,6 +25,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
     }
     return 'MOBILE';
   });
+
   const [country, setCountry] = useState<Country>('BENIN');
   const [network, setNetwork] = useState<Network>('MTN');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -605,6 +607,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
       setOtpModalOpen(false);
     }
   };
+
+  
   
   const handleStatusCheck = (ref: string) => {
     const handlerProps = {
@@ -639,39 +643,17 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md relative max-h-[90vh] flex flex-col">
 
 
-      <div className="flex justify-between items-center p-4 flex-shrink-0">
-  {/* Conteneur vide pour équilibrer le flex */}
-  <div className="w-6"></div> 
-  
-  {/* Ligne gauche - épaisseur 1px (par défaut) */}
-  <hr className="w-[40%] border-t-[1px] border-gray-200" />
-  
-  {/* Logo centré */}
-  <div className="flex justify-center flex-grow">
-    <img src="../public/logo.png" width="140px" alt="" />
-  </div>
-  
-  {/* Ligne droite - épaisseur personnalisée (ex: 2px) */}
-  <hr className="w-[40%] border-t-[1px] border-gray-200" />
-  
-  {/* Bouton de fermeture */}
-  <button 
-    onClick={onClose}
-    className="text-gray-500 hover:text-gray-700"
-  >
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-    </svg>
-  </button>
-</div>  
 
-        <div className="p-6 overflow-y-auto flex-grow">
+<HeaderBar shop={paymentConfig.shop} onClose={onClose} />
+
+
+    <div className="p-6 overflow-y-auto flex-grow">
           <p className="text-sm text-gray-600 text-center mb-4">
             Remplissez les champs suivants pour effectuer votre paiement
           </p>
 
           {/* Afficher les onglets de sélection de méthode de paiement uniquement si case n'est pas défini */}
-          {!paymentConfig.case && (
+          {!paymentConfig.case  && (
        <div className="flex justify-center mb-6 border-b pb-4 w-fit gap-2">
     {[
       { label: 'Mobile Money', value: 'MOBILE', icon: (
@@ -795,8 +777,9 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
               )}
               
               {/* Formulaire pour Carte Bancaire */}
-              {paymentMethod === 'CARD' && (
+              {(paymentMethod === 'CARD') && (
                 <div className="space-y-4">
+                  <p className="text-red-500 text-md">Les paiements par cartes sont momentanément indisponibles.</p>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
@@ -946,17 +929,17 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
               <div className="bg-gray-50 p-4 rounded-md">
                 <div className="flex justify-between mb-1">
                   <span className="text-sm text-gray-600">Montant :</span>
-                  <span className="text-sm font-medium">{paymentConfig.amount?.toLocaleString('fr-FR')} FCFA</span>
+                  <span className="text-sm font-medium">{paymentConfig.amount?.toLocaleString('fr-FR')} {paymentConfig.currency}</span>
                 </div>
                 <div className="flex justify-between mb-1">
                   <span className="text-sm text-gray-600">Frais* :</span>
                   <span className="text-sm font-medium">
-                    {fees > 0 ? `${fees.toLocaleString('fr-FR')} FCFA` : "0 FCFA"}
+                    {fees > 0 ? `${fees.toLocaleString('fr-FR')} ${paymentConfig.currency}` : `0 ${paymentConfig.currency}`}
                   </span>
                 </div>
                 <div className="flex justify-between font-bold">
                   <span>Montant Total à payer :</span>
-                  <span>{total.toLocaleString('fr-FR')} FCFA</span>
+                  <span>{total.toLocaleString('fr-FR')} {paymentConfig.currency}</span>
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
                   {fees > 0 ? `*Les frais de transaction sont de ${feePercentage.toFixed(1).replace('.', ',')}% du montant.` : "*Aucun frais de transaction applicable pour cette transaction."}
@@ -982,7 +965,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
                     ) : null}
-                    Payer {total.toLocaleString('fr-FR')} FCFA
+                    Payer {total.toLocaleString('fr-FR')} {paymentConfig.currency}
                   </button>
                 </div>
               </div>

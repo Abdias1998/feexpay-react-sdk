@@ -43,7 +43,7 @@ const FeexPayButton: React.FC<FeexPayButtonProps> = ({
   error_callback_url,
   custom_button = false,
   // id_custom_button is handled at the SDK level, not needed in component
-  buttonText = `Payer ${amount} FCFA`,
+  buttonText = `Payer ${amount} ${currency}`,
   buttonClass,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);

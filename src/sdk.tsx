@@ -37,7 +37,7 @@ const FeexPaySDK = {
       customId: config.custom_id || config.customId,
       fields_to_hide: config.fields_to_hide,
       currency: config.currency,
-      case: config.case,
+      case: config.case ,
       callback_info: config.callback_info,
       error_callback_url: config.error_callback_url,
       custom_button: config.custom_button,

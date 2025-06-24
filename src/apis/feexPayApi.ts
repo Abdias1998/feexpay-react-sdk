@@ -60,14 +60,24 @@ interface TransactionDetailsResponse {
   message: string;
 }
 
-export const requestToPay = async (params: RequestToPayParams): Promise<TransactionResponse> => {
-  // Convertir le réseau au format attendu par l'API
-  const networkApiCode = getNetworkApiCode(params.country, params.network);
-  
-  const apiUrl = `https://api.feexpay.me/api/transactions/requesttopay/integration`;
-  
+const getClientIP = async (): Promise<string> => {
   try {
-    // Créer une copie des paramètres sans le pays (non attendu par l'API)
+    const res = await fetch('https://api.ipify.org?format=json');
+    const data = await res.json();
+    return data.ip;
+  } catch {
+    return 'unknown';
+  }
+};
+
+export const requestToPay = async (params: RequestToPayParams): Promise<TransactionResponse> => {
+  const networkApiCode = getNetworkApiCode(params.country, params.network);
+  const apiUrl = `https://api.feexpay.me/api/transactions/requesttopay/integration`;
+
+  try {
+    const merchantDomain = window.location.origin;
+    const merchantIp = await getClientIP(); // Appelle la fonction définie plus haut
+
     const apiParams = {
       phoneNumber: params.phoneNumber,
       amount: params.amount,
@@ -75,9 +85,12 @@ export const requestToPay = async (params: RequestToPayParams): Promise<Transact
       description: params.description,
       customId: params.customId,
       shop: params.shop,
-      token: params.apiToken
+      token: params.apiToken,
+      merchant_domain: merchantDomain,
+      merchant_ip: merchantIp,
+      payment_interface : "REACT"
     };
-    
+
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
@@ -97,6 +110,7 @@ export const requestToPay = async (params: RequestToPayParams): Promise<Transact
     throw error;
   }
 };
+
 
 export const checkTransactionStatus = async (reference: string): Promise<TransactionResponse> => {
   const apiUrl = `https://api.feexpay.me/api/transactions/getrequesttopay/integration/${reference}`;
