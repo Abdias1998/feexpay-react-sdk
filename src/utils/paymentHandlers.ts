@@ -143,8 +143,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps) => {
   
   const {
     paymentConfig,
-    transactionReference,
-    setStateCallbacks
+        setStateCallbacks
   } = props;
 
   const {
@@ -173,7 +172,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps) => {
         // Appeler la fonction de callback si fournie
         if (paymentConfig.callback) {
           paymentConfig.callback({
-            reference: transactionReference,
+            reference: status.reference,
             status: 'INSUFFICIENT_FUNDS'
           });
         }
@@ -193,7 +192,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps) => {
         // Appeler la fonction de callback si fournie
         if (paymentConfig.callback) {
           paymentConfig.callback({
-            reference: transactionReference,
+            reference: status.reference,
             status: 'FAILED'
           });
         }
@@ -220,7 +219,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps) => {
           // Appeler la fonction de callback si fournie
           if (paymentConfig.callback) {
             paymentConfig.callback({
-              reference: transactionReference,
+              reference: status.reference,
               status: paymentStatus
             });
           }
@@ -241,7 +240,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps) => {
           // Appeler la fonction de callback si fournie
           if (paymentConfig.callback) {
             paymentConfig.callback({
-              reference: transactionReference,
+              reference: status.reference,
               status: paymentStatus
             });
           }
@@ -262,7 +261,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps) => {
           // Appeler la fonction de callback si fournie
           if (paymentConfig.callback) {
             paymentConfig.callback({
-              reference: transactionReference,
+              reference: status.reference,
               status: paymentStatus
             });
           }
@@ -283,7 +282,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps) => {
           // Appeler la fonction de callback si fournie
           if (paymentConfig.callback) {
             paymentConfig.callback({
-              reference: transactionReference,
+              reference: status.reference,
               status: paymentStatus
             });
           }
@@ -306,7 +305,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps) => {
             // Appeler la fonction de callback si fournie
             if (paymentConfig.callback) {
               paymentConfig.callback({
-                reference: transactionReference,
+                reference: status.reference,
                 status: 'TIMEOUT'
               });
             }
@@ -330,7 +329,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps) => {
             // Appeler la fonction de callback si fournie
             if (paymentConfig.callback) {
               paymentConfig.callback({
-                reference: transactionReference,
+                reference: status.reference,
                 status: 'TIMEOUT'
               });
             }
@@ -356,7 +355,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps) => {
         // Appeler la fonction de callback si fournie
         if (paymentConfig.callback) {
           paymentConfig.callback({
-            reference: transactionReference,
+            reference:  ref,
             status: 'TIMEOUT'
           });
         }

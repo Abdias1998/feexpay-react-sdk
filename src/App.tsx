@@ -11,19 +11,19 @@ function App() {
     // You can perform additional operations based on the payment status
     switch(response.status) {
       case 'SUCCESSFUL':
-        console.log('Payment was successful! Reference:', response.reference);
+        console.log('Payment was successful! Reference:', response);
         // You could update your database, show a success message, etc.
         break;
       case 'FAILED':
-        console.log('Payment failed. Reference:', response.reference);
+        console.log('Payment failed. Reference:', response);
         // You could show an error message, offer retry options, etc.
         break;
       case 'INSUFFICIENT_FUNDS':
-        console.log('Insufficient funds. Reference:', response.reference);
+        console.log('Insufficient funds. Reference:', response);
         // You could suggest alternative payment methods
         break;
       case 'TIMEOUT':
-        console.log('Payment verification timed out. Reference:', response.reference);
+        console.log('Payment verification timed out. Reference:', response);
         // You could suggest checking status later
         break;
     }
@@ -57,7 +57,7 @@ function App() {
                   callback={handlePaymentCallback}
                   // buttonText="Payer maintenant"
                   // buttonClass="bg-primary-blue hover:bg-blue-900 text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 flex items-center justify-center"
-                case=""
+                case="CARD"
                 currency="XOF"
                 />
                
