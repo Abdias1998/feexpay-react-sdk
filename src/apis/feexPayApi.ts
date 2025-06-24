@@ -1,4 +1,4 @@
-import { Network, Country } from '../types/index';
+import { Network, Country, PaymentStatus } from '../types/index';
 import { getNetworkApiCode } from '../utils/paymentUtils';
 
 // Type pour les paiements Wallet Coris
@@ -37,12 +37,17 @@ interface RequestToPayParams {
   apiToken: string;
 }
 
-interface TransactionResponse {
+export interface TransactionResponse {
+  status: PaymentStatus;
+  reason?: string;
   reference: string;
-  status: string;
-  message: string;
-  statusCode?: string; // Code de statut pour la requête de paiement
-  reason?: string;    // Raison de l'échec pour la vérification
+  transaction_id?: string;
+  amount?: number;
+  email?: string;
+  currency?: string;
+  callback_info?: Record<string, unknown>;
+  message?: string;
+  statusCode?: string;
 }
 
 interface TransactionDetailsParams {
@@ -74,12 +79,21 @@ export const requestToPay = async (params: RequestToPayParams): Promise<Transact
   const networkApiCode = getNetworkApiCode(params.country, params.network);
   const apiUrl = `https://api.feexpay.me/api/transactions/requesttopay/integration`;
 
+  // Nettoyage du numéro
+let cleanedPhone = params.phoneNumber.replace(/\+/g, '');
+if (cleanedPhone.length >= 8) {
+  const prefix = cleanedPhone.slice(0, 3);
+  if (cleanedPhone.startsWith(prefix + prefix)) {
+    cleanedPhone = cleanedPhone.slice(prefix.length);
+  }
+}
+
   try {
     const merchantDomain = window.location.origin;
     const merchantIp = await getClientIP(); // Appelle la fonction définie plus haut
 
     const apiParams = {
-      phoneNumber: params.phoneNumber,
+      phoneNumber: cleanedPhone,
       amount: params.amount,
       reseau: networkApiCode,
       description: params.description,
@@ -110,7 +124,6 @@ export const requestToPay = async (params: RequestToPayParams): Promise<Transact
     throw error;
   }
 };
-
 
 export const checkTransactionStatus = async (reference: string): Promise<TransactionResponse> => {
   const apiUrl = `https://api.feexpay.me/api/transactions/getrequesttopay/integration/${reference}`;

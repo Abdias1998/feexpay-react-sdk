@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PaymentModal from './PaymentModal';
 import { useFeexPay } from '../context/FeexPayContext';
+import { PaymentStatus } from 'src/types';
 
 interface FeexPayButtonProps {
   amount: number;
@@ -11,7 +12,8 @@ interface FeexPayButtonProps {
   mode?: 'SANDBOX' | 'LIVE';
   customId?: string;
   fields_to_hide?: string[];
-  callback?: (response: { reference: string; status: string }) => void;
+  callback?: (response: { reference: string; status: PaymentStatus;phoneNumber: string;reseau: string;callback_info: string;
+    description : string;transaction_id : string;message:string;amount:number;email:string;currency:string; }) => void;
   currency?: string;
   /**
    * Spécifie le type de méthode de paiement à afficher dans le modal.

@@ -4,7 +4,7 @@ export type Country = 'BENIN' | 'COTE_D_IVOIRE' | 'BURKINA_FASO' | 'CONGO_BRAZZA
 
 export type PaymentMethod = 'MOBILE' | 'CARD' | 'WALLET';
 
-export type PaymentStatus = 'PENDING' | 'SUCCESSFUL' | 'FAILED' | 'TIMEOUT' | 'INSUFFICIENT_FUNDS';
+export type PaymentStatus = 'PENDING' | 'SUCCESSFUL' | 'FAILED' | 'TIMEOUT' | 'INSUFFICIENT_FUNDS' | 'SUCCESS';
 
 
 
@@ -18,12 +18,26 @@ export interface PaymentConfig {
   mode?: 'SANDBOX' | 'LIVE';
   customId?: string;
   fields_to_hide?: string[];
-  callback?: (response: { reference: string; status: PaymentStatus }) => void;
+  callback?: (response: {
+    reference: string;
+    status: PaymentStatus;
+    phoneNumber: string;
+    reseau: string;
+    callback_info: Record<string, unknown> | string | unknown[];
+    description: string;
+    transaction_id: string;
+    message: string;
+    amount: number;
+    email: string;
+    currency: string;
+  }) => void;
   currency?: string;
   case?: string;
-  callback_info?: Record<string, unknown>;
+  callback_info?: Record<string, unknown> | string | unknown[];
   error_callback_url?: string;
+  email?: string;
 }
+
 
 export interface Transaction {
   reference: string;

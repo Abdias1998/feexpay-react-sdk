@@ -1,18 +1,7 @@
-import { PaymentStatus, Network, Country } from '../types/index';
+import { PaymentStatus, Network, Country, PaymentConfig } from '../types/index';
 import { requestToPay, checkTransactionStatus } from '../apis/feexPayApi';
 
-// Types nécessaires pour les fonctions
-interface PaymentConfig {
-  amount?: number;
-  description?: string;
-  customId?: string;
-  shop: string;
-  apiToken: string;
-  callback?: (data: { reference: string; status: PaymentStatus }) => void;
-  callbackUrl?: string;
-  error_callback_url?: string;
-  fields_to_hide?: string[];
-}
+
 
 interface PaymentHandlerProps {
   phoneNumber: string;
@@ -91,7 +80,16 @@ export const handlePaymentSubmit = async (
       if (paymentConfig.callback) {
         paymentConfig.callback({
           reference: response.reference,
-          status: 'INSUFFICIENT_FUNDS'
+          status: 'INSUFFICIENT_FUNDS',
+          phoneNumber: formattedPhoneNumber,
+          reseau: network,
+          callback_info:paymentConfig.callback_info ,
+          description: paymentConfig.description,
+          transaction_id: response.reference,
+          message: response.message,
+          amount: paymentConfig.amount,
+          email: paymentConfig.email,
+          currency: paymentConfig.currency ,
         });
       }
       
@@ -111,7 +109,16 @@ export const handlePaymentSubmit = async (
       if (paymentConfig.callback) {
         paymentConfig.callback({
           reference: response.reference,
-          status: 'FAILED'
+          status: 'FAILED',
+          phoneNumber:formattedPhoneNumber,
+          reseau: network,
+          callback_info: paymentConfig.callback_info,
+          description: paymentConfig.description,
+          transaction_id: response.transaction_id,
+          message: response.message,
+          amount: response.amount,
+          email: response.email,
+          currency: response.currency,
         });
       }
       
@@ -137,7 +144,7 @@ export const handlePaymentSubmit = async (
 /**
  * Vérifie périodiquement le statut d'une transaction
  */
-export const startStatusCheck = (ref: string, props: PaymentHandlerProps) => {
+export const startStatusCheck = (ref: string, props: PaymentHandlerProps, network: Network, getFormattedPhoneNumber: () => string) => {
   let checkCount = 0;
   const maxChecks = 30; // 60 secondes (30 * 2000ms)
   
@@ -173,7 +180,16 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps) => {
         if (paymentConfig.callback) {
           paymentConfig.callback({
             reference: status.reference,
-            status: 'INSUFFICIENT_FUNDS'
+            status: 'INSUFFICIENT_FUNDS',
+            phoneNumber: getFormattedPhoneNumber(),
+            reseau: network,
+            callback_info: paymentConfig.callback_info,
+            description: paymentConfig.description,
+            transaction_id: status.transaction_id,
+            message: status.message,
+            amount: status.amount,
+            email: status.email,
+            currency: status.currency,
           });
         }
         
@@ -193,7 +209,16 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps) => {
         if (paymentConfig.callback) {
           paymentConfig.callback({
             reference: status.reference,
-            status: 'FAILED'
+            status: 'FAILED',
+            phoneNumber: getFormattedPhoneNumber(),
+            reseau: network,
+            callback_info: paymentConfig.callback_info,
+            description: paymentConfig.description,
+            transaction_id: status.transaction_id,
+            message: status.message,
+            amount: status.amount,
+            email: status.email,
+            currency: status.currency,
           });
         }
         
@@ -220,7 +245,16 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps) => {
           if (paymentConfig.callback) {
             paymentConfig.callback({
               reference: status.reference,
-              status: paymentStatus
+              status: paymentStatus,
+              phoneNumber: getFormattedPhoneNumber(),
+              reseau: network,
+              callback_info: paymentConfig.callback_info,
+              description: paymentConfig.description,
+              transaction_id: status.transaction_id,
+              message: status.message,
+              amount: status.amount,
+              email: status.email,
+              currency: status.currency,
             });
           }
           
@@ -241,7 +275,16 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps) => {
           if (paymentConfig.callback) {
             paymentConfig.callback({
               reference: status.reference,
-              status: paymentStatus
+              status: paymentStatus,
+              phoneNumber: getFormattedPhoneNumber(),
+              reseau: network,
+              callback_info: paymentConfig.callback_info,
+              description: paymentConfig.description,
+              transaction_id: status.transaction_id,
+              message: status.message,
+              amount: status.amount,
+              email: status.email,
+              currency: status.currency,
             });
           }
           
@@ -262,7 +305,16 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps) => {
           if (paymentConfig.callback) {
             paymentConfig.callback({
               reference: status.reference,
-              status: paymentStatus
+              status: paymentStatus,
+              phoneNumber: getFormattedPhoneNumber(),
+              reseau: network,
+              callback_info: paymentConfig.callback_info,
+              description: paymentConfig.description,
+              transaction_id: status.transaction_id,
+              message: status.message,
+              amount: status.amount,
+              email: status.email,
+              currency: status.currency,
             });
           }
           
@@ -283,7 +335,16 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps) => {
           if (paymentConfig.callback) {
             paymentConfig.callback({
               reference: status.reference,
-              status: paymentStatus
+              status: paymentStatus,
+              phoneNumber: getFormattedPhoneNumber(),
+              reseau: network,
+              callback_info: paymentConfig.callback_info,
+              description: paymentConfig.description,
+              transaction_id: status.transaction_id,
+              message: status.message,
+              amount: status.amount,
+              email: status.email,
+              currency: status.currency,
             });
           }
           
@@ -306,7 +367,16 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps) => {
             if (paymentConfig.callback) {
               paymentConfig.callback({
                 reference: status.reference,
-                status: 'TIMEOUT'
+                status: 'TIMEOUT',
+                phoneNumber: getFormattedPhoneNumber(),
+                reseau: network,
+                callback_info: paymentConfig.callback_info,
+                description: paymentConfig.description,
+                transaction_id: status.transaction_id,
+                message: status.message,
+                amount: status.amount,
+                email: status.email,
+                currency: status.currency,
               });
             }
             
@@ -330,7 +400,16 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps) => {
             if (paymentConfig.callback) {
               paymentConfig.callback({
                 reference: status.reference,
-                status: 'TIMEOUT'
+                status: 'TIMEOUT',
+                phoneNumber: getFormattedPhoneNumber(),
+                reseau: network,
+                callback_info: paymentConfig.callback_info,
+                description: paymentConfig.description,
+                transaction_id: status.transaction_id,
+                message: status.message,
+                amount: status.amount,
+                email: status.email,
+                currency: status.currency,
               });
             }
             
@@ -348,15 +427,24 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps) => {
       if (checkCount >= maxChecks) {
         clearInterval(intervalId);
         setPaymentStatus('TIMEOUT');
-        setStatusMessage('La vérification du paiement a échoué. Veuillez vérifier votre compte pour confirmer le statut.');
+        setStatusMessage('La vérification du paiement a échoué après plusieurs tentatives.');
         setStatusModalOpen(true);
         setIsLoading(false);
-        
+
         // Appeler la fonction de callback si fournie
         if (paymentConfig.callback) {
           paymentConfig.callback({
-            reference:  ref,
-            status: 'TIMEOUT'
+            reference: ref,
+            status: 'TIMEOUT',
+            phoneNumber: getFormattedPhoneNumber(),
+            reseau: network,
+            callback_info: paymentConfig.callback_info,
+            description: paymentConfig.description,
+            transaction_id: undefined,
+            message: 'Error checking transaction status',
+            amount: paymentConfig.amount,
+            email: paymentConfig.email,
+            currency: paymentConfig.currency,
           });
         }
         

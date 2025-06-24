@@ -57,7 +57,7 @@ function App() {
                   callback={handlePaymentCallback}
                   // buttonText="Payer maintenant"
                   // buttonClass="bg-primary-blue hover:bg-blue-900 text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 flex items-center justify-center"
-                case="CARD"
+                case=""
                 currency="XOF"
                 />
                

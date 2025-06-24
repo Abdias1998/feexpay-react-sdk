@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import CountrySelector from './CountrySelector';
 import NetworkSelector from './NetworkSelector';
 import StatusModal from './StatusModal';
@@ -83,7 +83,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
   }, []);
 
   // Fonction pour récupérer les détails de transaction depuis l'API
-  const fetchTransactionDetails = async (amount: number, country: Country, network: Network, paymentMethodOverride?: PaymentMethod) => {
+  const fetchTransactionDetails = useCallback(async (amount: number, country: Country, network: Network, paymentMethodOverride?: PaymentMethod) => {
     try {
       // Utiliser la méthode de paiement fournie en paramètre ou celle de l'état
       const currentPaymentMethod = paymentMethodOverride || paymentMethod;
@@ -152,7 +152,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
       // En cas d'erreur, utiliser le calcul local des frais comme fallback
       calculateFeesLocally(amount, country, network, paymentMethodOverride);
     }
-  };
+  }, [paymentMethod, paymentConfig.shop, paymentConfig.apiToken]);
 
   const handleNetworkChange = (newNetwork: Network) => {
     setNetwork(newNetwork);
@@ -281,28 +281,52 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
 
   const getFormattedPhoneNumber = () => {
     if (!phoneNumber) return phoneNumber;
-    
-    // Ajouter le préfixe international selon le pays
+  
+    // Supprimer tous les caractères non numériques
+    let cleaned = phoneNumber.replace(/[^0-9]/g, '');
+  
+    // Définir le préfixe selon le pays
+    let prefix = '';
     switch (country) {
       case 'BENIN':
-        return `229${phoneNumber}`;
+        prefix = '229';
+        break;
       case 'COTE_D_IVOIRE':
-        return `225${phoneNumber}`;
+        prefix = '225';
+        break;
       case 'BURKINA_FASO':
-        return `226${phoneNumber}`;
+        prefix = '226';
+        break;
       case 'CONGO_BRAZZAVILLE':
-        return `242${phoneNumber}`;
+        prefix = '242';
+        break;
       case 'SENEGAL':
-        return `221${phoneNumber}`;
+        prefix = '221';
+        break;
       case 'TOGO':
-        return `228${phoneNumber}`;
+        prefix = '228';
+        break;
       default:
-        return phoneNumber;
+        return cleaned;
     }
+  
+    // Supprimer un double préfixe si présent
+    if (cleaned.startsWith(prefix + prefix)) {
+      cleaned = cleaned.slice(prefix.length);
+    }
+  
+    // Supprimer le préfixe s’il est déjà là une fois
+    if (cleaned.startsWith(prefix)) {
+      return cleaned;
+    }
+  
+    // Ajouter le préfixe sinon
+    return prefix + cleaned;
   };
+  
 
   // Fonction de calcul local des frais (utilisée comme fallback si l'API n'est pas disponible)
-  const calculateFeesLocally = (amount: number, country: Country, network: Network, paymentMethodOverride?: PaymentMethod) => {
+  const calculateFeesLocally = useCallback((amount: number, country: Country, network: Network, paymentMethodOverride?: PaymentMethod) => {
     // Utiliser la méthode de paiement fournie en paramètre ou celle de l'état
     const currentPaymentMethod = paymentMethodOverride || paymentMethod;
     
@@ -324,7 +348,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
         setFeePercentage(0);
       }
     }
-  };
+  }, [paymentMethod, typeCard]);
 
   const handlePaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -628,7 +652,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
       }
     };
     
-    checkStatus(ref, handlerProps);
+    checkStatus(ref, handlerProps, network, getFormattedPhoneNumber);
   };
 
 
