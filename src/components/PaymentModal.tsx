@@ -390,6 +390,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
     }
 
     setIsLoading(true);
+    
 
     const iframeNetworks: string[] = ['MOOV CI', 'ORANGE CI', 'MOOV BF', 'ORANGE BF', 'FREE SN', 'WAVE CI'];
     const networkApiCode = getNetworkApiCode(country, network);
