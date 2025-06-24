@@ -377,13 +377,17 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           shop: paymentConfig.shop,
           apiToken: paymentConfig.apiToken,
         });
-
         if (response.payment_url) {
           setIframeUrl(response.payment_url);
-        } else {
-          // Fallback to status check if no payment_url is provided
+        }
+
+        // Que l'URL de paiement soit présente ou non, nous devons suivre le statut
+        if (response.reference) {
           setTransactionReference(response.reference);
           handleStatusCheck(response.reference);
+        } else if (!response.payment_url) {
+          // Gérer le cas où il n'y a ni URL de paiement ni référence
+          throw new Error('La réponse de paiement est invalide.');
         }
       } catch (error) {
         console.error('Payment error:', error);
