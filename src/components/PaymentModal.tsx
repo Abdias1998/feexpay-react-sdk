@@ -47,16 +47,98 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
   const [otpModalOpen, setOtpModalOpen] = useState(false);
   const [pendingReference, setPendingReference] = useState('');
   const [iframeUrl, setIframeUrl] = useState<string | null>(null);
-  // Pas de système de steps, tout est sur une seule page
+  
+  // Fonction de calcul local des frais (utilisée comme fallback si l'API n'est pas disponible)
+  const calculateFeesLocally = useCallback((amount: number, country: Country, network: Network, paymentMethodOverride?: PaymentMethod) => {
+    const currentPaymentMethod = paymentMethodOverride || paymentMethod;
+    const calculatedFees = calculateFeesUtil(amount, country, network, currentPaymentMethod, typeCard);
+    setFees(calculatedFees);
+    setTotal(amount + calculatedFees);
+    setBaseAmount(amount);
+    
+    if (paymentMethod === 'CARD' && (typeCard === 'VISA' || typeCard === 'MASTERCARD')) {
+      setFeePercentage(4.5);
+    } else {
+      const countryFees = NETWORK_FEES[country];
+      if (countryFees && countryFees[network]) {
+        setFeePercentage(countryFees[network] * 100);
+      } else {
+        setFeePercentage(0);
+      }
+    }
+  }, [paymentMethod, typeCard]);
 
-  // Effet pour initialiser le montant et les frais
-  useEffect(() => {
+ 
+  
+    // Fonction pour récupérer les détails de transaction depuis l'API
+    const fetchTransactionDetails = useCallback(async (amount: number, country: Country, network: Network, paymentMethodOverride?: PaymentMethod) => {
+      try {
+        // Utiliser la méthode de paiement fournie en paramètre ou celle de l'état
+        const currentPaymentMethod = paymentMethodOverride || paymentMethod;
+        
+        // Pour toutes les méthodes de paiement, interroger l'API
+        const details = await getTransactionDetails({
+          network,
+          country,
+          amount,
+          shop: paymentConfig.shop,
+          apiToken: paymentConfig.apiToken
+        });
+        
+        // Si ifFees est true, appliquer les frais calculés à partir du total retourné par l'API
+        if (details && details.iffees) {
+          if (details.total !== undefined) {
+            const calculatedFees = details.total - amount;
+            setFees(calculatedFees);
+            setTotal(details.total);
+            
+            // Récupérer le pourcentage des frais pour l'affichage
+            if (currentPaymentMethod === 'CARD') {
+              setFeePercentage(4.5);
+            } else {
+              const countryFees = NETWORK_FEES[country];
+              if (countryFees && countryFees[network]) {
+                setFeePercentage(countryFees[network] * 100);
+              } else {
+                setFeePercentage(0);
+              }
+            }
+          } else {
+            calculateFeesLocally(amount, country, network, currentPaymentMethod);
+          }
+        } else {
+          // Gestion des frais minimums pour les petits montants
+          if (amount <= 30) {
+            const countryFees = NETWORK_FEES[country];
+            if (countryFees && countryFees[network] && countryFees[network] > 0) {
+              setFees(1);
+              setTotal(amount + 1);
+              setFeePercentage(countryFees[network] * 100);
+            } else {
+              setFees(0);
+              setTotal(amount);
+              setFeePercentage(0);
+            }
+          } else {
+            setFees(0);
+            setTotal(amount);
+            setFeePercentage(0);
+          }
+        }
+        
+        setBaseAmount(amount);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des détails de transaction:', error);
+        calculateFeesLocally(amount, country, network, paymentMethodOverride);
+      }
+    }, [paymentMethod, paymentConfig.shop, paymentConfig.apiToken, calculateFeesLocally]);
+   // Effet pour initialiser le montant et les frais
+   useEffect(() => {
     if (paymentConfig.amount) {
       setBaseAmount(paymentConfig.amount);
       fetchTransactionDetails(paymentConfig.amount, country, network);
     }
-  }, [paymentConfig, country, network]);
-  
+  }, [paymentConfig, country, network, fetchTransactionDetails]);
   // Effet pour initialiser correctement le réseau lorsque le mode de paiement est WALLET
   useEffect(() => {
     // Si le mode de paiement initial est WALLET, configurer correctement le réseau
@@ -84,77 +166,6 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Fonction pour récupérer les détails de transaction depuis l'API
-  const fetchTransactionDetails = useCallback(async (amount: number, country: Country, network: Network, paymentMethodOverride?: PaymentMethod) => {
-    try {
-      // Utiliser la méthode de paiement fournie en paramètre ou celle de l'état
-      const currentPaymentMethod = paymentMethodOverride || paymentMethod;
-      
-      // Pour toutes les méthodes de paiement, interroger l'API
-      const details = await getTransactionDetails({
-        network,
-        country,
-        amount,
-        shop: paymentConfig.shop,
-        apiToken: paymentConfig.apiToken
-      });
-      
-      // console.log('Transaction details:', details);
-      
-      // Si ifFees est true, appliquer les frais calculés à partir du total retourné par l'API
-      if (details && details.iffees) {
-        // Utiliser les frais calculés à partir du total retourné par l'API
-        if (details.total !== undefined) {
-          const calculatedFees = details.total - amount;
-          setFees(calculatedFees);
-          setTotal(details.total);
-          
-          // Récupérer le pourcentage des frais pour l'affichage
-          if (currentPaymentMethod === 'CARD') {
-            // Pour les cartes, afficher le pourcentage standard de 4,5%
-            setFeePercentage(4.5);
-          } else {
-            // Pour les autres méthodes, utiliser le pourcentage des constantes
-            const countryFees = NETWORK_FEES[country];
-            if (countryFees && countryFees[network]) {
-              setFeePercentage(countryFees[network] * 100);
-            } else {
-              setFeePercentage(0);
-            }
-          }
-        } else {
-          calculateFeesLocally(amount, country, network, currentPaymentMethod);
-        }
-      } else {
-        // Même si l'API indique qu'il n'y a pas de frais, vérifier si nous devons appliquer des frais minimums
-        // pour les petits montants (inférieurs à 30 FCFA)
-        if (amount <= 30) {
-          const countryFees = NETWORK_FEES[country];
-          if (countryFees && countryFees[network] && countryFees[network] > 0) {
-            // Appliquer un minimum de 1 FCFA de frais pour les petits montants
-            setFees(1);
-            setTotal(amount + 1);
-            setFeePercentage(countryFees[network] * 100);
-          } else {
-            setFees(0);
-            setTotal(amount);
-            setFeePercentage(0);
-          }
-        } else {
-          // Pour les montants plus élevés, respecter la décision de l'API
-          setFees(0);
-          setTotal(amount);
-          setFeePercentage(0);
-        }
-      }
-      
-      setBaseAmount(amount);
-    } catch (error) {
-      console.error('Erreur lors de la récupération des détails de transaction:', error);
-      // En cas d'erreur, utiliser le calcul local des frais comme fallback
-      calculateFeesLocally(amount, country, network, paymentMethodOverride);
-    }
-  }, [paymentMethod, paymentConfig.shop, paymentConfig.apiToken]);
 
   const handleNetworkChange = (newNetwork: Network) => {
     setNetwork(newNetwork);
@@ -326,31 +337,49 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
     return prefix + cleaned;
   };
   
-
-  // Fonction de calcul local des frais (utilisée comme fallback si l'API n'est pas disponible)
-  const calculateFeesLocally = useCallback((amount: number, country: Country, network: Network, paymentMethodOverride?: PaymentMethod) => {
-    // Utiliser la méthode de paiement fournie en paramètre ou celle de l'état
-    const currentPaymentMethod = paymentMethodOverride || paymentMethod;
-    
-    // Utiliser la fonction globale qui prend en compte tous les pays et le type de paiement
-    const calculatedFees = calculateFeesUtil(amount, country, network, currentPaymentMethod, typeCard);
-    setFees(calculatedFees);
-    setTotal(amount + calculatedFees);
-    setBaseAmount(amount);
-    
-    // Récupérer le pourcentage des frais pour l'affichage
-    if (paymentMethod === 'CARD' && (typeCard === 'VISA' || typeCard === 'MASTERCARD')) {
-      // Pour les paiements par carte, afficher 4,5%
-      setFeePercentage(4.5);
-    } else {
-      const countryFees = NETWORK_FEES[country];
-      if (countryFees && countryFees[network]) {
-        setFeePercentage(countryFees[network] * 100);
-      } else {
-        setFeePercentage(0);
-      }
+  const getPrefixFromCountry = (country: string): string => {
+    switch (country) {
+      case 'BENIN':
+        return '+229';
+      case 'COTE_D_IVOIRE':
+        return '+225';
+      case 'BURKINA_FASO':
+        return '+226';
+      case 'CONGO_BRAZZAVILLE':
+        return '+242';
+      case 'SENEGAL':
+        return '+221';
+      case 'TOGO':
+        return '+228';
+      default:
+        return '';
     }
-  }, [paymentMethod, typeCard]);
+  };
+  
+  // Fonction de calcul local des frais (utilisée comme fallback si l'API n'est pas disponible)
+  // const calculateFeesLocally = useCallback((amount: number, country: Country, network: Network, paymentMethodOverride?: PaymentMethod) => {
+  //   // Utiliser la méthode de paiement fournie en paramètre ou celle de l'état
+  //   const currentPaymentMethod = paymentMethodOverride || paymentMethod;
+    
+  //   // Utiliser la fonction globale qui prend en compte tous les pays et le type de paiement
+  //   const calculatedFees = calculateFeesUtil(amount, country, network, currentPaymentMethod, typeCard);
+  //   setFees(calculatedFees);
+  //   setTotal(amount + calculatedFees);
+  //   setBaseAmount(amount);
+    
+  //   // Récupérer le pourcentage des frais pour l'affichage
+  //   if (paymentMethod === 'CARD' && (typeCard === 'VISA' || typeCard === 'MASTERCARD')) {
+  //     // Pour les paiements par carte, afficher 4,5%
+  //     setFeePercentage(4.5);
+  //   } else {
+  //     const countryFees = NETWORK_FEES[country];
+  //     if (countryFees && countryFees[network]) {
+  //       setFeePercentage(countryFees[network] * 100);
+  //     } else {
+  //       setFeePercentage(0);
+  //     }
+  //   }
+  // }, [paymentMethod, typeCard]);
 
 
   const handlePaymentSubmit = async (e: React.FormEvent) => {
@@ -385,6 +414,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
         if (response.reference) {
           setTransactionReference(response.reference);
           handleStatusCheck(response.reference);
+         
+         
         } else if (!response.payment_url) {
           // Gérer le cas où il n'y a ni URL de paiement ni référence
           throw new Error('La réponse de paiement est invalide.');
@@ -824,6 +855,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
            
               
               {/* Formulaire pour Mobile Money */}
+              {/* Formulaire pour Mobile Money */}
               {paymentMethod === 'MOBILE' && (
                 <>
                   <div className="grid grid-cols-2 gap-4">
@@ -841,6 +873,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                         country={country}
                       />
                     </div>
+                  </div>
+                  
+                  <div className="flex">
+                    <div className="bg-gray-100 px-3 py-2 border border-r-0 rounded-l-md flex items-center justify-center">
+                      <span className="text-gray-600 text-xs">{getPrefixFromCountry(country)}</span>
+                    </div>
                     <input
                       type="tel"
                       placeholder="Numéro de téléphone sans indicatif"
@@ -851,7 +889,158 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                   </div>
                 </>
               )}
+
+                {/* Formulaire pour Carte Bancaire */}
+                {(paymentMethod === 'CARD') && (
+                <div className="space-y-4">
+                  <p className="text-red-500 text-md">Les paiements par cartes sont momentanément indisponibles.</p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+                      <input
+                        type="text"
+                        placeholder="Prénom"
+                        className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
+                        value={fullName.split(' ')[0] || ''}
+                        onChange={(e) => {
+                          const lastName = fullName.split(' ').slice(1).join(' ');
+                          setFullName(`${e.target.value} ${lastName}`.trim());
+                        }}
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+                      <input
+                        type="text"
+                        placeholder="Nom"
+                        className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
+                        value={fullName.split(' ').slice(1).join(' ') || ''}
+                        onChange={(e) => {
+                          const firstName = fullName.split(' ')[0] || '';
+                          setFullName(`${firstName} ${e.target.value}`.trim());
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input
+                      type="email"
+                      placeholder="exemple@email.com"
+                      className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                    <input
+                      type="tel"
+                      placeholder="Numéro de téléphone avec indicatif"
+                      className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Type de carte</label>
+                    <select
+                      className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
+                      value={typeCard}
+                      onChange={(e) => setTypeCard(e.target.value as 'VISA' | 'MASTERCARD')}
+                    >
+                      <option value="VISA">VISA</option>
+                      <option value="MASTERCARD">MASTERCARD</option>
+                    </select>
+                  </div>
+
+                  {/* <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Numéro de carte</label>
+                    <input
+                      type="text"
+                      placeholder="1234 5678 9012 3456"
+                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Date d'expiration</label>
+                      <input
+                        type="text"
+                        placeholder="MM/AA"
+                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">CVC</label>
+                      <input
+                        type="text"
+                        placeholder="123"
+                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                      />
+                    </div>
+                  </div> */}
+                </div>
+              )}
               
+
+              {/* Formulaire pour Wallet */}
+          {/* Formulaire pour Wallet - Utilise la même interface que Mobile Money */}
+          {paymentMethod === 'WALLET' && (
+                <>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Pays</label>
+                      <select
+                        value={country}
+                        onChange={(e) => handleCountryChange(e.target.value as Country)}
+                        className="block w-full px-2 py-2 pr-8 border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
+                      >
+                        <option value="BENIN">Bénin (Coris)</option>
+                        <option value="COTE_D_IVOIRE">Côte d'Ivoire (Wave)</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Réseau</label>
+                      <select
+                        value={network}
+                        onChange={(e) => handleNetworkChange(e.target.value as Network)}
+                        className="block w-full px-2 py-2 pr-8 border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
+                        disabled
+                      >
+                        {country === 'BENIN' && (
+                          <option value="CORIS">Coris</option>
+                        )}
+                        {country === 'COTE_D_IVOIRE' && (
+                          <option value="WAVE">Wave</option>
+                        )}
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div className="flex">
+                    <div className="bg-gray-100 px-3 py-2 border border-r-0 rounded-l-md flex items-center justify-center">
+                      <span className="text-gray-600 text-sm">
+                        {country === 'BENIN' ? '+229' : country === 'COTE_D_IVOIRE' ? '+225' : ''}
+                      </span>
+                    </div>
+                    <input
+                      type="tel"
+                      placeholder="Numéro de téléphone sans indicatif"
+                      className="flex-1 px-2 py-2 border rounded-r-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
+                      value={phoneNumber}
+                      onChange={handlePhoneNumberChange}
+                    />
+                  </div>
+                </>
+              )}
               <div className="bg-gray-50 p-4 rounded-md">
                 <div className="flex justify-between mb-1">
                   <span className="text-sm text-gray-600">Montant :</span>

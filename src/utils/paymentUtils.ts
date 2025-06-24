@@ -1,17 +1,28 @@
 import { Network, Country } from '../types';
 import { BENIN_PREFIXES, NETWORK_FEES, NETWORK_API_MAPPING } from '../constants';
 
-export const getNetworkByPhonePrefix = (prefix: string): Network | null => {
+export const getNetworkByPhonePrefix = (
+  prefix: string,
+  currentNetwork?: Network
+): Network | null => {
+  // Si l'utilisateur a déjà sélectionné CORIS, on ne change rien
+  if (currentNetwork === 'CORIS') {
+    return 'CORIS';
+  }
+
   if (BENIN_PREFIXES.MTN.includes(prefix)) {
     return 'MTN';
   } else if (BENIN_PREFIXES.MOOV.includes(prefix)) {
     return 'MOOV';
   } else if (BENIN_PREFIXES.CELTIIS.includes(prefix)) {
     return 'CELTIIS';
+  } else if (BENIN_PREFIXES.CORIS.includes(prefix)) {
+    return 'CORIS';
   }
-  
+
   return null;
 };
+
 
 export const getNetworksForCountry = (country: Country): Network[] => {
   switch (country) {

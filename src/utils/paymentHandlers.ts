@@ -148,7 +148,7 @@ export const handlePaymentSubmit = async (
  */
 export const startStatusCheck = (ref: string, props: PaymentHandlerProps, network: Network, getFormattedPhoneNumber: () => string) => {
   let checkCount = 0;
-  const maxChecks = 30; // 60 secondes (30 * 2000ms)
+  const maxChecks = 12; // 60 secondes (30 * 2000ms)
   
   const {
     paymentConfig,
@@ -454,7 +454,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
         }
       }
     }
-  }, 2000);
+  }, 20000);
 
   return () => {
     clearInterval(intervalId);
