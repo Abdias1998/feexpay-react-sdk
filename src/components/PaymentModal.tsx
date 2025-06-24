@@ -594,7 +594,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           // Redirection si une URL de succès est configurée
           if (paymentConfig.callbackUrl) {
             setTimeout(() => {
-              window.location.href = `${paymentConfig.callbackUrl}?reference=${response.reference}&status=success`;
+              window.location.href = `${paymentConfig.callbackUrl}?reference=${response.reference}`;
             }, 2000);
           }
         } else if (response.status === 'PENDING') {
@@ -611,7 +611,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           // Redirection si une URL d'erreur est configurée
           if (paymentConfig.error_callback_url) {
             setTimeout(() => {
-              window.location.href = `${paymentConfig.error_callback_url}?reference=${response.reference}&status=failed&reason=${encodeURIComponent(response.message || 'Unknown error')}`;
+              window.location.href = `${paymentConfig.error_callback_url}?reference=${response.reference}`;
             }, 2000);
           }
         }
