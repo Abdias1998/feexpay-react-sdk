@@ -63,11 +63,11 @@ export const calculateFees = (amount: number, country: Country, network: Network
   // Calculer les frais basés sur le pourcentage
   const calculatedFees = amount * feePercentage;
   
-  // Pour les petits montants (inférieurs à 30 FCFA), appliquer un minimum de frais
-  if (amount <= 30 && calculatedFees < 1 && feePercentage > 0) {
-    // Appliquer un minimum de 1 FCFA de frais pour les petits montants
-    return 1;
-  }
+  // // Pour les petits montants (inférieurs à 30 FCFA), appliquer un minimum de frais
+  // if (amount <= 30 && calculatedFees < 1 && feePercentage > 0) {
+  //   // Appliquer un minimum de 1 FCFA de frais pour les petits montants
+  //   return 1;
+  // }
   
   return Math.ceil(calculatedFees);
 };

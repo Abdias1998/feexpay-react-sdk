@@ -45,12 +45,12 @@ function App() {
               
               <div className="pt-4">
                 <FeexPayButton 
-                  amount={100}
+                  amount={10}
                   description="Test Payment"
-                  // shop="671a774c706593edb3dc4ab2"
+                  shop="671a774c706593edb3dc4ab2"
                   apiToken="fp_HHNoQGt9Vn8KpZoLaBkG3uEeKpLUYBaHUZIZXJE3Xgv0OKG2tK3A7PtlytctikrJ"
-                  
-                  shop="679a12dedea4a0b5d416ea87"
+                  // 
+                  // shop="679a12dedea4a0b5d416ea87"
                
                   // callbackUrl="https://example.com/callback"
                   mode="LIVE"
