@@ -1,4 +1,4 @@
-import { Network, Country, PaymentStatus } from '../types/index';
+import { Network, Country, PaymentStatus,Currency } from '../types/index';
 import { getNetworkApiCode } from '../utils/paymentUtils';
 
 // Type pour les paiements Wallet Coris
@@ -11,6 +11,7 @@ interface RequestWalletCorisParams {
   description?: string;
   reference?: string;
   otp?: string;
+  currency: Currency;
   apiToken: string;
 }
 
@@ -23,6 +24,7 @@ interface RequestCardPaymentParams {
   last_name: string;
   email: string;
   type_card: 'VISA' | 'MASTERCARD';
+  currency: Currency;
   apiToken: string;
 }
 
@@ -35,6 +37,7 @@ interface RequestToPayParams {
   customId: string;
   shop: string;
   apiToken: string;
+  currency: Currency;
 }
 
 export interface TransactionResponse {
@@ -57,6 +60,7 @@ interface TransactionDetailsParams {
   amount: number;
   shop: string;
   apiToken: string;
+  currency: Currency;
 }
 
 interface TransactionDetailsResponse {

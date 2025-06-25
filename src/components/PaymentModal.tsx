@@ -27,6 +27,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
     return 'MOBILE';
   });
 
+
+
   const [country, setCountry] = useState<Country>('BENIN');
   const [network, setNetwork] = useState<Network>('MTN');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -82,7 +84,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           country,
           amount,
           shop: paymentConfig.shop,
-          apiToken: paymentConfig.apiToken
+          apiToken: paymentConfig.apiToken,
+          currency: paymentConfig.currency
         });
         
         // Si ifFees est true, appliquer les frais calculés à partir du total retourné par l'API
@@ -406,6 +409,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           customId: generateRandomId(),
           shop: paymentConfig.shop,
           apiToken: paymentConfig.apiToken,
+          currency: paymentConfig.currency
         });
         if (response.payment_url) {
           setIframeUrl(response.payment_url);
@@ -449,7 +453,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           last_name: lastName,
           email: email,
           type_card: typeCard,
-          apiToken: paymentConfig.apiToken
+          apiToken: paymentConfig.apiToken,
+          currency: paymentConfig.currency
         });
         
         if (response && response.reference) {
@@ -503,7 +508,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
               email: email,
               first_name: firstName,
               description: 'Paiement via FeexPay',
-              apiToken: paymentConfig.apiToken
+              apiToken: paymentConfig.apiToken,
+              currency: paymentConfig.currency
             });
             
             // Si le statut est 201, afficher le modal OTP
@@ -645,7 +651,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
         description: 'Paiement via FeexPay',
         reference: pendingReference,
         otp: otp,
-        apiToken: paymentConfig.apiToken
+        apiToken: paymentConfig.apiToken,
+        currency: paymentConfig.currency
       });
       
       // Fermer le modal OTP
@@ -857,7 +864,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
               
               {/* Formulaire pour Mobile Money */}
               {/* Formulaire pour Mobile Money */}
-              {paymentMethod === 'MOBILE' && (
+              {paymentMethod === 'MOBILE' && paymentConfig.currency !== 'CAD' && paymentConfig.currency !== 'USD' && (
                 <>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -892,9 +899,11 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
               )}
 
                 {/* Formulaire pour Carte Bancaire */}
-                {(paymentMethod === 'CARD') && (
+                {(paymentMethod === 'CARD' && (paymentConfig.currency === 'CAD' || paymentConfig.currency === 'USD')) && (
                 <div className="space-y-4">
                   <p className="text-red-500 text-md">Les paiements par cartes sont momentanément indisponibles.</p>
+
+                  {/* Formulaire pour Carte Bancaire */}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
@@ -993,7 +1002,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
 
               {/* Formulaire pour Wallet */}
           {/* Formulaire pour Wallet - Utilise la même interface que Mobile Money */}
-          {paymentMethod === 'WALLET' && (
+          {paymentMethod === 'WALLET' && paymentConfig.currency !== 'CAD' && paymentConfig.currency !== 'USD' && (
                 <>
                   <div className="grid grid-cols-2 gap-4">
                     <div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PaymentModal from './PaymentModal';
 import { useFeexPay } from '../context/FeexPayContext';
-import { PaymentStatus } from 'src/types';
+import { PaymentStatus, Currency } from 'src/types';
 
 interface FeexPayButtonProps {
   amount: number;
@@ -14,7 +14,7 @@ interface FeexPayButtonProps {
   fields_to_hide?: string[];
   callback?: (response: { reference: string; status: PaymentStatus;phoneNumber: string;reseau: string;callback_info: string;
     description : string;transaction_id : string;message:string;amount:number;email:string;currency:string; }) => void;
-  currency?: string;
+  currency?: Currency;
   /**
    * Spécifie le type de méthode de paiement à afficher dans le modal.
    * Si défini, le modal n'affichera que le formulaire correspondant à cette méthode.
@@ -39,7 +39,7 @@ const FeexPayButton: React.FC<FeexPayButtonProps> = ({
   customId,
   fields_to_hide,
   callback,
-  currency,
+  currency = 'XOF',
   case: caseType,
   callback_info,
   error_callback_url,
