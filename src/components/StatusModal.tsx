@@ -15,7 +15,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
   message,
 }) => {
   useEffect(() => {
-    if (status === 'SUCCESSFUL') {
+    if (status === 'SUCCESSFUL' || status === 'SUCCESS') {
       // Auto close after 5 seconds for successful payments
       const timer = setTimeout(() => {
         onClose();
@@ -30,6 +30,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
   const getStatusIcon = () => {
     switch (status) {
       case 'SUCCESSFUL':
+      case 'SUCCESS':
         return (
           <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -70,6 +71,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
   const getButtonText = () => {
     switch (status) {
       case 'SUCCESSFUL':
+      case 'SUCCESS':
         return 'Continuer';
       case 'FAILED':
       case 'TIMEOUT':
@@ -82,6 +84,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
   const getButtonColor = () => {
     switch (status) {
       case 'SUCCESSFUL':
+      case 'SUCCESS':
         return 'bg-green-500 hover:bg-green-600';
       case 'FAILED':
         return 'bg-red-500 hover:bg-red-600';
@@ -100,6 +103,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
         <h3 className="text-xl font-bold mb-2">
           {status === 'SUCCESSFUL' ? 'Paiement Réussi' : 
            status === 'FAILED' ? 'Paiement Échoué' :
+           status === 'SUCCESS' ? 'Paiement Réussi' :
            status === 'PENDING' ? 'Traitement en cours' : 
            'Vérification expirée'}
         </h3>

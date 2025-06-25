@@ -65,7 +65,8 @@ export const handlePaymentSubmit = async (
       description: paymentConfig.description,
       customId: paymentConfig.customId || generateRandomId(),
       shop: paymentConfig.shop,
-      apiToken: paymentConfig.apiToken
+      apiToken: paymentConfig.apiToken,
+      currency: paymentConfig.currency
     });
     
     // Vérifier les codes de statut spécifiques
@@ -238,6 +239,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
       // Gérer les différents statuts possibles
       switch (paymentStatus) {
         case 'SUCCESSFUL':
+        case 'SUCCESS':
           clearInterval(intervalId);
           setPaymentStatus('SUCCESSFUL');
           setStatusMessage('Paiement réussi !');

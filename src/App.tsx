@@ -11,6 +11,7 @@ function App() {
     // You can perform additional operations based on the payment status
     switch(response.status) {
       case 'SUCCESSFUL':
+      case 'SUCCESS':
         console.log('Payment was successful! Reference:', response);
         // You could update your database, show a success message, etc.
         break;
