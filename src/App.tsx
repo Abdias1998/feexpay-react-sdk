@@ -48,7 +48,7 @@ function App() {
                   amount={10}
                   description="Test Payment"
                   shop="671a774c706593edb3dc4ab2"
-                  apiToken="fp_HHNoQGt9Vn8KpZoLaBkG3uEeKpLUYBaHUZIZXJE3Xgv0OKG2tK3A7PtlytctikrJ"
+                  apiToken="fp_HHNoQGt9Vn8KpZoLaBkG3uEeKpLUYBaHUZIZXJE3Xgv0OKG2tK3A7Ptlytctikr"
                   // 
                   // shop="679a12dedea4a0b5d416ea87"
                
