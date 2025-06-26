@@ -1,6 +1,6 @@
 {
   "name": "@feexpay/react-sdk",
-  "version": "1.0.0",
+  "version": "1.3.26",
   "type": "module",
   "private": false,
   "description": "SDK React officiel pour intégrer les paiements FeexPay dans vos applications React",
@@ -48,6 +48,7 @@
   },
   "keywords": [
     "feexpay",
+    "feexpay-react-sdk",
     "react",
     "sdk",
     "payment",
@@ -59,5 +60,13 @@
   "license": "MIT",
   "files": [
     "dist/*"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/La-Vedette-Media/feexpay-react-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/La-Vedette-Media/feexpay-react-sdk/issues"
+  },
+  "homepage": "https://github.com/La-Vedette-Media/feexpay-react-sdk#readme"
 }
