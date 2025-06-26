@@ -135,6 +135,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
         calculateFeesLocally(amount, country, network, paymentMethodOverride);
       }
     }, [paymentMethod, paymentConfig.shop, paymentConfig.apiToken, calculateFeesLocally]);
+
+    
    // Effet pour initialiser le montant et les frais
    useEffect(() => {
     if (paymentConfig.amount) {
@@ -1012,8 +1014,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                         onChange={(e) => handleCountryChange(e.target.value as Country)}
                         className="block w-full px-2 py-2 pr-8 border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
                       >
-                        <option value="BENIN">Bénin (Coris)</option>
-                        <option value="COTE_D_IVOIRE">Côte d'Ivoire (Wave)</option>
+                        <option value="BENIN">Bénin</option>
+                        <option value="COTE_D_IVOIRE">Côte d'Ivoire</option>
                       </select>
                     </div>
                     

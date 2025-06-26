@@ -1,60 +1,110 @@
-Installation
+# FeexPay React SDK
 
-With npm :
+SDK React officiel pour intégrer les paiements FeexPay dans vos applications React.
+
+## Installation
+
+Avec npm :
 ```bash
 npm install @feexpay/react-sdk
 ```
 
-With yarn :
+Avec yarn :
 ```bash
 yarn add @feexpay/react-sdk
 ```
 
-Initialisation:
+## Utilisation
 
-To import the library, we can make :
+### Importation
 
-```bash
-import Feexpay from ‘’@feexpay/react-sdk’’
+```javascript
+import React from 'react';
+import { FeexPayButton } from '@feexpay/react-sdk';
+import { FeexPayProvider } from '@feexpay/react-sdk/context/FeexPayContext';
 ```
 
+### Utilisation du bouton de paiement
 
-To init and add the payment button, you add this code in script balise.
+```javascript
+const handlePaymentCallback = (response) => {
+  switch(response.status) {
+    case 'SUCCESSFUL':
+    case 'SUCCESS':
+      console.log('Paiement réussi! Référence:', response.reference);
+      break;
+    case 'FAILED':
+      console.log('Paiement échoué. Référence:', response.reference);
+      break;
+    case 'INSUFFICIENT_FUNDS':
+      console.log('Fonds insuffisants. Référence:', response.reference);
+      break;
+    case 'TIMEOUT':
+      console.log('Timeout. Référence:', response.reference);
+      break;
+  }
+};
 
-```bash
-<Feexpay
-    token = {’/*API KEY*/’}
-    id = {’/*Shop's id */ ‘}
-    amount = {/*Montant du paiement à effectuer */}
-    callback={()=>alert(‘’Pay’’)}
-    description={'description'}
-    callback_url={"https://www.feexpay.me"}
-    callback_info={"callback_info"}
-    buttonText="Payer"
-    buttonClass={"mt-3"}
-    defaultValueField={{'country_iban': "BJ"}}
+// Dans votre composant
+<FeexPayButton
+  shop="YOUR_SHOP_ID"
+  apiToken="YOUR_API_TOKEN"
+  amount={10000}
+  description="Description du paiement"
+  callbackUrl="https://votre-site.com/success"
+  mode="LIVE"
+  buttonText="Payer"
+  buttonClass="mt-3"
+  callback={handlePaymentCallback}
 />
 ```
+```
 
-token (string): your token API key. 
+## Propriétés disponibles
 
-id (string): your shop's id. 
+### FeexPayButton
 
-callback (function): Function called back after payment has been made. This is optional.
+- `shop` (string) : Identifiant de votre boutique
+- `apiToken` (string) : Votre clé API FeexPay
+- `amount` (number) : Montant du paiement en XOF
+- `description` (string) : Description du paiement
+- `callbackUrl` (string) : URL de redirection après le paiement
+- `mode` (string) : Mode d'opération ('SANDBOX' ou 'LIVE')
+- `customId` (string) : Identifiant personnalisé
+- `fields_to_hide` (array) : Champs à masquer dans le formulaire
+- `callback` (function) : Fonction appelée après le paiement
+- `currency` (string) : Devise (par défaut: XOF)
+- `case` (string) : Mode de casse
+- `buttonText` (string) : Texte du bouton (par défaut: "Payer")
+- `buttonClass` (string) : Classes CSS pour le bouton
+- `buttonStyles` (object) : Styles CSS personnalisés pour le bouton
+- `defaultValueField` (object) : Valeurs par défaut pour certains champs
 
-callback_url (string): redirect url after payment. This is optional.
+> **Note** : Le FeexPayProvider n'est pas nécessaire car toutes les configurations peuvent être passées directement au composant FeexPayButton.
 
-amount (int): Amount of payment to be made in XOF.
+## Méthodes de paiement supportées
 
-fieldsToHide (array): By example, you can put fieldsToHide={['email', 'full_name']}
+- Mobile Money (MTN, MOOV, CELTIIS, ORANGE, etc.)
+- Carte bancaire (VISA, MASTERCARD)
+- Wallet (CORIS pour Bénin, WAVE pour Côte d'Ivoire)
 
-buttonText: The text to be displayed on the payment button before the amount. By example buttonText="Payer".
+## Pays supportés
 
-buttonStyles: Sets of css properties to customize the start button. By example: buttonStyles={{ backgroundColor: "red", color: "black", borderRadius: "25px", width: '25%' }}.
+- Bénin (préfixes téléphoniques: MTN, MOOV, CELTIIS)
+- Côte d'Ivoire (MTN, MOOV, ORANGE, WAVE)
+- Burkina Faso (MOOV, ORANGE)
+- Congo Brazzaville (MTN)
+- Sénégal (ORANGE, FREE)
+- Togo (TOGOCOM, MOOV)
 
-buttonClass (string): Sets of css class name to customize the start button. By example: buttonClass={'mt-4 text-center'}.
+## Support
 
-defaultValueField: object to auto-complete certain fields. By example: defaultValueField={{'country_iban': "BJ"}}
+Pour toute question ou problème, contactez-nous à support@feexpay.me
 
-You can get the shop's id and token API in your account FeexPay in Developer Menu. You won't need to define both callback and callback_url.
+## Licence
 
+MIT
+
+## Version
+
+1.0.0

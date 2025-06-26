@@ -10,8 +10,8 @@ export default defineConfig({
   build: {
     lib: {
       // The entry point for the library
-      entry: 'src/sdk.tsx',
-      name: 'FeexPayButton',
+      entry: 'src/index.tsx',
+      name: 'FeexPay',
       // The proper extensions will be added
       fileName: 'index',
       formats: ['umd', 'es'],

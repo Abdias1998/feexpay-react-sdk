@@ -1,13 +1,28 @@
 {
-  "name": "vite-react-typescript-starter",
-  "private": true,
-  "version": "0.0.0",
+  "name": "@feexpay/react-sdk",
+  "version": "1.0.0",
   "type": "module",
+  "private": false,
+  "description": "SDK React officiel pour intégrer les paiements FeexPay dans vos applications React",
+  "main": "dist/index.umd.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.umd.cjs"
+    },
+    "./style.css": "./dist/style.css"
+  },
+  "browser": {
+    "./src/sdk.tsx": "./dist/index.js"
+  },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "lucide-react": "^0.344.0",
@@ -30,5 +45,19 @@
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.3.0",
     "vite": "^5.4.2"
-  }
+  },
+  "keywords": [
+    "feexpay",
+    "react",
+    "sdk",
+    "payment",
+    "mobile-money",
+    "card",
+    "wallet"
+  ],
+  "author": "FeexPay",
+  "license": "MIT",
+  "files": [
+    "dist/*"
+  ]
 }
