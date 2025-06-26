@@ -20,8 +20,8 @@ yarn add @feexpay/react-sdk
 
 ```javascript
 import React from 'react';
-import { FeexPayButton } from '@feexpay/react-sdk';
-import { FeexPayProvider } from '@feexpay/react-sdk/context/FeexPayContext';
+import { FeexPayButton ,FeexPayProvider} from '@feexpay/react-sdk';
+
 ```
 
 ### Utilisation du bouton de paiement
@@ -46,17 +46,29 @@ const handlePaymentCallback = (response) => {
 };
 
 // Dans votre composant
+<FeexPayProvider>
 <FeexPayButton
+
   shop="YOUR_SHOP_ID"
   apiToken="YOUR_API_TOKEN"
-  amount={10000}
+  amount={100}
   description="Description du paiement"
   callbackUrl="https://votre-site.com/success"
+  error_callabck_url :"https://votre-site.com/error"
   mode="LIVE"
+  case :"" //MOBILE/WALLET/CARD
+  currency :"" //Laiseer vide si vous voulez pas utilisez la methode par carte bancaire(USD ou CAD)
   buttonText="Payer"
   buttonClass="mt-3"
+  fields_to_hide={["email", "name"]}
   callback={handlePaymentCallback}
+  customId="123646473"
+  callback_info ="INFORMATION SUPPLEMANTAIRE"
 />
+
+</FeexPayProvider>
+
+
 ```
 ```
 
