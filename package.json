@@ -1,6 +1,6 @@
 {
-  "name": "feexpay-lite",
-  "version": "1.0.0",
+  "name": "feexpay_lite",
+  "version": "1.0.3",
   "type": "module",
   "private": false,
   "description": "SDK React officiel pour intégrer les paiements FeexPay dans vos applications React",
