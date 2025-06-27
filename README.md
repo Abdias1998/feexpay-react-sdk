@@ -1,107 +1,113 @@
-# FeexPay React SDK
+# 💸 FeexPay React SDK
 
-SDK React officiel pour intégrer les paiements FeexPay dans vos applications React.
+SDK officiel pour intégrer les paiements **FeexPay** dans vos applications **React** de manière simple et rapide.
 
-## Installation
+---
 
-Avec npm :
+## 🚀 Installation
+
 ```bash
-npm install @feexpay/react-sdk
+npm install @abdias1998/feexpay_lite
 ```
 
-Avec yarn :
+ou
+
 ```bash
-yarn add @feexpay/react-sdk
+yarn add @abdias1998/feexpay_lite
 ```
 
-## Utilisation
+---
 
-### Importation
+## 📆 Importation
 
-```javascript
+Ajoutez les composants et le fichier CSS dans votre application :
+
+```tsx
 import React from 'react';
-import { FeexPayButton ,FeexPayProvider} from '@feexpay/react-sdk';
-
+import { FeexPayProvider, FeexPayButton } from '@abdias1998/feexpay_lite';
+import '@abdias1998/feexpay_lite/style.css';
 ```
 
-### Utilisation du bouton de paiement
+---
 
-```javascript
+## 💻 Exemple d'utilisation
 
+```tsx
+function App() {
+  return (
+    <div className="App">
+      <h1>Intégration de FeexPay dans React</h1>
 
-// Dans votre composant
-<FeexPayProvider>
-<FeexPayButton
+      <FeexPayProvider>
+        <FeexPayButton
+          amount={10}
+          description="Test Payment"
+          shop="Votre shop id"
+          apiToken="Votre api token"
+          customId="23455"
+          callbackUrl="https://example.com/callback"
+          callback_info={{
+            description: "Test Payment",
+            fullname: "John Doe",
+            email: "john.doe@example.com",
+            phone: "12345678"
+          }}
+          mode="LIVE"
+          currency="XOF"
+          buttonClass="bg-primary-blue hover:bg-blue-900 text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 flex items-center justify-center"
+          callback={(response) => {
+            console.log(response);
+          }}
+        />
+      </FeexPayProvider>
+    </div>
+  );
+}
 
-  shop="YOUR_SHOP_ID"
-  apiToken="YOUR_API_TOKEN"
-  amount={100}
-  description="Description du paiement"
-  callbackUrl="https://votre-site.com/success"
-  error_callabck_url :"https://votre-site.com/error"
-  mode="LIVE"
-  case :"" //MOBILE/WALLET/CARD
-  currency :"" //Laiseer vide si vous voulez pas utilisez la methode par carte bancaire(USD ou CAD)
-  buttonText="Payer"
-  buttonClass="mt-3"
-  fields_to_hide={["email", "name"]}
- callback={(response)=>{
- console.log(response)
-  }}
-  customId="123646473"
-  callback_info ="INFORMATION SUPPLEMANTAIRE"
-/>
-
-</FeexPayProvider>
-
-
+export default App;
 ```
-```
 
-## Propriétés disponibles
+---
 
-### FeexPayButton
+## 🛠 Props du composant `FeexPayButton`
 
-- `shop` (string) : Identifiant de votre boutique
-- `apiToken` (string) : Votre clé API FeexPay
-- `amount` (number) : Montant du paiement en XOF
-- `description` (string) : Description du paiement
-- `callbackUrl` (string) : URL de redirection après le paiement
-- `mode` (string) : Mode d'opération ('SANDBOX' ou 'LIVE')
-- `customId` (string) : Référence personnalisée (chaîne aléatoire unique)
-- `fields_to_hide` (array) : Champs à masquer dans le formulaire
-- `callback` (function) : Fonction appelée après le paiement
-- `currency` (string) : Devise (par défaut: XOF)
-- `case` (string) : Mode de casse
-- `buttonText` (string) : Texte du bouton personnaliser 
-- `buttonClass` (string) : Classes CSS pour le bouton
-- `buttonStyles` (object) : Styles CSS personnalisés pour le bouton
-- `callback_info` (object) :  Informations complémentaires. 
+| Prop                 | Type       | Requis   | Description                                  |                        |
+| -------------------- | ---------- | -------- | -------------------------------------------- | ---------------------- |
+| `amount`             | `number`   | ✅        | Montant à payer                              |                        |
+| `description`        | `string`   | ✅        | Description du paiement                      |                        |
+| `shop`               | `string`   | ✅        | ID du shop fourni par FeexPay                |                        |
+| `apiToken`           | `string`   | ✅        | Token API d'authentification                 |                        |
+| `customId`           | `string`   | ✅        | ID personnalisé de la transaction            |                        |
+| `callbackUrl`        | `string`   | ✅        | URL de redirection post-paiement             |                        |
+| `callback_info`      | `object`   | ✅        | Infos utilisateur (nom, email, téléphone...) |                        |
+| `mode`               | \`"LIVE"   | "SANDBOX"\` | ✅                                            | Mode de fonctionnement |
+| `currency`           | `string`   | ✅        | Devise (`XOF`, `USD`, etc.)                  |                        |
+| `buttonClass`        | `string`   | ❌        | Classe CSS personnalisée pour le bouton      |                        |
+| `buttonText`         | `string`   | ❌        | Texte personnalisé du bouton                 |                        |
+| `fields_to_hide`     | `string[]` | ❌        | Champs à masquer (`"email"`, `"name"`, etc.) |                        |
+| `callback`           | `function` | ❌        | Callback JavaScript à la fin du paiement     |                        |
+| `error_callback_url` | `string`   | ❌        | URL de redirection en cas d'erreur           |                        |
 
+---
 
-## Méthodes de paiement supportées
+## 🔐 Sécurité
 
-- Mobile Money (MTN, MOOV, CELTIIS, ORANGE, etc.)
-- Carte bancaire (VISA, MASTERCARD)
-- Wallet (CORIS pour Bénin, WAVE pour Côte d'Ivoire)
+* Ne jamais exposer de tokens sensibles dans des environnements publics.
+* Utilisez le mode `SANDBOX` pour vos intégrations de test.
 
-## Pays supportés
+---
 
-- Bénin (préfixes téléphoniques: MTN, MOOV, CELTIIS)
-- Côte d'Ivoire (MTN, MOOV, ORANGE, WAVE)
-- Burkina Faso (MOOV, ORANGE)
-- Congo Brazzaville (MTN)
-- Sénégal (ORANGE, FREE)
-- Togo (TOGOCOM, MOOV)
+## 🧰 Dépendances
 
-## Support
+* React 18 ou 19 compatible
+* Tailwind CSS recommandé pour la personnalisation
 
-Pour toute question ou problème, contactez-nous à support@feexpay.me
+---
 
-## Licence
+## 🧠 Aide et Support
 
-MIT
+En cas de besoin ou d'intégration personnalisée, contactez l'équipe FeexPay ou ouvrez une *issue* sur [GitHub](https://github.com/Abdias1998/feexpay-react-sdk/issues).
 
-## Version
+---
 
-1.0.0
+## © FeexPay - 2025

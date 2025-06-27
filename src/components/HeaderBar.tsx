@@ -30,7 +30,7 @@ const HeaderBar = ({ shop  , onClose }: { shop: string; onClose: () => void }) =
     <div className="flex items-center justify-between px-4 py-2 border-b border-gray-200">
       {/* Logo à gauche */}
       <div>
-        <img src="../public/logo.png" width="100" alt="Logo" />
+        <img src="https://api.feexpay.me/api/static/feexpay_logo-h.png" width="100" alt="Logo" />
       </div>
 
       {/* Informations du shop au centre-droit */}

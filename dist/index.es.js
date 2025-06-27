@@ -660,7 +660,7 @@ const Se = ({ selectedCountry: t, onChange: c }) => /* @__PURE__ */ i("div", { c
       }
     })();
   }, [t]), /* @__PURE__ */ i("div", { className: "flex items-center justify-between px-4 py-2 border-b border-gray-200", children: [
-    /* @__PURE__ */ r("div", { children: /* @__PURE__ */ r("img", { src: "../public/logo.png", width: "100", alt: "Logo" }) }),
+    /* @__PURE__ */ r("div", { children: /* @__PURE__ */ r("img", { src: "https://api.feexpay.me/api/static/feexpay_logo-h.png", width: "100", alt: "Logo" }) }),
     /* @__PURE__ */ r("div", { className: "text-right text-xs text-gray-700 ", children: e && /* @__PURE__ */ i(Q, { children: [
       /* @__PURE__ */ i("div", { className: "font-semibold", children: [
         "MARCHAND: ",
