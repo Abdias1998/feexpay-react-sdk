@@ -1,38 +1,32 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  optimizeDeps: {
-    exclude: ['lucide-react'],
+  plugins: [react(), cssInjectedByJsPlugin()],
+  resolve: {
+    dedupe: ['react', 'react-dom'],
   },
   build: {
     lib: {
-      // The entry point for the library
-      entry: 'src/index.tsx',
+            entry: 'src/index.tsx',
       name: 'FeexPay',
-      // The proper extensions will be added
-      fileName: 'index',
-      formats: ['umd', 'es'],
+      formats: ['es', 'cjs'],
+      fileName: (format) => `index.${format}.js`
+
     },
     rollupOptions: {
-      // Make sure to externalize deps that shouldn't be bundled
-      // into your library
-      external: ['react', 'react-dom'],
+      // Indiquer les externes (React ne doit pas être embarqué dans le SDK)
+      
+      external: [/^react($|\/.*)/, /^react-dom($|\/.*)/, /^lucide-react($|\/.*)/],
+      preserveEntrySignatures: 'strict',
       output: {
-        // Provide global variables to use in the UMD build
-        // for externalized deps
         globals: {
-          react: 'React',
+          'react': 'React',
           'react-dom': 'ReactDOM',
-        },
-      },
-    },
-    sourcemap: true,
-    // Reduce bloat from legacy polyfills
-    target: 'es2015',
-    // Leave minification up to applications
-    minify: 'terser',
-  },
+          'lucide-react': 'LucideReact'
+        }
+      }
+    }
+  }
 });

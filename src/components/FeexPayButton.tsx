@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import  { useState, useEffect, useRef, useCallback } from 'react';
 import PaymentModal from './PaymentModal';
 import { useFeexPay } from '../context/FeexPayContext';
 import { PaymentStatus, Currency } from 'src/types';

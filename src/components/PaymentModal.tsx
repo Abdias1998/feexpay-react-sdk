@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import CountrySelector from './CountrySelector';
 import NetworkSelector from './NetworkSelector';
 import StatusModal from './StatusModal';
@@ -17,7 +17,7 @@ interface PaymentModalProps {
   onClose: () => void;
 }
 
-const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
+const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
   const { paymentConfig } = useFeexPay();
   // Si case est défini dans paymentConfig, utiliser cette valeur, sinon utiliser 'MOBILE' par défaut
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(() => {
@@ -85,7 +85,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           amount,
           shop: paymentConfig.shop,
           apiToken: paymentConfig.apiToken,
-          currency: paymentConfig.currency,
+          
           callback_info: paymentConfig.callback_info || {},
         });
         
@@ -412,7 +412,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           customId: paymentConfig.customId || '',
           shop: paymentConfig.shop,
           apiToken: paymentConfig.apiToken,
-          currency: paymentConfig.currency,
+          currency: paymentConfig.currency || 'XOF',
           callback_info: paymentConfig.callback_info || {},
           first_name: fullName|| '',
           email: email || '',
@@ -461,7 +461,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           email: email,
           type_card: typeCard,
           apiToken: paymentConfig.apiToken,
-          currency: paymentConfig.currency,
+          currency: paymentConfig.currency || 'XOF',
           
         });
         
@@ -520,7 +520,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
               first_name: firstName,
               description: 'Paiement via FeexPay',
               apiToken: paymentConfig.apiToken,
-              currency: paymentConfig.currency,
+              currency: paymentConfig.currency || 'XOF',
               callback_info: paymentConfig.callback_info || {},
             });
             
@@ -666,7 +666,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
         reference: pendingReference,
         otp: otp,
         apiToken: paymentConfig.apiToken,
-        currency: paymentConfig.currency,
+        currency: paymentConfig.currency || 'XOF', 
         callback_info: paymentConfig.callback_info || {},
       });
       

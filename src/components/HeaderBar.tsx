@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 
 // Fonction déjà définie
 const getShop = async (shop: string): Promise<{ name: string; reference: string }> => {

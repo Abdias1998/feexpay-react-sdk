@@ -8,7 +8,10 @@ export const BENIN_PREFIXES = {
 };
 
 // Pourcentages de frais par pays et réseau
-export const NETWORK_FEES = {
+import { Country, Network } from '../types';
+
+// Pourcentages de frais par pays et réseau
+export const NETWORK_FEES: Record<Country, Partial<Record<Network, number>>> = {
   BENIN: {
     MTN: 0.017,
     MOOV: 0.017,
@@ -39,7 +42,7 @@ export const NETWORK_FEES = {
 };
 
 // Mapping des réseaux pour l'API
-export const NETWORK_API_MAPPING = {
+export const NETWORK_API_MAPPING: Record<Country, Partial<Record<Network, string>>> = {
   BENIN: {
     MTN: 'MTN',
     MOOV: 'MOOV',

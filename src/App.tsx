@@ -1,4 +1,4 @@
-import React from 'react';
+
 import FeexPayButton from './components/FeexPayButton';
 import { FeexPayProvider } from './context/FeexPayContext';
 

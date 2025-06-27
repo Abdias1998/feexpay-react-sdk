@@ -1,20 +1,23 @@
 {
   "compilerOptions": {
     "jsx": "react-jsx",
-    "module": "commonjs",
+    "module": "ESNext",
+    "target": "ESNext",
     "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationDir": "./types",
+    "outDir": "./dist",
     "removeComments": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es2016",
     "sourceMap": false,
-    "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
+    "esModuleInterop": true,
+    "moduleResolution": "bundler",
+    "strict": true,
+    "isolatedModules": true,
+    "types": ["vite/client", "node"]
   },
-  "include": [
-    "src/**/*",
-    
-  ],
-  "exclude": ["node_modules","test","lib","**/*spec.ts"]
-
+  "include": ["src"],
+  "exclude": ["node_modules", "test", "lib", "**/*spec.ts"]
 }

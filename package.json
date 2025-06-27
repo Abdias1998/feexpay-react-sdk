@@ -1,39 +1,38 @@
 {
-  "name": "@feexpay/react-sdk",
-  "version": "1.3.26",
+  "name": "@abdias1998/feexpay_lite",
+  "version": "1.0.5",
   "type": "module",
   "private": false,
   "description": "SDK React officiel pour intégrer les paiements FeexPay dans vos applications React",
-  "main": "dist/index.umd.cjs",
-  "module": "dist/index.js",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.umd.cjs"
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.cjs.js",
+      "types": "./dist/index.d.ts"
     },
-    "./style.css": "./dist/style.css"
-  },
-  "browser": {
-    "./src/sdk.tsx": "./dist/index.js"
+
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "npm run types && vite build && npm run copy-types",
+    "types": "tsc --rootDir src",
+    "copy-types": "cp -r types/* dist/",
     "lint": "eslint .",
     "preview": "vite preview",
     "prepublishOnly": "npm run build"
   },
-  "dependencies": {
-    "lucide-react": "^0.344.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+  "peerDependencies": {
+    "lucide-react": "^0.417.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
+    "@types/node": "^24.0.4",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.1",
+    "@vitejs/plugin-react": "^4.6.0",
     "autoprefixer": "^10.4.18",
     "eslint": "^9.9.1",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
@@ -57,16 +56,20 @@
     "wallet"
   ],
   "author": "FeexPay",
-  "license": "MIT",
+  "license": "ISC",
   "files": [
     "dist/*"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/La-Vedette-Media/feexpay-react-sdk.git"
+    "url": "https://github.com/Abdias1998/feexpay-react-sdk.git"
   },
   "bugs": {
-    "url": "https://github.com/La-Vedette-Media/feexpay-react-sdk/issues"
+    "url": "https://github.com/Abdias1998/feexpay-react-sdk/issues"
   },
-  "homepage": "https://github.com/La-Vedette-Media/feexpay-react-sdk#readme"
+  "homepage": "https://github.com/Abdias1998/feexpay-react-sdk",
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  }
 }

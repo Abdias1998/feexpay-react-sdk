@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Country } from '../types/index';
 
 interface CountrySelectorProps {

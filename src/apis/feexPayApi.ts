@@ -64,7 +64,6 @@ interface TransactionDetailsParams {
   amount: number;
   shop: string;
   apiToken: string;
-  currency: Currency;
   callback_info: Record<string, unknown>;
 }
 
