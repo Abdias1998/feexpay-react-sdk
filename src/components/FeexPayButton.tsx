@@ -18,12 +18,11 @@ interface FeexPayButtonProps {
     status: PaymentStatus;
     phoneNumber: string;
     reseau: string;
-    callback_info: string;
+    callback_info: Record<string, unknown>;
     description: string;
     transaction_id: string;
     message: string;
     amount: number;
-    email: string;
     currency: string;
   }) => void;
   currency?: Currency;
@@ -81,7 +80,7 @@ const Feexpay: React.FC<FeexPayButtonProps> = ({
       apiToken,
       callbackUrl,
       mode,
-      customId: customId || generateRandomId(),
+      customId: customId ,
       fields_to_hide,
       callback,
       currency,
@@ -126,10 +125,10 @@ const Feexpay: React.FC<FeexPayButtonProps> = ({
     setIsModalOpen(false);
   };
 
-  const generateRandomId = () => {
-    return Math.random().toString(36).substring(2, 15) +
-           Math.random().toString(36).substring(2, 15);
-  };
+  // const generateRandomId = () => {
+  //   return `TRX_${Math.random().toString(36).substring(2, 15) +
+  //          Math.random().toString(36).substring(2, 15)}` 
+  // };
 
   return (
     <div ref={containerRef}>

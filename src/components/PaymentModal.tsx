@@ -85,7 +85,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           amount,
           shop: paymentConfig.shop,
           apiToken: paymentConfig.apiToken,
-          currency: paymentConfig.currency
+          currency: paymentConfig.currency,
+          callback_info: paymentConfig.callback_info || {},
         });
         
         // Si ifFees est true, appliquer les frais calculés à partir du total retourné par l'API
@@ -408,10 +409,14 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           network,
           country,
           description: paymentConfig.description || 'Payment',
-          customId: generateRandomId(),
+          customId: paymentConfig.customId || '',
           shop: paymentConfig.shop,
           apiToken: paymentConfig.apiToken,
-          currency: paymentConfig.currency
+          currency: paymentConfig.currency,
+          callback_info: paymentConfig.callback_info || {},
+          first_name: fullName|| '',
+          email: email || '',
+          
         });
         if (response.payment_url) {
           setIframeUrl(response.payment_url);
@@ -456,7 +461,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           email: email,
           type_card: typeCard,
           apiToken: paymentConfig.apiToken,
-          currency: paymentConfig.currency
+          currency: paymentConfig.currency,
+          
         });
         
         if (response && response.reference) {
@@ -477,7 +483,10 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           country,
           paymentConfig,
           transactionReference,
-          generateRandomId,          setStateCallbacks: {
+          fullName,
+          email,
+          generateRandomId,
+          setStateCallbacks: {
             setTransactionReference,
             setPaymentStatus,
             setStatusMessage,
@@ -511,7 +520,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
               first_name: firstName,
               description: 'Paiement via FeexPay',
               apiToken: paymentConfig.apiToken,
-              currency: paymentConfig.currency
+              currency: paymentConfig.currency,
+              callback_info: paymentConfig.callback_info || {},
             });
             
             // Si le statut est 201, afficher le modal OTP
@@ -542,6 +552,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
             paymentConfig,
             transactionReference,
             generateRandomId,
+            fullName,
+            email,
             setStateCallbacks: {
               setTransactionReference,
               setPaymentStatus,
@@ -654,7 +666,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
         reference: pendingReference,
         otp: otp,
         apiToken: paymentConfig.apiToken,
-        currency: paymentConfig.currency
+        currency: paymentConfig.currency,
+        callback_info: paymentConfig.callback_info || {},
       });
       
       // Fermer le modal OTP
@@ -716,7 +729,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
   
   
   const handleStatusCheck = (ref: string) => {
-    const handlerProps = {
+    checkStatus(ref, {
       phoneNumber,
       baseAmount,
       network,
@@ -724,6 +737,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
       paymentConfig,
       transactionReference,
       generateRandomId,
+      fullName,
+      email,
       setStateCallbacks: {
         setTransactionReference,
         setPaymentStatus,
@@ -731,9 +746,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
         setStatusModalOpen,
         setIsLoading
       }
-    };
-    
-    checkStatus(ref, handlerProps, network, getFormattedPhoneNumber);
+    }, network, getFormattedPhoneNumber);
   };
 
 

@@ -25,17 +25,21 @@ export interface PaymentConfig {
     status: PaymentStatus;
     phoneNumber: string;
     reseau: string;
-    callback_info: Record<string, unknown> | string | unknown[];
+    callback_info: Record<string, unknown>;
     description: string;
     transaction_id: string;
     message: string;
     amount: number;
     currency: string;
+    first_name: string;
+    email: string;
   }) => void;
   currency?: Currency;
   case?: string;
-  callback_info?: Record<string, unknown> | string | unknown[];
+  callback_info?: Record<string, unknown>;
   error_callback_url?: string;
+  first_name?: string;
+  email?: string;
 
 }
 

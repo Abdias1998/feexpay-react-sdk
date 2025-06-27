@@ -11,6 +11,8 @@ interface PaymentHandlerProps {
   paymentConfig: PaymentConfig;
   transactionReference: string;
   generateRandomId: () => string;
+  fullName: string;
+  email: string;
   setStateCallbacks: {
     setTransactionReference: (ref: string) => void;
     setPaymentStatus: (status: PaymentStatus) => void;
@@ -42,6 +44,8 @@ export const handlePaymentSubmit = async (
     country,
     paymentConfig,
     generateRandomId,
+    fullName,
+    email,
     setStateCallbacks
   } = props;
 
@@ -66,7 +70,10 @@ export const handlePaymentSubmit = async (
       customId: paymentConfig.customId || generateRandomId(),
       shop: paymentConfig.shop,
       apiToken: paymentConfig.apiToken,
-      currency: paymentConfig.currency
+      currency: paymentConfig.currency,
+      callback_info: paymentConfig.callback_info || {},
+      first_name: fullName,
+      email: email,
     });
     
     // Vérifier les codes de statut spécifiques
@@ -84,14 +91,14 @@ export const handlePaymentSubmit = async (
           status: 'FAILED',
           phoneNumber: formattedPhoneNumber,
           reseau: network,
-          callback_info:paymentConfig.callback_info ,
+          callback_info: paymentConfig.callback_info || {},
           description: paymentConfig.description,
           transaction_id: response.reference,
           message:"Le paiement a échoué. Veuillez vérifier votre solde et réessayer.",
           amount: paymentConfig.amount,
-          
           currency: paymentConfig.currency ,
-    
+          first_name: fullName,
+          email: email,
         });
       }
       
@@ -114,14 +121,14 @@ export const handlePaymentSubmit = async (
           status: 'FAILED',
           phoneNumber: formattedPhoneNumber,
           reseau: network,
-          callback_info:paymentConfig.callback_info ,
+          callback_info: paymentConfig.callback_info || {},
           description: paymentConfig.description,
           transaction_id: response.reference,
           message:"La transaction a été annulée. Veuillez réessayer.",
           amount: paymentConfig.amount,
-          
+          first_name: fullName,
+          email: email,
           currency: paymentConfig.currency ,
-    
         });
       }
       
@@ -133,14 +140,15 @@ export const handlePaymentSubmit = async (
     }
     
     setTransactionReference(response.reference);
-    // Ne pas appeler startStatusCheck ici, cela sera fait par le composant
+    startStatusCheck(response.reference, props, network, getFormattedPhoneNumber);
+
     return { reference: response.reference };
   } catch (error) {
-    console.error('Payment initiation failed:', error);
+    console.error('Payment error:', error);
     setPaymentStatus('FAILED');
     setStatusMessage('Le paiement a échoué. Veuillez réessayer.');
     setStatusModalOpen(true);
-    setIsLoading(false); 
+    setIsLoading(false);
   }
 };
 
@@ -153,7 +161,9 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
   
   const {
     paymentConfig,
-    setStateCallbacks
+    setStateCallbacks,
+    fullName,
+    email,
   } = props;
 
   const {
@@ -191,7 +201,8 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
             transaction_id: status.reference,
             message:"Le paiement a échoué. Veuillez vérifier votre solde et réessayer.",
             amount: paymentConfig.amount,
-            
+            first_name: fullName,
+            email: email,
             currency: paymentConfig.currency ,
     
           });
@@ -221,7 +232,8 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
             transaction_id: status.reference,
             message:"Le paiement a echoué. Veuillez vérifier le numéro et réessayer.",
             amount: paymentConfig.amount,
-            
+            first_name: fullName,
+            email: email,
             currency: paymentConfig.currency ,
           });
         }
@@ -253,13 +265,14 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
               status: paymentStatus,
               phoneNumber: getFormattedPhoneNumber(),
               reseau: network,
-              callback_info:paymentConfig.callback_info ,
+              callback_info:paymentConfig.callback_info || {},
               description: paymentConfig.description,
               transaction_id: status.reference,
               message:"La transaction a été effectuée avec succès.",
               amount: paymentConfig.amount,
-              
-              currency: paymentConfig.currency ,
+              currency: paymentConfig.currency,
+              first_name: fullName,
+              email: email,
             });
           }
           
@@ -283,14 +296,14 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
               status: paymentStatus,
               phoneNumber: getFormattedPhoneNumber(),
               reseau: network,
-              callback_info:paymentConfig.callback_info ,
+              callback_info:paymentConfig.callback_info || {},
               description: paymentConfig.description,
               transaction_id: status.reference,
               message:"Le paiement a échoué. Veuillez réessayer ou utiliser une autre méthode de paiement.",
               amount: paymentConfig.amount,
-              
-              currency: paymentConfig.currency ,
-             
+              currency: paymentConfig.currency,
+              first_name: fullName,
+              email: email,
             });
           }
           
@@ -314,13 +327,14 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
               status: paymentStatus,
               phoneNumber: getFormattedPhoneNumber(),
               reseau: network,
-              callback_info:paymentConfig.callback_info ,
+              callback_info:paymentConfig.callback_info || {},
               description: paymentConfig.description,
               transaction_id: status.reference,
               message:"Le paiement a échoué. Veuillez vérifier votre solde et réessayer.",
               amount: paymentConfig.amount,
-              
-              currency: paymentConfig.currency ,
+              currency: paymentConfig.currency,
+              first_name: fullName,
+              email: email,
             });
           }
           
@@ -344,13 +358,14 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
               status: paymentStatus,
               phoneNumber: getFormattedPhoneNumber(),
               reseau: network,
-              callback_info:paymentConfig.callback_info ,
+              callback_info:paymentConfig.callback_info || {},
               description: paymentConfig.description,
               transaction_id: status.reference,
               message:"La vérification du paiement a expiré. Veuillez vérifier votre compte pour confirmer le statut.",
               amount: paymentConfig.amount,
-              
-              currency: paymentConfig.currency 
+              currency: paymentConfig.currency,
+              first_name: fullName,
+              email: email,
             });
           }
           
@@ -376,14 +391,14 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
                 status: 'TIMEOUT',
                 phoneNumber: getFormattedPhoneNumber(),
                 reseau: network,
-                callback_info:paymentConfig.callback_info ,
+                callback_info:paymentConfig.callback_info || {},
                 description: paymentConfig.description,
                 transaction_id: status.reference,
                 message:"La vérification du paiement a expiré. Veuillez vérifier votre compte pour confirmer le statut.",
                 amount: paymentConfig.amount,
-                
-                currency: paymentConfig.currency ,
-             
+                currency: paymentConfig.currency,
+                first_name: fullName,
+                email: email,
               });
             }
             
@@ -415,8 +430,9 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
                 message: 'Le statut de la transaction est inconnu après plusieurs tentatives.',
                 amount: paymentConfig.amount,
                 
-                currency: paymentConfig.currency,
-                
+                currency    : paymentConfig.currency,
+                first_name: fullName,
+                email: email,
               });
             }
 
@@ -448,6 +464,8 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
             amount: paymentConfig.amount,
             
             currency: paymentConfig.currency,
+            first_name: fullName,
+            email: email,
           });
         }
 

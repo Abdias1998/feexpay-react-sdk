@@ -27,23 +27,7 @@ import { FeexPayButton ,FeexPayProvider} from '@feexpay/react-sdk';
 ### Utilisation du bouton de paiement
 
 ```javascript
-const handlePaymentCallback = (response) => {
-  switch(response.status) {
-    case 'SUCCESSFUL':
-    case 'SUCCESS':
-      console.log('Paiement réussi! Référence:', response.reference);
-      break;
-    case 'FAILED':
-      console.log('Paiement échoué. Référence:', response.reference);
-      break;
-    case 'INSUFFICIENT_FUNDS':
-      console.log('Fonds insuffisants. Référence:', response.reference);
-      break;
-    case 'TIMEOUT':
-      console.log('Timeout. Référence:', response.reference);
-      break;
-  }
-};
+
 
 // Dans votre composant
 <FeexPayProvider>
@@ -61,7 +45,9 @@ const handlePaymentCallback = (response) => {
   buttonText="Payer"
   buttonClass="mt-3"
   fields_to_hide={["email", "name"]}
-  callback={handlePaymentCallback}
+ callback={(response)=>{
+ console.log(response)
+  }}
   customId="123646473"
   callback_info ="INFORMATION SUPPLEMANTAIRE"
 />
@@ -82,17 +68,16 @@ const handlePaymentCallback = (response) => {
 - `description` (string) : Description du paiement
 - `callbackUrl` (string) : URL de redirection après le paiement
 - `mode` (string) : Mode d'opération ('SANDBOX' ou 'LIVE')
-- `customId` (string) : Identifiant personnalisé
+- `customId` (string) : Référence personnalisée (chaîne aléatoire unique)
 - `fields_to_hide` (array) : Champs à masquer dans le formulaire
 - `callback` (function) : Fonction appelée après le paiement
 - `currency` (string) : Devise (par défaut: XOF)
 - `case` (string) : Mode de casse
-- `buttonText` (string) : Texte du bouton (par défaut: "Payer")
+- `buttonText` (string) : Texte du bouton personnaliser 
 - `buttonClass` (string) : Classes CSS pour le bouton
 - `buttonStyles` (object) : Styles CSS personnalisés pour le bouton
-- `defaultValueField` (object) : Valeurs par défaut pour certains champs
+- `callback_info` (object) :  Informations complémentaires. 
 
-> **Note** : Le FeexPayProvider n'est pas nécessaire car toutes les configurations peuvent être passées directement au composant FeexPayButton.
 
 ## Méthodes de paiement supportées
 

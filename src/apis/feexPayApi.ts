@@ -13,6 +13,7 @@ interface RequestWalletCorisParams {
   otp?: string;
   currency: Currency;
   apiToken: string;
+  callback_info: Record<string, unknown>;
 }
 
 // Type pour les paiements par carte
@@ -38,6 +39,9 @@ interface RequestToPayParams {
   shop: string;
   apiToken: string;
   currency: Currency;
+  callback_info: Record<string, unknown>;
+  first_name: string;
+  email: string;
 }
 
 export interface TransactionResponse {
@@ -61,6 +65,7 @@ interface TransactionDetailsParams {
   shop: string;
   apiToken: string;
   currency: Currency;
+  callback_info: Record<string, unknown>;
 }
 
 interface TransactionDetailsResponse {
@@ -107,7 +112,11 @@ if (cleanedPhone.length >= 8) {
       token: params.apiToken,
       merchant_domain: merchantDomain,
       merchant_ip: merchantIp,
-      payment_interface : "REACT"
+      payment_interface : "REACT",
+      callback_info: params.callback_info || {},
+      currency: params.currency || "XOF",
+      first_name: params.first_name,
+      email: params.email,
     };
 
     const response = await fetch(apiUrl, {
@@ -256,7 +265,8 @@ export const requestWalletCorisPayment = async (params: RequestWalletCorisParams
       reference: params.reference || '',
       reseau: 'CORIS',
       shop: params.shop,
-      token: params.apiToken
+      token: params.apiToken,
+      callback_info: params.callback_info || {},
     };
     
     const response = await fetch(apiUrl, {
