@@ -4,7 +4,7 @@ export type Country = 'BENIN' | 'COTE_D_IVOIRE' | 'BURKINA_FASO' | 'CONGO_BRAZZA
 
 export type PaymentMethod = 'MOBILE' | 'CARD' | 'WALLET';
 
-export type Currency = 'XOF' | 'USD' | 'CAD';
+export type Currency = 'XOF' | 'USD' | 'CAD' | 'XAF';
 
 export type PaymentStatus = 'PENDING' | 'SUCCESSFUL' | 'FAILED' | 'TIMEOUT' | 'INSUFFICIENT_FUNDS' | 'SUCCESS';
 

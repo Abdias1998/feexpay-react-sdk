@@ -879,7 +879,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
               
               {/* Formulaire pour Mobile Money */}
               {/* Formulaire pour Mobile Money */}
-              {paymentMethod === 'MOBILE' && paymentConfig.currency !== 'CAD' && paymentConfig.currency !== 'USD' && (
+              {paymentMethod === 'MOBILE' && (
                 <>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -914,7 +914,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
               )}
 
                 {/* Formulaire pour Carte Bancaire */}
-                {(paymentMethod === 'CARD' && (paymentConfig.currency === 'CAD' || paymentConfig.currency === 'USD')) && (
+                {(paymentMethod === 'CARD' ) && (
                 <div className="space-y-4">
                   <p className="text-red-500 text-md">Les paiements par cartes sont momentanément indisponibles.</p>
 
@@ -1017,7 +1017,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
 
               {/* Formulaire pour Wallet */}
           {/* Formulaire pour Wallet - Utilise la même interface que Mobile Money */}
-          {paymentMethod === 'WALLET' && paymentConfig.currency !== 'CAD' && paymentConfig.currency !== 'USD' && (
+          {paymentMethod === 'WALLET' && (
                 <>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
