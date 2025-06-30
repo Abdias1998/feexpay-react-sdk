@@ -1,23 +1,14 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getShop, ShopResponse } from '../apis/feexPayApi';
 
-// Fonction déjà définie
-const getShop = async (shop: string): Promise<{ name: string; reference: string }> => {
-  const apiUrl = `https://api.feexpay.me/api/shop/${shop}/get_shop`;
-
-  const response = await fetch(apiUrl);
-  if (!response.ok) throw new Error('Shop retrieval failed');
-
-  return await response.json();
-};
-
-const HeaderBar = ({ shop  , onClose }: { shop: string; onClose: () => void }) => {
-  const [shopData   , setShopData] = useState<{ name: string; reference: string } | null>(null);
+const HeaderBar = ({ shop, onClose }: { shop: string; onClose: () => void }) => {
+  const [shopData, setShopData] = useState<ShopResponse | null>(null);
 
   useEffect(() => {
     const fetchShop = async () => {
       try {
-        const data = await getShop(shop);
-        setShopData(data);
+        const shopData = await getShop(shop);
+        setShopData(shopData);
       } catch (err) {
         console.error('Erreur de récupération du shop :', err);
       }

@@ -44,6 +44,11 @@ interface RequestToPayParams {
   email: string;
 }
 
+export interface ShopResponse {
+  name: string;
+  reference: string;
+}
+
 export interface TransactionResponse {
   status: PaymentStatus;
   reason?: string;
@@ -290,8 +295,8 @@ export const requestWalletCorisPayment = async (params: RequestWalletCorisParams
 };
 
 
-export const getShop = async (apiToken: string): Promise<TransactionResponse> => {
-  const apiUrl = `https://api.feexpay.me/api/shop/${apiToken}/get_shop`;
+export const getShop = async (shop: string): Promise<ShopResponse> => {
+  const apiUrl = `https://api.feexpay.me/api/shop/${shop}/get_shop`;
   
   try {
     const response = await fetch(apiUrl);
