@@ -137,7 +137,7 @@ const Feexpay: React.FC<FeexPayButtonProps> = ({
       ) : shopLoaded && !custom_button && (
         <button
           onClick={handlePaymentClick}
-          className={buttonClass || "w-full bg-primary-orange hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 flex items-center justify-center"}
+          className={buttonClass || "bg-primary-orange hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 flex items-center justify-center"}
         >
           {buttonText}
         </button>
