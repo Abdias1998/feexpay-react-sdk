@@ -39,12 +39,12 @@ function App() {
           
         
                 <FeexPayButton 
-                  amount={10}
+                  amount={100}
                   description="Test Payment"
-                  shop="671a774c706593edb3dc4ab2"
+                  // shop="671a774c706593edb3dc4ab2"
                   apiToken="fp_HHNoQGt9Vn8KpZoLaBkG3uEeKpLUYBaHUZIZXJE3Xgv0OKG2tK3A7PtlytctikrJ"
-                  // 
-                  // shop="679a12dedea4a0b5d416ea87"
+                  
+                  shop="679a12dedea4a0b5d416ea87"
                   customId='23455'
                   // error_callback_url='https://example.com/callback/error'
                   // callbackUrl="https://example.com/callback"

@@ -90,14 +90,30 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
           callback_info: paymentConfig.callback_info || {},
         });
         
-        // Si ifFees est true, appliquer les frais calculés à partir du total retourné par l'API
+        // Si ifFees est true, appliquer les frais
         if (details && details.iffees) {
-          if (details.total !== undefined) {
-            const calculatedFees = details.total - amount;
-            setFees(calculatedFees);
-            setTotal(details.total);
+          let feesApplied = false;
+          // Gestion des frais minimums pour les petits montants
+          if (amount <= 30) {
+            const countryFees = NETWORK_FEES[country];
+            if (countryFees && countryFees[network] && countryFees[network] > 0) {
+              setFees(1);
+              setTotal(amount + 1);
+              setFeePercentage(countryFees[network] * 100);
+              feesApplied = true;
+            }
+          }
+
+          if (!feesApplied) {
+            if (details.total !== undefined) {
+              const calculatedFees = details.total - amount;
+              setFees(calculatedFees);
+              setTotal(details.total);
+            } else {
+              calculateFeesLocally(amount, country, network, currentPaymentMethod);
+            }
             
-            // Récupérer le pourcentage des frais pour l'affichage
+            // Mise à jour du pourcentage des frais
             if (currentPaymentMethod === 'CARD') {
               setFeePercentage(4.5);
             } else {
@@ -108,30 +124,13 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
                 setFeePercentage(0);
               }
             }
-          } else {
-            calculateFeesLocally(amount, country, network, currentPaymentMethod);
           }
-        } 
-        // else {
-        //   // Gestion des frais minimums pour les petits montants
-        //   if (amount <= 30) {
-        //     const countryFees = NETWORK_FEES[country];
-        //     if (countryFees && countryFees[network] && countryFees[network] > 0) {
-        //       setFees(1);
-        //       setTotal(amount + 1);
-        //       setFeePercentage(countryFees[network] * 100);
-        //     } else {
-        //       setFees(0);
-        //       setTotal(amount);
-        //       setFeePercentage(0);
-        //     }
-        //   }
-        //    else {
-        //     setFees(0);
-        //     setTotal(amount);
-        //     setFeePercentage(0);
-        //   }
-        // }
+        } else {
+          // Si ifFees est false, aucun frais n'est appliqué
+          setFees(0);
+          setTotal(amount);
+          setFeePercentage(0);
+        }
         
         setBaseAmount(amount);
       } catch (error) {

@@ -158,7 +158,7 @@ export const handlePaymentSubmit = async (
  */
 export const startStatusCheck = (ref: string, props: PaymentHandlerProps, network: Network, getFormattedPhoneNumber: () => string) => {
   let checkCount = 0;
-  const maxChecks = 12; // 60 secondes (12 * 5000ms)
+  const maxChecks = 12; // 120secondes (12 * 10000ms)
   let isCallbackCalled = false; // Flag to ensure callback is called only once
   let timeoutId: NodeJS.Timeout | null = null;
 
@@ -249,7 +249,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
           if (checkCount >= maxChecks) {
             handleFinalStatus('TIMEOUT', 'La vérification du paiement a expiré. Veuillez vérifier votre compte.', 'TIMEOUT');
           } else {
-            timeoutId = setTimeout(checkStatus, 5000);
+            timeoutId = setTimeout(checkStatus, 10000);
           }
           break;
         default:
