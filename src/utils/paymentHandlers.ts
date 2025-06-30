@@ -13,6 +13,7 @@ interface PaymentHandlerProps {
   generateRandomId: () => string;
   fullName: string;
   email: string;
+  isCallbackCalledRef: React.MutableRefObject<boolean>;
   setStateCallbacks: {
     setTransactionReference: (ref: string) => void;
     setPaymentStatus: (status: PaymentStatus) => void;
@@ -157,8 +158,10 @@ export const handlePaymentSubmit = async (
  */
 export const startStatusCheck = (ref: string, props: PaymentHandlerProps, network: Network, getFormattedPhoneNumber: () => string) => {
   let checkCount = 0;
-  const maxChecks = 12; // 60 secondes (30 * 2000ms)
-  
+  const maxChecks = 12; // 60 secondes (12 * 5000ms)
+  let isCallbackCalled = false; // Flag to ensure callback is called only once
+  let timeoutId: NodeJS.Timeout | null = null;
+
   const {
     paymentConfig,
     setStateCallbacks,
@@ -172,312 +175,104 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
     setStatusModalOpen,
     setIsLoading
   } = setStateCallbacks;
-  
-  const intervalId = setInterval(async () => {
+
+  const handleFinalStatus = (status: PaymentStatus, message: string, callbackStatus: PaymentStatus) => {
+    if (props.isCallbackCalledRef.current) return;
+    props.isCallbackCalledRef.current = true;
+
+    if (timeoutId) clearTimeout(timeoutId);
+
+    setPaymentStatus(status);
+    setStatusMessage(message);
+    setStatusModalOpen(true);
+    setIsLoading(false);
+
+    const callbackData = {
+      reference: ref,
+      status: callbackStatus,
+      phoneNumber: getFormattedPhoneNumber(),
+      reseau: network as string,
+      callback_info: paymentConfig.callback_info || {},
+      description: paymentConfig.description,
+      transaction_id: ref,
+      message: message,
+      amount: paymentConfig.amount,
+      currency: (paymentConfig.currency || "XOF") as string,
+      first_name: fullName,
+      email: email,
+    };
+
+    if (paymentConfig.callback) {
+      paymentConfig.callback(callbackData);
+    }
+
+    const isSuccess = callbackStatus === 'SUCCESSFUL' || callbackStatus === 'SUCCESS';
+    if (isSuccess && paymentConfig.callbackUrl) {
+      window.location.href = `${paymentConfig.callbackUrl}?ref=${ref}`;
+    } else if (!isSuccess && paymentConfig.error_callback_url) {
+      window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}`;
+    }
+  };
+
+  const checkStatus = async () => {
+    if (isCallbackCalled) return;
     checkCount++;
-    
+
     try {
-      // Vérifier le statut de la transaction avec l'API
       const status = await checkTransactionStatus(ref);
-      // console.log(`Transaction status check ${checkCount}:`, status);
-      
-      // Vérifier d'abord les raisons d'échec spécifiques
+
       if (status.reason === "LOW_BALANCE_OR_PAYEE_LIMIT_REACHED_OR_NOT_ALLOWED") {
-        clearInterval(intervalId);
-        setPaymentStatus('INSUFFICIENT_FUNDS');
-        setStatusMessage('Fonds insuffisants. Veuillez vérifier votre solde et réessayer.');
-        setStatusModalOpen(true);
-        setIsLoading(false);
-        
-        // Appeler la fonction de callback si fournie
-        if (paymentConfig.callback) {
-          paymentConfig.callback({
-            reference: status.reference,
-            status: 'FAILED',
-            phoneNumber: getFormattedPhoneNumber(),
-            reseau: network,
-            callback_info:paymentConfig.callback_info || {},
-            description: paymentConfig.description,
-            transaction_id: status.reference,
-            message:"Le paiement a échoué. Veuillez vérifier votre solde et réessayer.",
-            amount: paymentConfig.amount,
-            first_name: fullName,
-            email: email,
-            currency: paymentConfig.currency || "XOF" ,
-    
-          });
-        }
-        
-        // Rediriger vers l'URL d'erreur si fournie
-        if (paymentConfig.error_callback_url) {
-          window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}`;
-        }
+        handleFinalStatus('INSUFFICIENT_FUNDS', 'Fonds insuffisants. Veuillez vérifier votre solde et réessayer.', 'FAILED');
         return;
       } else if (status.reason === "PAYER NOT FOUND") {
-        clearInterval(intervalId);
-        setPaymentStatus('FAILED');
-        setStatusMessage('Numéro de téléphone non trouvé. Veuillez vérifier le numéro et réessayer.');
-        setStatusModalOpen(true);
-        setIsLoading(false);
-        
-        // Appeler la fonction de callback si fournie
-        if (paymentConfig.callback) {
-          paymentConfig.callback({
-            reference: status.reference,
-            status: 'FAILED',
-            phoneNumber: getFormattedPhoneNumber(),
-            reseau: network,
-            callback_info:paymentConfig.callback_info || {},
-            description: paymentConfig.description,
-            transaction_id: status.reference,
-            message:"Le paiement a echoué. Veuillez vérifier le numéro et réessayer.",
-            amount: paymentConfig.amount,
-            first_name: fullName,
-            email: email,
-            currency: paymentConfig.currency || "XOF",
-          });
-        }
-        
-        // Rediriger vers l'URL d'erreur si fournie
-        if (paymentConfig.error_callback_url) {
-          window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}`;
-        }
+        handleFinalStatus('FAILED', 'Numéro de téléphone non trouvé. Veuillez vérifier le numéro et réessayer.', 'FAILED');
         return;
       }
-      
-      // Si aucune raison spécifique n'est trouvée, déterminer le statut de paiement en fonction de la réponse de l'API
+
       const paymentStatus = status.status.toUpperCase() as PaymentStatus;
-      
-      // Gérer les différents statuts possibles
+
       switch (paymentStatus) {
         case 'SUCCESSFUL':
         case 'SUCCESS':
-          clearInterval(intervalId);
-          setPaymentStatus('SUCCESSFUL');
-          setStatusMessage('Paiement réussi !');
-          setStatusModalOpen(true);
-          setIsLoading(false);
-          
-          // Appeler la fonction de callback si fournie
-          if (paymentConfig.callback) {
-            paymentConfig.callback({
-              reference: status.reference,
-              status: paymentStatus,
-              phoneNumber: getFormattedPhoneNumber(),
-              reseau: network,
-              callback_info:paymentConfig.callback_info || {},
-              description: paymentConfig.description,
-              transaction_id: status.reference,
-              message:"La transaction a été effectuée avec succès.",
-              amount: paymentConfig.amount,
-              currency: paymentConfig.currency || "XOF",
-              first_name: fullName,
-              email: email,
-            });
-          }
-          
-          // Rediriger vers l'URL de callback si fournie
-          if (paymentConfig.callbackUrl) {
-            window.location.href = `${paymentConfig.callbackUrl}?ref=${ref}`;
-          }
+          handleFinalStatus('SUCCESSFUL', 'Paiement réussi !', paymentStatus);
           break;
-          
         case 'FAILED':
-          clearInterval(intervalId);
-          setPaymentStatus('FAILED');
-          setStatusMessage('Le paiement a échoué. Veuillez réessayer ou utiliser une autre méthode de paiement.');
-          setStatusModalOpen(true);
-          setIsLoading(false);
-          
-          // Appeler la fonction de callback si fournie
-          if (paymentConfig.callback) {
-            paymentConfig.callback({
-              reference: status.reference,
-              status: paymentStatus,
-              phoneNumber: getFormattedPhoneNumber(),
-              reseau: network,
-              callback_info:paymentConfig.callback_info || {},
-              description: paymentConfig.description,
-              transaction_id: status.reference,
-              message:"Le paiement a échoué. Veuillez réessayer ou utiliser une autre méthode de paiement.",
-              amount: paymentConfig.amount,
-              currency: paymentConfig.currency || "XOF",
-              first_name: fullName,
-              email: email,
-            });
-          }
-          
-          // Rediriger vers l'URL d'erreur si fournie
-          if (paymentConfig.error_callback_url) {
-            window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}`;
-          }
+          handleFinalStatus('FAILED', 'Le paiement a échoué. Veuillez réessayer.', 'FAILED');
           break;
-          
         case 'INSUFFICIENT_FUNDS':
-          clearInterval(intervalId);
-          setPaymentStatus('INSUFFICIENT_FUNDS');
-          setStatusMessage('Fonds insuffisants. Veuillez vérifier votre solde et réessayer.');
-          setStatusModalOpen(true);
-          setIsLoading(false);
-          
-          // Appeler la fonction de callback si fournie
-          if (paymentConfig.callback) {
-            paymentConfig.callback({
-              reference: status.reference,
-              status: paymentStatus,
-              phoneNumber: getFormattedPhoneNumber(),
-              reseau: network,
-              callback_info:paymentConfig.callback_info || {},
-              description: paymentConfig.description,
-              transaction_id: status.reference,
-              message:"Le paiement a échoué. Veuillez vérifier votre solde et réessayer.",
-              amount: paymentConfig.amount,
-              currency: paymentConfig.currency || "XOF",
-              first_name: fullName,
-              email: email,
-            });
-          }
-          
-          // Rediriger vers l'URL d'erreur si fournie
-          if (paymentConfig.error_callback_url) {
-            window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}`;
-          }
+          handleFinalStatus('INSUFFICIENT_FUNDS', 'Fonds insuffisants. Veuillez vérifier votre solde et réessayer.', 'INSUFFICIENT_FUNDS');
           break;
-          
         case 'TIMEOUT':
-          clearInterval(intervalId);
-          setPaymentStatus('TIMEOUT');
-          setStatusMessage('La vérification du paiement a expiré. Veuillez vérifier votre compte pour confirmer le statut.');
-          setStatusModalOpen(true);
-          setIsLoading(false);
-          
-          // Appeler la fonction de callback si fournie
-          if (paymentConfig.callback) {
-            paymentConfig.callback({
-              reference: status.reference,
-              status: paymentStatus,
-              phoneNumber: getFormattedPhoneNumber(),
-              reseau: network,
-              callback_info:paymentConfig.callback_info || {},
-              description: paymentConfig.description,
-              transaction_id: status.reference,
-              message:"La vérification du paiement a expiré. Veuillez vérifier votre compte pour confirmer le statut.",
-              amount: paymentConfig.amount,
-              currency: paymentConfig.currency || "XOF",
-              first_name: fullName,
-              email: email,
-            });
-          }
-          
-          // Rediriger vers l'URL d'erreur si fournie
-          if (paymentConfig.error_callback_url) {
-            window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}`;
-          }
-          break;
-          
+            handleFinalStatus('TIMEOUT', 'La vérification du paiement a expiré.', 'TIMEOUT');
+            break;
         case 'PENDING':
-          // Si le statut est toujours en attente et que nous avons atteint le nombre maximum de vérifications
           if (checkCount >= maxChecks) {
-            clearInterval(intervalId);
-            setPaymentStatus('TIMEOUT');
-            setStatusMessage('La vérification du paiement a expiré. Veuillez vérifier votre compte pour confirmer le statut.');
-            setStatusModalOpen(true);
-            setIsLoading(false);
-            
-            // Appeler la fonction de callback si fournie
-            if (paymentConfig.callback) {
-              paymentConfig.callback({
-                reference: status.reference,
-                status: 'TIMEOUT',
-                phoneNumber: getFormattedPhoneNumber(),
-                reseau: network,
-                callback_info:paymentConfig.callback_info || {},
-                description: paymentConfig.description,
-                transaction_id: status.reference,
-                message:"La vérification du paiement a expiré. Veuillez vérifier votre compte pour confirmer le statut.",
-                amount: paymentConfig.amount,
-                currency: paymentConfig.currency || "XOF",
-                first_name: fullName,
-                email: email,
-              });
-            }
-            
-            // Rediriger vers l'URL d'erreur si fournie
-            if (paymentConfig.error_callback_url) {
-              window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}`;
-            }
+            handleFinalStatus('TIMEOUT', 'La vérification du paiement a expiré. Veuillez vérifier votre compte.', 'TIMEOUT');
+          } else {
+            timeoutId = setTimeout(checkStatus, 5000);
           }
           break;
-          
         default:
-          // Pour tout autre statut non géré, continuer à vérifier jusqu'à atteindre le nombre maximum de vérifications
           if (checkCount >= maxChecks) {
-            clearInterval(intervalId);
-            setPaymentStatus('TIMEOUT');
-            setStatusMessage('Le statut de la transaction est inconnu après plusieurs tentatives.');
-            setStatusModalOpen(true);
-            setIsLoading(false);
-            
-            if (paymentConfig.callback) {
-              paymentConfig.callback({
-                reference: ref,
-                status: 'TIMEOUT',
-                phoneNumber: getFormattedPhoneNumber(),
-                reseau: network,
-                callback_info: paymentConfig.callback_info || {},
-                description: paymentConfig.description,
-                transaction_id: ref,
-                message: 'Le statut de la transaction est inconnu après plusieurs tentatives.',
-                amount: paymentConfig.amount,
-                
-                currency    : paymentConfig.currency || "XOF",
-                first_name: fullName,
-                email: email,
-              });
-            }
-
-            if (paymentConfig.error_callback_url) {
-              window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}`;
-            }
+            handleFinalStatus('TIMEOUT', 'Statut de transaction inconnu après plusieurs tentatives.', 'TIMEOUT');
           }
           break;
       }
     } catch (error) {
       console.error(`Status check failed for ref ${ref}:`, error);
       if (checkCount >= maxChecks) {
-        clearInterval(intervalId);
-        setPaymentStatus('TIMEOUT');
-        setStatusMessage('La vérification du paiement a échoué après plusieurs tentatives.');
-        setStatusModalOpen(true);
-        setIsLoading(false);
-
-        if (paymentConfig.callback) {
-          paymentConfig.callback({
-            reference: ref,
-            status: 'TIMEOUT',
-            phoneNumber: getFormattedPhoneNumber(),
-            reseau: network,
-            callback_info: paymentConfig.callback_info || {},
-            description: paymentConfig.description,
-            transaction_id: ref,
-            message: 'La vérification du paiement a échoué après plusieurs tentatives.',
-            amount: paymentConfig.amount,
-            
-            currency: paymentConfig.currency || "XOF",
-            first_name: fullName,
-            email: email,
-          });
-        }
-
-        if (paymentConfig.error_callback_url) {
-          window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}`;
-        }
+        handleFinalStatus('TIMEOUT', 'La vérification du paiement a échoué après plusieurs tentatives.', 'TIMEOUT');
       }
     }
-  }, 20000);
+  };
+
+  checkStatus();
 
   return () => {
-    clearInterval(intervalId);
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    isCallbackCalled = true; // Prevent any further callbacks when component unmounts
   };
 };
     

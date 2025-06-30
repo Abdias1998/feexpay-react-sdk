@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import CountrySelector from './CountrySelector';
 import NetworkSelector from './NetworkSelector';
 import StatusModal from './StatusModal';
@@ -49,6 +49,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
   const [otpModalOpen, setOtpModalOpen] = useState(false);
   const [pendingReference, setPendingReference] = useState('');
   const [iframeUrl, setIframeUrl] = useState<string | null>(null);
+  const isCallbackCalledRef = useRef(false);
   
   // Fonction de calcul local des frais (utilisée comme fallback si l'API n'est pas disponible)
   const calculateFeesLocally = useCallback((amount: number, country: Country, network: Network, paymentMethodOverride?: PaymentMethod) => {
@@ -110,25 +111,27 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
           } else {
             calculateFeesLocally(amount, country, network, currentPaymentMethod);
           }
-        } else {
-          // Gestion des frais minimums pour les petits montants
-          if (amount <= 30) {
-            const countryFees = NETWORK_FEES[country];
-            if (countryFees && countryFees[network] && countryFees[network] > 0) {
-              setFees(1);
-              setTotal(amount + 1);
-              setFeePercentage(countryFees[network] * 100);
-            } else {
-              setFees(0);
-              setTotal(amount);
-              setFeePercentage(0);
-            }
-          } else {
-            setFees(0);
-            setTotal(amount);
-            setFeePercentage(0);
-          }
-        }
+        } 
+        // else {
+        //   // Gestion des frais minimums pour les petits montants
+        //   if (amount <= 30) {
+        //     const countryFees = NETWORK_FEES[country];
+        //     if (countryFees && countryFees[network] && countryFees[network] > 0) {
+        //       setFees(1);
+        //       setTotal(amount + 1);
+        //       setFeePercentage(countryFees[network] * 100);
+        //     } else {
+        //       setFees(0);
+        //       setTotal(amount);
+        //       setFeePercentage(0);
+        //     }
+        //   }
+        //    else {
+        //     setFees(0);
+        //     setTotal(amount);
+        //     setFeePercentage(0);
+        //   }
+        // }
         
         setBaseAmount(amount);
       } catch (error) {
@@ -395,6 +398,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
       return;
     }
 
+    isCallbackCalledRef.current = false;
     setIsLoading(true);
     
 
@@ -476,29 +480,32 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
         }
       } else if (paymentMethod === 'MOBILE') {
         // Paiement mobile money (code existant)
-        const handlerProps = {
-          phoneNumber,
-          baseAmount,
-          network,
-          country,
-          paymentConfig,
-          transactionReference,
-          fullName,
-          email,
-          generateRandomId,
-          setStateCallbacks: {
-            setTransactionReference,
-            setPaymentStatus,
-            setStatusMessage,
-            setStatusModalOpen,
-            setIsLoading
-          }
-        };
-        
-        // Appeler submitPayment et gérer la réponse pour appeler handleStatusCheck
-        const response = await submitPayment(e, handlerProps, validateForm, getFormattedPhoneNumber);
-        if (response && response.reference) {
-          handleStatusCheck(response.reference);
+        const result = await submitPayment(
+          e,
+          {
+            phoneNumber,
+            baseAmount,
+            network,
+            country,
+            paymentConfig,
+            transactionReference,
+            fullName,
+            email,
+            generateRandomId,
+            isCallbackCalledRef,
+            setStateCallbacks: {
+              setTransactionReference,
+              setPaymentStatus,
+              setStatusMessage,
+              setStatusModalOpen,
+              setIsLoading,
+            },
+          },
+          validateForm,
+          getFormattedPhoneNumber
+        );
+        if (result && result.reference) {
+          handleStatusCheck(result.reference);
         }
       } else if (paymentMethod === 'WALLET') {
         // Cas spécifique pour Wallet Coris (Bénin)
@@ -554,13 +561,14 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
             generateRandomId,
             fullName,
             email,
+            isCallbackCalledRef,
             setStateCallbacks: {
               setTransactionReference,
               setPaymentStatus,
               setStatusMessage,
               setStatusModalOpen,
-              setIsLoading
-            }
+              setIsLoading,
+            },
           };
           
           // Appeler submitPayment et gérer la réponse pour appeler handleStatusCheck
@@ -735,17 +743,18 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
       network,
       country,
       paymentConfig,
-      transactionReference,
+      transactionReference: ref,
       generateRandomId,
       fullName,
       email,
+      isCallbackCalledRef,
       setStateCallbacks: {
         setTransactionReference,
         setPaymentStatus,
         setStatusMessage,
         setStatusModalOpen,
-        setIsLoading
-      }
+        setIsLoading,
+      },
     }, network, getFormattedPhoneNumber);
   };
 

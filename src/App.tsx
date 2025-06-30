@@ -47,7 +47,7 @@ function App() {
                   // shop="679a12dedea4a0b5d416ea87"
                   customId='23455'
                   // error_callback_url='https://example.com/callback/error'
-                  callbackUrl="https://example.com/callback"
+                  // callbackUrl="https://example.com/callback"
                   callback_info={{description:"Test Payment",fullname:"John Doe",email:"john.doe@example.com",phone:"12345678"}}
                   mode="LIVE"
                   // fields_to_hide={["email", "name"]}
