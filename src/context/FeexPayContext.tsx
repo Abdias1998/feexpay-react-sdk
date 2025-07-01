@@ -24,7 +24,7 @@ const defaultPaymentConfig: PaymentConfig = {
   amount: 0,
   description: '',
   shop: '',
-  apiToken: '',
+  token: '',
   mode: 'SANDBOX',
 };
 

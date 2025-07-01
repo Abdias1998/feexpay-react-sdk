@@ -1,6 +1,6 @@
 export const feexpayConfig = {
   shop: '671a774c706593edb3dc4ab2',
-  apiToken: 'fp_HHNoQGt9Vn8KpZoLaBkG3uEeKpLUYBaHUZIZXJE3Xgv0OKG2tK3A7PtlytctikrJ',
+  token: 'fp_HHNoQGt9Vn8KpZoLaBkG3uEeKpLUYBaHUZIZXJE3Xgv0OKG2tK3A7PtlytctikrJ',
   mode: 'LIVE',
   callback_url: 'https://votre-site.com/success',
   currency: 'XOF',

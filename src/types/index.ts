@@ -15,7 +15,7 @@ export interface PaymentConfig {
   amount: number;
   description: string;
   shop: string;
-  apiToken: string;
+  token: string;
   callback_url?: string;
   mode?: 'SANDBOX' | 'LIVE';
   customId?: string;

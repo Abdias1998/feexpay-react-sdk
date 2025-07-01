@@ -8,7 +8,7 @@ interface FeexPayButtonProps {
   amount: number;
   description: string;
   shop: string;
-  apiToken: string;
+  token: string;
   callback_url?: string;
   mode?: 'SANDBOX' | 'LIVE';
   customId?: string;
@@ -39,7 +39,7 @@ const Feexpay: React.FC<FeexPayButtonProps> = ({
   amount,
   description,
   shop,
-  apiToken,
+  token,
   callback_url,
   mode = 'LIVE',
   customId,
@@ -77,7 +77,7 @@ const Feexpay: React.FC<FeexPayButtonProps> = ({
       amount,
       description,
       shop,
-      apiToken,
+      token,
       callback_url,
       mode,
       customId: customId ,
@@ -93,7 +93,7 @@ const Feexpay: React.FC<FeexPayButtonProps> = ({
     amount,
     description,
     shop,
-    apiToken,
+    token,
     callback_url,
     mode,
     customId,

@@ -85,7 +85,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
           country,
           amount,
           shop: paymentConfig.shop,
-          apiToken: paymentConfig.apiToken,
+          token: paymentConfig.token,
           
           callback_info: paymentConfig.callback_info || {},
         });
@@ -137,7 +137,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
         console.error('Erreur lors de la récupération des détails de transaction:', error);
         calculateFeesLocally(amount, country, network, paymentMethodOverride);
       }
-    }, [paymentMethod, paymentConfig.shop, paymentConfig.apiToken, calculateFeesLocally]);
+    }, [paymentMethod, paymentConfig.shop, paymentConfig.token, calculateFeesLocally]);
 
     
    // Effet pour initialiser le montant et les frais
@@ -414,7 +414,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
           description: paymentConfig.description || 'Payment',
           customId: paymentConfig.customId || '',
           shop: paymentConfig.shop,
-          apiToken: paymentConfig.apiToken,
+          token: paymentConfig.token,
           currency: paymentConfig.currency || 'XOF',
           callback_info: paymentConfig.callback_info || {},
           first_name: fullName|| '',
@@ -463,7 +463,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
           last_name: lastName,
           email: email,
           type_card: typeCard,
-          apiToken: paymentConfig.apiToken,
+          token: paymentConfig.token,
           currency: paymentConfig.currency || 'XOF',
           
         });
@@ -525,7 +525,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
               email: email,
               first_name: firstName,
               description: 'Paiement via FeexPay',
-              apiToken: paymentConfig.apiToken,
+              token: paymentConfig.token,
               currency: paymentConfig.currency || 'XOF',
               callback_info: paymentConfig.callback_info || {},
             });
@@ -672,7 +672,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
         description: 'Paiement via FeexPay',
         reference: pendingReference,
         otp: otp,
-        apiToken: paymentConfig.apiToken,
+        token: paymentConfig.token,
         currency: paymentConfig.currency || 'XOF', 
         callback_info: paymentConfig.callback_info || {},
       });

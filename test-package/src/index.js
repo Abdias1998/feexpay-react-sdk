@@ -37,7 +37,7 @@ function App() {
       FeexPayButton,
       {
         shop: feexpayConfig.shop,
-        apiToken: feexpayConfig.apiToken,
+        token: feexpayConfig.token,
         callback_url :"h",
         amount: 100,
         description: 'Test de paiement avec FeexPay',

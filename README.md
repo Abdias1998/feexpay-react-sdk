@@ -43,9 +43,9 @@ function App() {
           amount={10}
           description="Test Payment"
           shop="Votre shop id"
-          apiToken="Votre api token"
+          token="Votre api token"
           customId="23455"
-          callbackUrl="https://example.com/callback"
+          callback_url="https://example.com/callback"
           callback_info={{
             description: "Test Payment",
             fullname: "John Doe",
@@ -76,9 +76,9 @@ export default App;
 | `amount`             | `number`   | ✅        | Montant à payer                              |                        |
 | `description`        | `string`   | ✅        | Description du paiement                      |                        |
 | `shop`               | `string`   | ✅        | ID du shop fourni par FeexPay                |                        |
-| `apiToken`           | `string`   | ✅        | Token API d'authentification                 |                        |
+| `token`           | `string`   | ✅        | Token API d'authentification                 |                        |
 | `customId`           | `string`   | ✅        | ID personnalisé de la transaction            |                        |
-| `callbackUrl`        | `string`   | ✅        | URL de redirection post-paiement             |                        |
+| `callback_url`        | `string`   | ✅        | URL de redirection post-paiement             |                        |
 | `callback_info`      | `object`   | ✅        | Infos utilisateur (nom, email, téléphone...) |                        |
 | `mode`               | \`"LIVE"   | "SANDBOX"\` | ✅                                            | Mode de fonctionnement |
 | `currency`           | `string`   | ✅        | Devise (`XOF`, `USD`, etc.)                  |                        |

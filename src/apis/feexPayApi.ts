@@ -12,7 +12,7 @@ interface RequestWalletCorisParams {
   reference?: string;
   otp?: string;
   currency: Currency;
-  apiToken: string;
+  token: string;
   callback_info: Record<string, unknown>;
 }
 
@@ -26,7 +26,7 @@ interface RequestCardPaymentParams {
   email: string;
   type_card: 'VISA' | 'MASTERCARD';
   currency: Currency;
-  apiToken: string;
+  token: string;
 }
 
 interface RequestToPayParams {
@@ -37,7 +37,7 @@ interface RequestToPayParams {
   description: string;
   customId: string;
   shop: string;
-  apiToken: string;
+  token: string;
   currency: Currency;
   callback_info: Record<string, unknown>;
   first_name: string;
@@ -68,7 +68,7 @@ interface TransactionDetailsParams {
   country: Country;
   amount: number;
   shop: string;
-  apiToken: string;
+  token: string;
   callback_info: Record<string, unknown>;
 }
 
@@ -113,7 +113,7 @@ if (cleanedPhone.length >= 8) {
       description: params.description,
       customId: params.customId,
       shop: params.shop,
-      token: params.apiToken,
+      token: params.token,
       merchant_domain: merchantDomain,
       merchant_ip: merchantIp,
       payment_interface : "REACT",
@@ -127,7 +127,7 @@ if (cleanedPhone.length >= 8) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${params.apiToken}`,
+        'Authorization': `Bearer ${params.token}`,
       },
       body: JSON.stringify(apiParams),
     });
@@ -183,7 +183,7 @@ export const getTransactionDetails = async (params: TransactionDetailsParams): P
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${params.apiToken}`,
+        'Authorization': `Bearer ${params.token}`,
       },
       body: JSON.stringify(requestParams),
     });
@@ -223,7 +223,7 @@ export const requestCardPayment = async (params: RequestCardPaymentParams): Prom
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${params.apiToken}`,
+        'Authorization': `Bearer ${params.token}`,
       },
       body: JSON.stringify(requestParams),
     });
@@ -269,7 +269,7 @@ export const requestWalletCorisPayment = async (params: RequestWalletCorisParams
       reference: params.reference || '',
       reseau: 'CORIS',
       shop: params.shop,
-      token: params.apiToken,
+      token: params.token,
       callback_info: params.callback_info || {},
     };
     

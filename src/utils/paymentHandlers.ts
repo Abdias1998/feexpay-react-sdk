@@ -70,7 +70,7 @@ export const handlePaymentSubmit = async (
       description: paymentConfig.description,
       customId: paymentConfig.customId || generateRandomId(),
       shop: paymentConfig.shop,
-      apiToken: paymentConfig.apiToken,
+      token: paymentConfig.token,
       currency: paymentConfig.currency || "XOF",
       callback_info: paymentConfig.callback_info || {},
       first_name: fullName,
