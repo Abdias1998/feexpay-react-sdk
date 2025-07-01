@@ -27,7 +27,7 @@ export const getNetworksForCountry = (country: Country): Network[] => {
     case 'BENIN':
       return ['MTN', 'MOOV', 'CELTIIS'];
     case 'COTE_D_IVOIRE':
-      return ['MTN', 'MOOV', 'ORANGE', 'WAVE'];
+      return ['MTN', 'MOOV', 'ORANGE'];
     case 'BURKINA_FASO':
       return ['MOOV', 'ORANGE'];
     case 'CONGO_BRAZZAVILLE':
