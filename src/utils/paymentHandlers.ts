@@ -207,8 +207,8 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
     }
 
     const isSuccess = callbackStatus === 'SUCCESSFUL' || callbackStatus === 'SUCCESS';
-    if (isSuccess && paymentConfig.callbackUrl) {
-      window.location.href = `${paymentConfig.callbackUrl}?ref=${ref}`;
+    if (isSuccess && paymentConfig.callback_url) {
+      window.location.href = `${paymentConfig.callback_url}?ref=${ref}`;
     } else if (!isSuccess && paymentConfig.error_callback_url) {
       window.location.href = `${paymentConfig.error_callback_url}?ref=${ref}`;
     }

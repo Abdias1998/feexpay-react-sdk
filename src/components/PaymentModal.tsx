@@ -693,9 +693,9 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
           setIsLoading(false);
           
           // Redirection si une URL de succès est configurée
-          if (paymentConfig.callbackUrl) {
+          if (paymentConfig.callback_url) {
             setTimeout(() => {
-              window.location.href = `${paymentConfig.callbackUrl}?ref=${response.reference}`;
+              window.location.href = `${paymentConfig.callback_url}?ref=${response.reference}`;
             }, 2000);
           }
         } else if (response.status === 'PENDING') {
