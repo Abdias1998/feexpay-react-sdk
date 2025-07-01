@@ -1035,8 +1035,8 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
                         onChange={(e) => handleCountryChange(e.target.value as Country)}
                         className="block w-full px-2 py-2 pr-8 border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
                       >
-                        <option value="BENIN">Bénin</option>
-                        <option value="COTE_D_IVOIRE">Côte d'Ivoire</option>
+                        <option value="BENIN">🇧🇯 Bénin</option>
+                        <option value="COTE_D_IVOIRE">🇨🇮 Côte d'Ivoire</option>
                       </select>
                     </div>
                     
@@ -1049,10 +1049,10 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
                         disabled
                       >
                         {country === 'BENIN' && (
-                          <option value="CORIS">Coris</option>
+                          <option value="CORIS">CORIS</option>
                         )}
                         {country === 'COTE_D_IVOIRE' && (
-                          <option value="WAVE">Wave</option>
+                          <option value="WAVE">WAVE</option>
                         )}
                       </select>
                     </div>
