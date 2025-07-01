@@ -5,7 +5,7 @@ import { getNetworkApiCode } from '../utils/paymentUtils';
 interface RequestWalletCorisParams {
   phoneNumber: string;
   amount: number;
-  shop: string;
+  id: string;
   email: string;
   first_name: string;
   description?: string;
@@ -20,7 +20,7 @@ interface RequestWalletCorisParams {
 interface RequestCardPaymentParams {
   phone: string;
   amount: number;
-  shop: string;
+  id: string;
   first_name: string;
   last_name: string;
   email: string;
@@ -36,7 +36,7 @@ interface RequestToPayParams {
   country: Country;
   description: string;
   customId: string;
-  shop: string;
+  id: string;
   token: string;
   currency: Currency;
   callback_info: Record<string, unknown>;
@@ -67,7 +67,7 @@ interface TransactionDetailsParams {
   network: Network;
   country: Country;
   amount: number;
-  shop: string;
+  id: string;
   token: string;
   callback_info: Record<string, unknown>;
 }
@@ -112,7 +112,7 @@ if (cleanedPhone.length >= 8) {
       reseau: networkApiCode,
       description: params.description,
       customId: params.customId,
-      shop: params.shop,
+      shop: params.id,
       token: params.token,
       merchant_domain: merchantDomain,
       merchant_ip: merchantIp,
@@ -176,7 +176,7 @@ export const getTransactionDetails = async (params: TransactionDetailsParams): P
     const requestParams = {
       network: networkApiCode,
       amount: params.amount,
-      shop: params.shop
+      shop: params.id
     };
     
     const response = await fetch(apiUrl, {
@@ -211,7 +211,7 @@ export const requestCardPayment = async (params: RequestCardPaymentParams): Prom
     const requestParams = {
       phone: params.phone,
       amount: params.amount,
-      shop: params.shop,
+      shop: params.id,
       first_name: params.first_name,
       last_name: params.last_name,
       email: params.email,
@@ -268,7 +268,7 @@ export const requestWalletCorisPayment = async (params: RequestWalletCorisParams
       otp: params.otp || '',
       reference: params.reference || '',
       reseau: 'CORIS',
-      shop: params.shop,
+      shop: params.id,
       token: params.token,
       callback_info: params.callback_info || {},
     };

@@ -1,5 +1,5 @@
 export const feexpayConfig = {
-  shop: '671a774c706593edb3dc4ab2',
+  id: '671a774c706593edb3dc4ab2',
   token: 'fp_HHNoQGt9Vn8KpZoLaBkG3uEeKpLUYBaHUZIZXJE3Xgv0OKG2tK3A7PtlytctikrJ',
   mode: 'LIVE',
   callback_url: 'https://votre-site.com/success',

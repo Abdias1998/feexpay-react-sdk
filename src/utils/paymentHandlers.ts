@@ -69,7 +69,7 @@ export const handlePaymentSubmit = async (
       country, // Ajout du paramètre country
       description: paymentConfig.description,
       customId: paymentConfig.customId || generateRandomId(),
-      shop: paymentConfig.shop,
+      id: paymentConfig.id,
       token: paymentConfig.token,
       currency: paymentConfig.currency || "XOF",
       callback_info: paymentConfig.callback_info || {},

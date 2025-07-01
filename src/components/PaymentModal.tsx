@@ -84,7 +84,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
           network,
           country,
           amount,
-          shop: paymentConfig.shop,
+          id: paymentConfig.id,
           token: paymentConfig.token,
           
           callback_info: paymentConfig.callback_info || {},
@@ -137,7 +137,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
         console.error('Erreur lors de la récupération des détails de transaction:', error);
         calculateFeesLocally(amount, country, network, paymentMethodOverride);
       }
-    }, [paymentMethod, paymentConfig.shop, paymentConfig.token, calculateFeesLocally]);
+    }, [paymentMethod, paymentConfig.id, paymentConfig.token, calculateFeesLocally]);
 
     
    // Effet pour initialiser le montant et les frais
@@ -413,7 +413,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
           country,
           description: paymentConfig.description || 'Payment',
           customId: paymentConfig.customId || '',
-          shop: paymentConfig.shop,
+          id: paymentConfig.id,
           token: paymentConfig.token,
           currency: paymentConfig.currency || 'XOF',
           callback_info: paymentConfig.callback_info || {},
@@ -458,7 +458,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
         const response = await requestCardPayment({
           phone: phoneNumber,
           amount: baseAmount,
-          shop: paymentConfig.shop,
+          id: paymentConfig.id,
           first_name: firstName,
           last_name: lastName,
           email: email,
@@ -521,7 +521,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
             const response = await requestWalletCorisPayment({
               phoneNumber: formattedPhone,
               amount: baseAmount,
-              shop: paymentConfig.shop,
+              id: paymentConfig.id,
               email: email,
               first_name: firstName,
               description: 'Paiement via FeexPay',
@@ -666,7 +666,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
       const response = await requestWalletCorisPayment({
         phoneNumber: formattedPhone,
         amount: baseAmount,
-        shop: paymentConfig.shop,
+        id: paymentConfig.id,
         email: email,
         first_name: firstName,
         description: 'Paiement via FeexPay',
@@ -788,7 +788,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
         </div>
       )}
 
-<HeaderBar shop={paymentConfig.shop} onClose={onClose} />
+<HeaderBar id={paymentConfig.id} onClose={onClose} />
 
 
     <div className="p-6 overflow-y-auto flex-grow">

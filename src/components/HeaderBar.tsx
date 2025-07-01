@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
 import { getShop, ShopResponse } from '../apis/feexPayApi';
 
-const HeaderBar = ({ shop, onClose }: { shop: string; onClose: () => void }) => {
+const HeaderBar = ({ id, onClose }: { id: string; onClose: () => void }) => {
   const [shopData, setShopData] = useState<ShopResponse | null>(null);
 
   useEffect(() => {
     const fetchShop = async () => {
       try {
-        const shopData = await getShop(shop);
+        const shopData = await getShop(id);
         setShopData(shopData);
       } catch (err) {
-        console.error('Erreur de récupération du shop :', err);
+        console.error('Erreur de récupération du id :', err);
       }
     };
 
     fetchShop();
-  }, [shop]);
+  }, [id]);
 
   return (
     <div className="flex items-center justify-between px-4 py-2 border-b border-gray-200">
@@ -24,7 +24,7 @@ const HeaderBar = ({ shop, onClose }: { shop: string; onClose: () => void }) => 
         <img src="https://api.feexpay.me/api/static/feexpay_logo-h.png" width="100" alt="Logo" />
       </div>
 
-      {/* Informations du shop au centre-droit */}
+      {/* Informations du id au centre-droit */}
       <div className="text-right text-xs text-gray-700 ">
         {shopData&& (
           <>

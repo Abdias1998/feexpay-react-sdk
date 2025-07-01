@@ -7,7 +7,7 @@ import { getShop } from '../apis/feexPayApi';
 interface FeexPayButtonProps {
   amount: number;
   description: string;
-  shop: string;
+  id: string;
   token: string;
   callback_url?: string;
   mode?: 'SANDBOX' | 'LIVE';
@@ -38,7 +38,7 @@ interface FeexPayButtonProps {
 const Feexpay: React.FC<FeexPayButtonProps> = ({
   amount,
   description,
-  shop,
+  id,
   token,
   callback_url,
   mode = 'LIVE',
@@ -63,20 +63,20 @@ const Feexpay: React.FC<FeexPayButtonProps> = ({
   useEffect(() => {
     const loadShop = async () => {
       try {
-        await getShop(shop); // Appel API ici
+        await getShop(id); // Appel API ici
         setShopLoaded(true);
       } catch {
         setShopError("Veuillez vérifier vos identifiants de boutique (ID et token) et rester en mode LIVE.");
       }
     };
     loadShop();
-  }, [shop]);
+  }, [id]);
 
   const handlePaymentClick = useCallback(() => {
     setPaymentConfig({
       amount,
       description,
-      shop,
+      id,
       token,
       callback_url,
       mode,
@@ -92,7 +92,7 @@ const Feexpay: React.FC<FeexPayButtonProps> = ({
   }, [
     amount,
     description,
-    shop,
+    id,
     token,
     callback_url,
     mode,

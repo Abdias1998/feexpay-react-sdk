@@ -23,7 +23,7 @@ interface FeexPayProviderProps {
 const defaultPaymentConfig: PaymentConfig = {
   amount: 0,
   description: '',
-  shop: '',
+  id: '',
   token: '',
   mode: 'SANDBOX',
 };

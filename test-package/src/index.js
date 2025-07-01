@@ -36,7 +36,7 @@ function App() {
     React.createElement(
       FeexPayButton,
       {
-        shop: feexpayConfig.shop,
+        id: feexpayConfig.id,
         token: feexpayConfig.token,
         callback_url :"h",
         amount: 100,

@@ -42,7 +42,7 @@ function App() {
         <FeexPayButton
           amount={10}
           description="Test Payment"
-          shop="Votre shop id"
+          id="Votre id id"
           token="Votre api token"
           customId="23455"
           callback_url="https://example.com/callback"
@@ -75,7 +75,7 @@ export default App;
 | -------------------- | ---------- | -------- | -------------------------------------------- | ---------------------- |
 | `amount`             | `number`   | ✅        | Montant à payer                              |                        |
 | `description`        | `string`   | ✅        | Description du paiement                      |                        |
-| `shop`               | `string`   | ✅        | ID du shop fourni par FeexPay                |                        |
+| `id`               | `string`   | ✅        | ID du id fourni par FeexPay                |                        |
 | `token`           | `string`   | ✅        | Token API d'authentification                 |                        |
 | `customId`           | `string`   | ✅        | ID personnalisé de la transaction            |                        |
 | `callback_url`        | `string`   | ✅        | URL de redirection post-paiement             |                        |

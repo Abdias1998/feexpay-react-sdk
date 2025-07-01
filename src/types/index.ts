@@ -14,7 +14,7 @@ export type PaymentStatus = 'PENDING' | 'SUCCESSFUL' | 'FAILED' | 'TIMEOUT' | 'I
 export interface PaymentConfig {
   amount: number;
   description: string;
-  shop: string;
+  id: string;
   token: string;
   callback_url?: string;
   mode?: 'SANDBOX' | 'LIVE';
