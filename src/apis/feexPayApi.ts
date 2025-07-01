@@ -42,6 +42,7 @@ interface RequestToPayParams {
   callback_info: Record<string, unknown>;
   first_name: string;
   email: string;
+  otp?: string;
 }
 
 export interface ShopResponse {
@@ -121,6 +122,7 @@ if (cleanedPhone.length >= 8) {
       currency: params.currency || "XOF",
       first_name: params.first_name,
       email: params.email,
+      otp: params.otp || '',
     };
 
     const response = await fetch(apiUrl, {

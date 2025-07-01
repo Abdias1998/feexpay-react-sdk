@@ -44,12 +44,14 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>('PENDING');
   const [statusMessage, setStatusMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
   
   // États pour la gestion du code OTP (Wallet Coris)
   const [otpModalOpen, setOtpModalOpen] = useState(false);
   const [pendingReference, setPendingReference] = useState('');
   const [iframeUrl, setIframeUrl] = useState<string | null>(null);
   const isCallbackCalledRef = useRef(false);
+  const otpInputRef = useRef<HTMLInputElement>(null);
   
   // Fonction de calcul local des frais (utilisée comme fallback si l'API n'est pas disponible)
   const calculateFeesLocally = useCallback((amount: number, country: Country, network: Network, paymentMethodOverride?: PaymentMethod) => {
@@ -397,11 +399,13 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
       return;
     }
 
+  
+
     isCallbackCalledRef.current = false;
     setIsLoading(true);
     
 
-    const iframeNetworks: string[] = ['MOOV CI', 'ORANGE CI', 'MOOV BF', 'ORANGE BF', 'FREE SN', 'WAVE CI'];
+    const iframeNetworks: string[] = ['MOOV CI', 'ORANGE CI', 'MOOV BF', 'ORANGE BF', 'FREE SN', 'WAVE CI', 'ORANGE SN'];
     const networkApiCode = getNetworkApiCode(country, network);
 
     if (iframeNetworks.includes(networkApiCode)) {
@@ -419,6 +423,8 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
           callback_info: paymentConfig.callback_info || {},
           first_name: fullName|| '',
           email: email || '',
+          otp: otpInputRef.current?.value || '',
+        
           
         });
         if (response.payment_url) {
@@ -680,7 +686,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
       // Fermer le modal OTP
       setOtpModalOpen(false);
       
-      // console.log('OTP submission response:', response);
+  
       
       // Exploiter la réponse de l'API
       if (response.reference) {
@@ -692,7 +698,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
           setStatusModalOpen(true);
           setIsLoading(false);
           
-          // Redirection si une URL de succès est configurée
+          // Redirection si une URL de succès est configurée  
           if (paymentConfig.callback_url) {
             setTimeout(() => {
               window.location.href = `${paymentConfig.callback_url}?ref=${response.reference}`;
@@ -723,8 +729,8 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
         setStatusModalOpen(true);
         setIsLoading(false);
       }
-    } catch (error) {
-      console.error('Error in OTP submission:', error);
+    } catch {
+      
       setPaymentStatus('FAILED');
       setStatusMessage('Une erreur est survenue lors de la confirmation du paiement. Veuillez réessayer.');
       setStatusModalOpen(true);
@@ -917,7 +923,22 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
                       value={phoneNumber}
                       onChange={handlePhoneNumberChange}
                     />
+                     
                   </div>
+                  {country === 'SENEGAL' && network === 'ORANGE' && (
+                 
+                     <>
+                      <input
+                        type="text"
+                        ref={otpInputRef}
+                        id="otp"
+                        placeholder="L’otp de validation"
+                        className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
+
+                      />
+                      <span className='text-xs text-gray-900'>L’otp de validation de la transaction obtenu en tapant #144#391# sur votre téléphone</span>
+                  </>
+                  )}
                 </>
               )}
 
