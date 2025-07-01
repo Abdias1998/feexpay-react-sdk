@@ -16,8 +16,6 @@ export const getNetworkByPhonePrefix = (
     return 'MOOV';
   } else if (BENIN_PREFIXES.CELTIIS.includes(prefix)) {
     return 'CELTIIS';
-  } else if (BENIN_PREFIXES.CORIS.includes(prefix)) {
-    return 'CORIS';
   }
 
   return null;
@@ -27,7 +25,7 @@ export const getNetworkByPhonePrefix = (
 export const getNetworksForCountry = (country: Country): Network[] => {
   switch (country) {
     case 'BENIN':
-      return ['MTN', 'MOOV', 'CELTIIS', 'CORIS'];
+      return ['MTN', 'MOOV', 'CELTIIS'];
     case 'COTE_D_IVOIRE':
       return ['MTN', 'MOOV', 'ORANGE', 'WAVE'];
     case 'BURKINA_FASO':
