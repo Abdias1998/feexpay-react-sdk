@@ -7,13 +7,13 @@ SDK officiel pour intégrer les paiements **FeexPay** dans vos applications **Re
 ## 🚀 Installation
 
 ```bash
-npm install @abdias1998/feexpay_lite
+npm install @feexpay/react-sdk
 ```
 
 ou
 
 ```bash
-yarn add @abdias1998/feexpay_lite
+yarn add @feexpay/react-sdk
 ```
 
 ---
@@ -24,8 +24,8 @@ Ajoutez les composants et le fichier CSS dans votre application :
 
 ```tsx
 import React from 'react';
-import { FeexPayProvider, FeexPayButton } from '@abdias1998/feexpay_lite';
-import '@abdias1998/feexpay_lite/style.css';
+import { FeexPayProvider, FeexPayButton } from '@feexpay/react-sdk';
+import '@feexpay/react-sdk/style.css';
 ```
 
 ---
