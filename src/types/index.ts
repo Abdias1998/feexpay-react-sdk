@@ -12,6 +12,8 @@ export type PaymentStatus = 'PENDING' | 'SUCCESSFUL' | 'FAILED' | 'TIMEOUT' | 'I
 
 
 export interface PaymentConfig {
+  onPaymentSuccess?: (response: { status: string; reference: string; message: string }) => void;
+  onPaymentFailure?: (response: { status: string; reference?: string; message: string }) => void;
   amount: number;
   description: string;
   id: string;

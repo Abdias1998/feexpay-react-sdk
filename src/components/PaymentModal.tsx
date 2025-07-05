@@ -88,8 +88,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
           amount,
           id: paymentConfig.id,
           token: paymentConfig.token,
-          
-          callback_info: paymentConfig.callback_info || {},
+        
         });
         
         // Si ifFees est true, appliquer les frais
@@ -531,9 +530,12 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
               email: email,
               first_name: firstName,
               description: 'Paiement via FeexPay',
-              token: paymentConfig.token,
+              token: paymentConfig.token, 
               currency: paymentConfig.currency || 'XOF',
-              callback_info: paymentConfig.callback_info || {},
+              callback_info: paymentConfig.callback_info || {}, 
+              network: network,
+              country: country,
+              customId: paymentConfig.customId || '',
             });
             
             // Si le statut est 201, afficher le modal OTP
@@ -676,44 +678,80 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
         email: email,
         first_name: firstName,
         description: 'Paiement via FeexPay',
-        reference: pendingReference,
         otp: otp,
         token: paymentConfig.token,
         currency: paymentConfig.currency || 'XOF', 
         callback_info: paymentConfig.callback_info || {},
+        network: network,
+        country: country,
+        customId: paymentConfig.customId || '',
       });
       
       // Fermer le modal OTP
       setOtpModalOpen(false);
       
-  
+      if (response.status === "FAILED") {
+        // Code 10: Fonds insuffisants
+        setPaymentStatus('FAILED');
+        setStatusMessage(response.message?? 'Le paiement a échoué.');
+        setStatusModalOpen(true);
+        setIsLoading(false);
+        
+        // Appeler la fonction de callback si fournie
+        if (paymentConfig.callback) {
+          paymentConfig.callback({
+            reference: response.reference ?? '',
+            status: 'FAILED',
+            phoneNumber: phoneNumber,
+            reseau: network,
+            callback_info: paymentConfig.callback_info || {},
+            description: paymentConfig.description ?? '',
+            transaction_id: response.reference ?? '',
+            message: response.message ?? 'Le paiement a échoué.',
+            amount: paymentConfig.amount,
+            currency: paymentConfig.currency || "XOF",
+            first_name: fullName,
+            email: email,
+          });
+        }
+        
+        // Rediriger vers l'URL d'erreur si fournie
+        if (paymentConfig.error_callback_url) {
+          window.location.href = `${paymentConfig.error_callback_url}?ref=${response.reference}`;
+        }
+        return;
+      } 
       
       // Exploiter la réponse de l'API
       if (response.reference) {
         // Vérifier le statut de la transaction dans la réponse
-        if (response.status === 'SUCCESSFUL' || response.status === 'SUCCESS') {
+        if (response.status && (response.status.toUpperCase() === 'SUCCESSFUL' || response.status.toUpperCase() === 'SUCCESS')) {
           // Transaction réussie
           setPaymentStatus('SUCCESSFUL');
           setStatusMessage('Paiement effectué avec succès!');
           setStatusModalOpen(true);
           setIsLoading(false);
-          
+
+          if (paymentConfig.onPaymentSuccess) {
+            paymentConfig.onPaymentSuccess({ status: 'SUCCESSFUL', reference: response.reference, message: 'Paiement effectué avec succès!' });
+          }
+
           // Redirection si une URL de succès est configurée  
           if (paymentConfig.callback_url) {
             setTimeout(() => {
               window.location.href = `${paymentConfig.callback_url}?ref=${response.reference}`;
             }, 2000);
           }
-        } else if (response.status === 'PENDING') {
-          // Transaction en attente, continuer avec la vérification du statut
-          setTransactionReference(response.reference);
-          handleStatusCheck(response.reference);
         } else {
           // Transaction échouée avec un statut connu
           setPaymentStatus('FAILED');
           setStatusMessage(response.message || 'La transaction a échoué. Veuillez réessayer.');
           setStatusModalOpen(true);
           setIsLoading(false);
+
+          if (paymentConfig.onPaymentFailure) {
+            paymentConfig.onPaymentFailure({ status: 'FAILED', reference: response.reference, message: response.message || 'La transaction a échoué. Veuillez réessayer.' });
+          }
           
           // Redirection si une URL d'erreur est configurée
           if (paymentConfig.error_callback_url) {
@@ -724,18 +762,26 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
         }
       } else {
         // Aucune référence dans la réponse
+        const message = response.message || 'La confirmation du paiement a échoué. Veuillez réessayer.';
         setPaymentStatus('FAILED');
-        setStatusMessage(response.message || 'La confirmation du paiement a échoué. Veuillez réessayer.');
+        setStatusMessage(message);
         setStatusModalOpen(true);
         setIsLoading(false);
+        if (paymentConfig.onPaymentFailure) {
+          paymentConfig.onPaymentFailure({ status: 'FAILED', message });
+        }
       }
-    } catch {
-      
+    } catch (error) {
+      console.error('Error in OTP submission:', error);
+      const message = 'Une erreur est survenue lors de la confirmation du paiement. Veuillez réessayer.';
       setPaymentStatus('FAILED');
-      setStatusMessage('Une erreur est survenue lors de la confirmation du paiement. Veuillez réessayer.');
+      setStatusMessage(message);
       setStatusModalOpen(true);
       setIsLoading(false);
       setOtpModalOpen(false);
+      if (paymentConfig.onPaymentFailure) {
+        paymentConfig.onPaymentFailure({ status: 'FAILED', message });
+      }
     }
   };
 

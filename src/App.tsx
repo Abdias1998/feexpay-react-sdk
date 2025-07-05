@@ -78,7 +78,7 @@ function App() {
   customId='23455'
 
   // URL de redirection en cas d’échec du paiement (optionnel)
-    error_callback_url='https://example.com/callback/error'
+    // error_callback_url='https://example.com/callback/error'
 
   // URL de redirection après succès du paiement (optionnel si callback utilisé)
     callback_url="https://example.com/callback"
@@ -95,7 +95,7 @@ function App() {
   mode="LIVE"
 
   // Champs à cacher dans le formulaire de paiement (optionnel)
-  // fields_to_hide={["email", "name"]}
+  fields_to_hide={["email", "name"]}
 
   // Fonction appelée après le paiement (réussi ou échoué)
   callback={(response) => {
@@ -103,10 +103,12 @@ function App() {
   }}
 
   // Texte du bouton (optionnel si tu veux un texte personnalisé)
-  // buttonText="Payer maintenant"
+  buttonText="Payer maintenant"
 
   // Style personnalisé du bouton (CSS classes tailwind ou bootstrap)
-  // buttonClass="bg-primary-blue hover:bg-blue-900 text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 flex items-center justify-center"
+  buttonClass="bg-primary-blue hover:bg-blue-900 text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 flex items-center justify-center"
+
+  // custom_button={true}
 
   // Type de paiement : MOBILE, CARD, WALLET(Laisser vide pour afficher les trois)
   case=''

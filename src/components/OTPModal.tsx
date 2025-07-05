@@ -7,7 +7,7 @@ interface OTPModalProps {
   reference: string;
 }
 
-const OTPModal: React.FC<OTPModalProps> = ({ isOpen, onClose, onSubmit, reference }) => {
+const OTPModal: React.FC<OTPModalProps> = ({ isOpen, onClose, onSubmit }) => {
   const [otp, setOtp] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -39,10 +39,10 @@ const OTPModal: React.FC<OTPModalProps> = ({ isOpen, onClose, onSubmit, referenc
             Un code de confirmation a été envoyé à votre téléphone. Veuillez le saisir ci-dessous pour finaliser votre paiement.
           </p>
           
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <p className="text-sm text-gray-500 mb-1">Référence de transaction:</p>
             <p className="font-medium">{reference}</p>
-          </div>
+          </div> */}
 
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
@@ -65,6 +65,7 @@ const OTPModal: React.FC<OTPModalProps> = ({ isOpen, onClose, onSubmit, referenc
               className="w-full bg-primary-orange text-white py-2 px-4 rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-orange disabled:opacity-50"
             >
               {isLoading ? 'Traitement en cours...' : 'Confirmer le paiement'}
+             
             </button>
           </form>
         </div>

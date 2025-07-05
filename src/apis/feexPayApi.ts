@@ -1,34 +1,6 @@
 import { Network, Country, PaymentStatus,Currency } from '../types/index';
 import { getNetworkApiCode } from '../utils/paymentUtils';
 
-// Type pour les paiements Wallet Coris
-interface RequestWalletCorisParams {
-  phoneNumber: string;
-  amount: number;
-  id: string;
-  email: string;
-  first_name: string;
-  description?: string;
-  reference?: string;
-  otp?: string;
-  currency: Currency;
-  token: string;
-  callback_info: Record<string, unknown>;
-}
-
-// Type pour les paiements par carte
-interface RequestCardPaymentParams {
-  phone: string;
-  amount: number;
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  type_card: 'VISA' | 'MASTERCARD';
-  currency: Currency;
-  token: string;
-}
-
 interface RequestToPayParams {
   phoneNumber: string;
   amount: number;
@@ -44,6 +16,37 @@ interface RequestToPayParams {
   email: string;
   otp?: string;
 }
+// Type pour les paiements Wallet Coris
+interface RequestWalletCorisParams {
+  phoneNumber: string;
+  amount: number;
+  network: Network;
+  country:Country;
+  description:string;
+  customId:string;
+  id: string;
+  token: string;
+  currency: Currency;
+  callback_info: Record<string, unknown>;
+  first_name: string;
+  email: string;
+  otp?: string;
+}
+
+// Type pour les paiements par carte
+interface RequestCardPaymentParams {
+  phone: string;
+  amount: number;
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  type_card: 'VISA' | 'MASTERCARD';
+  currency: Currency;
+  token: string;
+}
+
+
 
 export interface ShopResponse {
   name: string;
@@ -56,8 +59,6 @@ export interface TransactionResponse {
   reference: string;
   transaction_id?: string;
   amount?: number;
-  email?: string;
-  currency?: string;
   callback_info?: Record<string, unknown>;
   message?: string;
   statusCode?: string;
@@ -70,7 +71,6 @@ interface TransactionDetailsParams {
   amount: number;
   id: string;
   token: string;
-  callback_info: Record<string, unknown>;
 }
 
 interface TransactionDetailsResponse {
@@ -268,7 +268,6 @@ export const requestWalletCorisPayment = async (params: RequestWalletCorisParams
       email: params.email,
       first_name: params.first_name,
       otp: params.otp || '',
-      reference: params.reference || '',
       reseau: 'CORIS',
       shop: params.id,
       token: params.token,

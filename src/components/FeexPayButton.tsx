@@ -29,7 +29,7 @@ interface FeexPayButtonProps {
   case?: string;
   callback_info?: Record<string, unknown>;
   error_callback_url?: string;
-  custom_button?: boolean;
+  // custom_button?: boolean;
   id_custom_button?: string;
   buttonText?: string;
   buttonClass?: string;
@@ -49,7 +49,7 @@ const Feexpay: React.FC<FeexPayButtonProps> = ({
   case: caseType,
   callback_info,
   error_callback_url,
-  custom_button = false,
+  // custom_button = false,
   buttonText = `Payer ${amount} ${currency}`,
   buttonClass,
 }) => {
@@ -134,7 +134,9 @@ const Feexpay: React.FC<FeexPayButtonProps> = ({
     <div ref={containerRef}>
       {shopError ? (
         <p className="text-red-600 text-sm mb-2">{shopError}</p>
-      ) : shopLoaded && !custom_button && (
+      ) : shopLoaded && 
+      // !custom_button &&
+       (
         <button
           onClick={handlePaymentClick}
           className={buttonClass || "bg-primary-orange hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 flex items-center justify-center"}

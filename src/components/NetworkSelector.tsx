@@ -29,7 +29,7 @@ const NetworkSelector: React.FC<NetworkSelectorProps> = ({
         onChange={(e) => onChange(e.target.value as Network)}
         className="block w-full px-2 py-2 pr-8 border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
       >
-        {availableNetworks.map((network) => (
+        {availableNetworks?.map((network) => (
           <option key={network} value={network}>
             {network.replace('_', ' ')}
           </option>
