@@ -1,0 +1,78 @@
+{
+    "name": "@abdias1998/feexpay_lite",
+    "version": "1.0.13",
+    "type": "module",
+    "private": false,
+    "description": "SDK React officiel pour intégrer les paiements FeexPay dans vos applications React",
+    "main": "dist/index.cjs.js",
+    "module": "dist/index.es.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "import": "./dist/index.es.js",
+        "require": "./dist/index.cjs.js",
+        "types": "./dist/index.d.ts"
+      },
+      "./style.css": {
+        "import": "./dist/style.css"
+      }
+    },
+    "scripts": {
+      "dev": "vite",
+      "build": "npm run types && vite build && npm run copy-types",
+      "types": "tsc --rootDir src",
+      "copy-types": "cp -r types/* dist/",
+      "lint": "eslint .",
+      "preview": "vite preview",
+      "prepublishOnly": "npm run build"
+    },
+    "peerDependencies": {
+      "lucide-react": "^0.417.0"
+    },
+    "devDependencies": {
+      "@eslint/js": "^9.9.1",
+      "@types/node": "^24.0.4",
+      "@types/react": "^18.3.5",
+      "@types/react-dom": "^18.3.0",
+      "@vitejs/plugin-react": "^4.6.0",
+      "autoprefixer": "^10.4.18",
+      "eslint": "^9.9.1",
+      "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+      "eslint-plugin-react-refresh": "^0.4.11",
+      "globals": "^15.9.0",
+      "postcss": "^8.4.35",
+      "tailwindcss": "^3.4.1",
+      "terser": "^5.39.0",
+      "typescript": "^5.5.3",
+      "typescript-eslint": "^8.3.0",
+      "vite": "^5.4.19"
+    },
+    "keywords": [
+      "feexpay",
+      "feexpay-react-sdk",
+      "react",
+      "sdk",
+      "payment",
+      "mobile-money",
+      "card",
+      "wallet"
+    ],
+    "author": "FeexPay",
+    "license": "ISC",
+    "files": [
+      "dist/*"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/Abdias1998/feexpay-react-sdk.git"
+    },
+    "bugs": {
+      "url": "https://github.com/Abdias1998/feexpay-react-sdk/issues"
+    },
+    "homepage": "https://github.com/Abdias1998/feexpay-react-sdk",
+    "dependencies": {
+      "react": "^19.1.0",
+      "react-dom": "^19.1.0"
+    }
+  }
+  
