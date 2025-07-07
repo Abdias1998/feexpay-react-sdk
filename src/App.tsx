@@ -95,7 +95,7 @@ function App() {
   mode="LIVE"
 
   // Champs à cacher dans le formulaire de paiement (optionnel)
-  fields_to_hide={["email", "name"]}
+  // fields_to_hide={["email", "name"]}
 
   // Fonction appelée après le paiement (réussi ou échoué)
   callback={(response) => {

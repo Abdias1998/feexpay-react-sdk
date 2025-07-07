@@ -7,6 +7,11 @@ export const BENIN_PREFIXES = {
  
 };
 
+export const COTE_D_IVOIRE_PREFIXES = {
+  MOOV: ['01', '02', '03', '40', '41', '42', '43', '50', '51', '52', '53', '70', '71', '72', '73', '80', '81', '82', '83', '90', '91', '92', '93'],
+  MTN: ['04',  '05', '06', '44', '45', '46', '54', '55', '56', '64', '65', '66', '74', '75', '76', '84', '85', '86', '94', '95', '96'],
+};
+
 // Pourcentages de frais par pays et réseau
 import { Country, Network } from '../types';
 

@@ -1,5 +1,5 @@
 import { Network, Country } from '../types';
-import { BENIN_PREFIXES, NETWORK_FEES, NETWORK_API_MAPPING } from '../constants';
+import { BENIN_PREFIXES, COTE_D_IVOIRE_PREFIXES, NETWORK_FEES, NETWORK_API_MAPPING } from '../constants';
 
 export const getNetworkByPhonePrefix = (
   prefix: string,
@@ -10,11 +10,22 @@ export const getNetworkByPhonePrefix = (
     return 'CORIS';
   }
 
+  // COTE D'IVOIRE
+  if (COTE_D_IVOIRE_PREFIXES.MTN.includes(prefix)) {
+    return 'MTN';
+  }
+  if (COTE_D_IVOIRE_PREFIXES.MOOV.includes(prefix)) {
+    return 'MOOV';
+  }
+
+  // BENIN
   if (BENIN_PREFIXES.MTN.includes(prefix)) {
     return 'MTN';
-  } else if (BENIN_PREFIXES.MOOV.includes(prefix)) {
+  }
+  if (BENIN_PREFIXES.MOOV.includes(prefix)) {
     return 'MOOV';
-  } else if (BENIN_PREFIXES.CELTIIS.includes(prefix)) {
+  }
+  if (BENIN_PREFIXES.CELTIIS.includes(prefix)) {
     return 'CELTIIS';
   }
 
@@ -27,7 +38,7 @@ export const getNetworksForCountry = (country: Country): Network[] => {
     case 'BENIN':
       return ['MTN', 'MOOV', 'CELTIIS'];
     case 'COTE_D_IVOIRE':
-      return ['MTN', 'MOOV', 'ORANGE'];
+      return ['MTN', 'MOOV', 'ORANGE', 'WAVE'];
     case 'BURKINA_FASO':
       return ['MOOV', 'ORANGE'];
     case 'CONGO_BRAZZAVILLE':

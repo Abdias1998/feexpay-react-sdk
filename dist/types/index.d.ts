@@ -4,6 +4,16 @@ export type PaymentMethod = 'MOBILE' | 'CARD' | 'WALLET';
 export type Currency = 'XOF' | 'USD' | 'CAD' | 'XAF';
 export type PaymentStatus = 'PENDING' | 'SUCCESSFUL' | 'FAILED' | 'TIMEOUT' | 'INSUFFICIENT_FUNDS' | 'SUCCESS';
 export interface PaymentConfig {
+    onPaymentSuccess?: (response: {
+        status: string;
+        reference: string;
+        message: string;
+    }) => void;
+    onPaymentFailure?: (response: {
+        status: string;
+        reference?: string;
+        message: string;
+    }) => void;
     amount: number;
     description: string;
     id: string;

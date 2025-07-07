@@ -24,7 +24,6 @@ interface FeexPayButtonProps {
     case?: string;
     callback_info?: Record<string, unknown>;
     error_callback_url?: string;
-    custom_button?: boolean;
     id_custom_button?: string;
     buttonText?: string;
     buttonClass?: string;

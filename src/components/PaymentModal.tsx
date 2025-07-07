@@ -278,26 +278,33 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
   };
   
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // let value = e.target.value.replace(/\D/g, '');
     const value = e.target.value;
-    
-    // Ne pas changer dynamiquement le réseau si le mode de paiement est WALLET
-    if (country === 'BENIN' && paymentMethod !== 'WALLET') {
-      // Remove any existing "01" prefix
-      // if (value.startsWith('01')) {
-      //   value = value.substring(2);
-      // }
-      
-      // Only detect network after the "01" prefix
+
+    if (paymentMethod === 'WALLET') {
+      setPhoneNumber(value);
+      return;
+    }
+
+    if (country === 'COTE_D_IVOIRE') {
+      if (value.length >= 2) {
+        const prefix = value.substring(0, 2);
+        const detectedNetwork = getNetworkByPhonePrefix(prefix);
+        console.log(`[DEBUG] CIV Prefix: ${prefix}, Detected Network: ${detectedNetwork}`);
+        if (detectedNetwork) {
+          setNetwork(detectedNetwork);
+        }
+      }
+    } else if (country === 'BENIN') {
       if (value.length >= 4) {
         const prefix = value.substring(0, 4);
         const detectedNetwork = getNetworkByPhonePrefix(prefix);
+        console.log(`[DEBUG] BENIN Prefix: ${prefix}, Detected Network: ${detectedNetwork}`);
         if (detectedNetwork) {
           setNetwork(detectedNetwork);
         }
       }
     }
-    
+
     setPhoneNumber(value);
   };
 
@@ -702,7 +709,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
           paymentConfig.callback({
             reference: response.reference ?? '',
             status: 'FAILED',
-            phoneNumber: phoneNumber,
+            phoneNumber: formattedPhone,
             reseau: network,
             callback_info: paymentConfig.callback_info || {},
             description: paymentConfig.description ?? '',
