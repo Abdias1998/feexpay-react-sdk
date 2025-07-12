@@ -108,7 +108,8 @@ export const handlePaymentSubmit = async (
         window.location.href = `${paymentConfig.error_callback_url}?ref=${response.reference}`;
       }
       return;
-    } else if (response.statusCode === "92") {
+    } 
+    else if (response.statusCode === "92") {
       // Code 92: Transaction annulée
       setPaymentStatus('FAILED');
       setStatusMessage('La transaction a été annulée. Veuillez réessayer.');
@@ -139,6 +140,8 @@ export const handlePaymentSubmit = async (
       }
       return;
     }
+
+   
     
     setTransactionReference(response.reference);
     startStatusCheck(response.reference, props, network, getFormattedPhoneNumber);
@@ -224,7 +227,8 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
       if (status.reason === "LOW_BALANCE_OR_PAYEE_LIMIT_REACHED_OR_NOT_ALLOWED") {
         handleFinalStatus('INSUFFICIENT_FUNDS', 'Fonds insuffisants. Veuillez vérifier votre solde et réessayer.', 'FAILED');
         return;
-      } else if (status.reason === "PAYER NOT FOUND") {
+      } 
+      else if (status.reason === "PAYER NOT FOUND" || status.reason === "PAYER_NOT_FOUND") {
         handleFinalStatus('FAILED', 'Numéro de téléphone non trouvé. Veuillez vérifier le numéro et réessayer.', 'FAILED');
         return;
       }

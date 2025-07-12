@@ -66,7 +66,7 @@ function App() {
   amount={100}
 
   // Description affichée dans la modale de paiement
-  description="Test Payment"
+  description={"Test Payment ()"}
 
   // Clé API sécurisée : SANDBOX pour test, LIVE pour production
   token="fp_HHNoQGt9Vn8KpZoLaBkG3uEeKpLUYBaHUZIZXJE3Xgv0OKG2tK3A7PtlytctikrJ"

@@ -298,7 +298,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
       if (value.length >= 4) {
         const prefix = value.substring(0, 4);
         const detectedNetwork = getNetworkByPhonePrefix(prefix);
-        console.log(`[DEBUG] BENIN Prefix: ${prefix}, Detected Network: ${detectedNetwork}`);
+        // console.log(`[DEBUG] BENIN Prefix: ${prefix}, Detected Network: ${detectedNetwork}`);
         if (detectedNetwork) {
           setNetwork(detectedNetwork);
         }

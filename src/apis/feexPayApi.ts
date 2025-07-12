@@ -107,11 +107,16 @@ if (cleanedPhone.length >= 8) {
     const merchantDomain = window.location.origin;
     const merchantIp = await getClientIP(); // Appelle la fonction définie plus haut
 
+    let description = params.description;
+    if (params.network === 'MTN') {
+      description = description.replace(/[^a-zA-Z0-9 ]/g, '');
+    }
+
     const apiParams = {
       phoneNumber: cleanedPhone,
       amount: params.amount,
       reseau: networkApiCode,
-      description: params.description,
+      description: description,
       customId: params.customId,
       shop: params.id,
       token: params.token,
