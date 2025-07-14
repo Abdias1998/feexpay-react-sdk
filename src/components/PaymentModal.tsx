@@ -175,6 +175,17 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Effet pour fermer automatiquement la modale après un succès
+  useEffect(() => {
+    if (paymentStatus === 'SUCCESSFUL') {
+      const timer = setTimeout(() => {
+        onClose();
+      }, 1500); // Ferme après 1.5 secondes
+
+      return () => clearTimeout(timer); // Nettoyage du timer
+    }
+  }, [paymentStatus, onClose]);
+
 
   const handleNetworkChange = (newNetwork: Network) => {
     setNetwork(newNetwork);
@@ -417,6 +428,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
     if (iframeNetworks.includes(networkApiCode)) {
       try {
         const response = await requestToPay({
+          mode: paymentConfig.mode, // Ajout du mode ici
           phoneNumber: getFormattedPhoneNumber(),
           amount: baseAmount,
           network,
@@ -433,6 +445,29 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
         
           
         });
+        if (response.status === 'SUCCESSFUL') {
+          if (paymentConfig.callback && !isCallbackCalledRef.current) {
+            paymentConfig.callback({
+              ...response,
+              transaction_id: response.transaction_id ?? 'sandbox-tx-id',
+              message: response.message ?? 'Payment successful',
+              status: 'SUCCESSFUL',
+              reseau: network,
+              phoneNumber: getFormattedPhoneNumber(),
+              amount: baseAmount,
+              currency: paymentConfig.currency || 'XOF',
+              description: paymentConfig.description || 'Payment',
+              callback_info: paymentConfig.callback_info || {},
+              first_name: fullName || '',
+              email: email || '',
+            });
+            isCallbackCalledRef.current = true;
+          }
+          setIsLoading(false);
+          setPaymentStatus('SUCCESSFUL');
+          return;
+        }
+
         if (response.payment_url) {
           setIframeUrl(response.payment_url);
         }

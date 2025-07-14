@@ -2,6 +2,7 @@ import { Network, Country, PaymentStatus,Currency } from '../types/index';
 import { getNetworkApiCode } from '../utils/paymentUtils';
 
 interface RequestToPayParams {
+  mode?: 'SANDBOX' | 'LIVE';
   phoneNumber: string;
   amount: number;
   network: Network;
@@ -18,6 +19,7 @@ interface RequestToPayParams {
 }
 // Type pour les paiements Wallet Coris
 interface RequestWalletCorisParams {
+  mode?: 'SANDBOX' | 'LIVE';
   phoneNumber: string;
   amount: number;
   network: Network;
@@ -91,6 +93,15 @@ const getClientIP = async (): Promise<string> => {
 };
 
 export const requestToPay = async (params: RequestToPayParams): Promise<TransactionResponse> => {
+  if (params.mode === 'SANDBOX') {
+   
+    return {
+      status: 'SUCCESSFUL',
+      message: 'Payment successful (SANDBOX MODE)',
+      transaction_id: 'ref_c36484845FDVvgDFEGEGEGE_REACT',
+      reference: "ref_c36484845FDVvgDFEGEGEGE_REACT",
+    } as TransactionResponse;
+  }
   const networkApiCode = getNetworkApiCode(params.country, params.network);
   const apiUrl = `https://api.feexpay.me/api/transactions/requesttopay/integration`;
 
@@ -104,6 +115,7 @@ if (cleanedPhone.length >= 8) {
 }
 
   try {
+    
     const merchantDomain = window.location.origin;
     const merchantIp = await getClientIP(); // Appelle la fonction définie plus haut
 
@@ -252,8 +264,21 @@ export const requestCardPayment = async (params: RequestCardPaymentParams): Prom
  * @returns Réponse contenant la référence de transaction et le statut
  */
 export const requestWalletCorisPayment = async (params: RequestWalletCorisParams): Promise<TransactionResponse> => {
+  if (params.mode === 'SANDBOX') {
+    return {
+      status: 'SUCCESSFUL',
+      message: 'Payment successful (SANDBOX MODE)',
+      transaction_id: 'sandbox-tx-id-' + new Date().getTime(),
+      reference: params.customId || 'sandbox-ref-' + new Date().getTime(),
+      // Remplissez les autres champs de TransactionResponse avec des données factices si nécessaire
+    } as TransactionResponse;
+  }
   const apiUrl = 'https://api.feexpay.me/api/transactions/requesttopay/integration';
   
+  let description = params.description;
+  if (params.network === 'MTN') {
+    description = description.replace(/[^a-zA-Z0-9 ]/g, '');
+  }
   try {
     // Extraire le code pays et le numéro sans indicatif
     const countryCode = '229'; // Bénin pour Coris
@@ -267,9 +292,9 @@ export const requestWalletCorisPayment = async (params: RequestWalletCorisParams
       phoneNumber: `229${phoneNumberRight}`,
       country: countryCode,
       phoneNumberRight: phoneNumberRight,
-      amount: params.amount.toString(),
+      amount: params.amount,
       currency: 'XOF',
-      description: params.description || 'Paiement via FeexPay',
+      description: description,
       email: params.email,
       first_name: params.first_name,
       otp: params.otp || '',

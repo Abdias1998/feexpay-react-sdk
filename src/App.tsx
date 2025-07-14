@@ -62,8 +62,11 @@ function App() {
 <FeexPayProvider>
 
 <FeexPayButton 
+  // Mode de la transaction : SANDBOX pour test, LIVE pour production
+  mode="SANDBOX"
+
   // Montant de la transaction en XOF
-  amount={100}
+  amount={10}
 
   // Description affichée dans la modale de paiement
   description={"Test Payment ()"}
@@ -72,7 +75,7 @@ function App() {
   token="fp_HHNoQGt9Vn8KpZoLaBkG3uEeKpLUYBaHUZIZXJE3Xgv0OKG2tK3A7PtlytctikrJ"
   
   // ID de la boutique 
-  id="679a12dedea4a0b5d416ea87"
+  id="671a774c706593edb3dc4ab2"
 
   // Référence personnalisée (chaîne aléatoire unique)
   customId='23455'
@@ -92,14 +95,17 @@ function App() {
   }}
 
   // Mode de paiement : "SANDBOX" (test) ou "LIVE" (production)
-  mode="LIVE"
+
 
   // Champs à cacher dans le formulaire de paiement (optionnel)
-  // fields_to_hide={["email", "name"]}
+  fields_to_hide={["email", "name"]}
 
   // Fonction appelée après le paiement (réussi ou échoué)
   callback={(response) => {
     console.log(response);
+    // if(response.status === 'SUCCESSFUL') {
+    //  window.location.href = "https://example.com/callback";
+    // }
   }}
 
   // Texte du bouton (optionnel si tu veux un texte personnalisé)

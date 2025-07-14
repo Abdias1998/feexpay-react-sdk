@@ -63,6 +63,7 @@ export const handlePaymentSubmit = async (
   try {
     const formattedPhoneNumber = getFormattedPhoneNumber();
     const response = await requestToPay({
+      mode: paymentConfig.mode,
       phoneNumber: formattedPhoneNumber,
       amount: baseAmount, // Envoyer le montant sans frais
       network,
@@ -76,6 +77,30 @@ export const handlePaymentSubmit = async (
       first_name: fullName,
       email: email,
     });
+
+    // Gérer la réponse immédiate (ex: mode SANDBOX)
+    if (response.status === 'SUCCESSFUL') {
+      setPaymentStatus('SUCCESSFUL');
+      setIsLoading(false);
+      if (paymentConfig.callback) {
+        paymentConfig.callback({
+          ...response,
+          status: 'SUCCESSFUL',
+          message: response.message ?? 'Payment successful (SANDBOX)',
+          transaction_id: response.transaction_id ?? `sandbox-tx-${Date.now()}`,
+          reference: response.reference ?? '',
+          reseau: network,
+          phoneNumber: formattedPhoneNumber,
+          amount: baseAmount,
+          currency: paymentConfig.currency || 'XOF',
+          description: paymentConfig.description || '',
+          callback_info: paymentConfig.callback_info || {},
+          first_name: fullName || '',
+          email: email || '',
+        });
+      }
+      return; // Arrêter l'exécution pour ne pas continuer le polling
+    }
     
     // Vérifier les codes de statut spécifiques
     if (response.statusCode === "10") {
