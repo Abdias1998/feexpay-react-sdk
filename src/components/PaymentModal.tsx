@@ -975,7 +975,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
                 <span className="bg-gray-800 text-white rounded-full w-5 h-5 inline-flex items-center justify-center text-xs mr-2">
                   {paymentMethod === 'CARD' || ((paymentConfig.fields_to_hide || []).includes('email') && (paymentConfig.fields_to_hide || []).includes('name')) ? '1' : '2'}
                 </span>
-               {paymentMethod === 'CARD' ? 'Paiement par Carte Bancaire' : 'Méthodes de paiement'}
+               {paymentMethod === 'CARD' ? 'Informations de paiement' : 'Méthodes de paiement'}
               </h2>
            
               
