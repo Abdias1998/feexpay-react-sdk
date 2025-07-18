@@ -1,0 +1,116 @@
+    {(paymentMethod === 'CARD' ) && (
+
+                <div className="space-y-4">
+                  <p className="text-red-500 text-md">Les paiements par cartes sont momentanément indisponibles.</p>
+
+                  {/* Formulaire pour Carte Bancaire */}
+                  <div className="grid grid-cols-2 gap-4">
+
+                    {/* <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+                      <input
+                        type="text"
+                        placeholder="Prénom"
+                        className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
+                        value={fullName.split(' ')[0] || ''}
+                        onChange={(e) => {
+                          const lastName = fullName.split(' ').slice(1).join(' ');
+                          setFullName(`${e.target.value} ${lastName}`.trim());
+                        }}
+                      />
+                    </div> */}
+                    
+                    {/* <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Nom et Prénoms</label>
+                      <input
+                        type="text"
+                        placeholder="Nom"
+                        className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
+                        value={fullName.split(' ').slice(1).join(' ') || ''}
+                        onChange={(e) => {
+                          const firstName = fullName.split(' ')[0] || '';
+                          setFullName(`${firstName} ${e.target.value}`.trim());
+                        }}
+                      />
+                    </div> */}
+                  </div>
+                   <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Nom et Prénoms</label>
+                      <input
+                        type="text"
+                        placeholder="Nom"
+                        className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
+                        value={fullName.split(' ').slice(1).join(' ') || ''}
+                        onChange={(e) => {
+                          const firstName = fullName.split(' ')[0] || '';
+                          setFullName(`${firstName} ${e.target.value}`.trim());
+                        }}
+                      />
+                    </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input
+                      type="email"
+                      placeholder="exemple@email.com"
+                      className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
+
+                  {/* <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                    <input
+                      type="tel"
+                      placeholder="Numéro de téléphone avec indicatif"
+                      className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                    />
+                  </div> */}
+{/* 
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Type de carte</label>
+                    <select
+                      className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
+                      value={typeCard}
+                      onChange={(e) => setTypeCard(e.target.value as 'VISA' | 'MASTERCARD')}
+                    >
+                      <option value="VISA">VISA</option>
+                      <option value="MASTERCARD">MASTERCARD</option>
+                    </select>
+                  </div> */}
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Numéro de carte</label>
+                    <input
+                      type="text"
+                      placeholder="1234 5678 9012 3456"
+                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Date d'expiration</label>
+                      <input
+                        type="text"
+                        placeholder="MM/AA"
+                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">CVC</label>
+                      <input
+                        type="text"
+                        placeholder="123"
+                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-sm"
+                      />
+                    </div>
+                  </div>
+                </div>
+                
+              )}
+              
