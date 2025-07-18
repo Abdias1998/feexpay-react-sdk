@@ -1033,7 +1033,7 @@ const PaymentModal = ({ isOpen, onClose }: PaymentModalProps) => {
                 {/* Formulaire pour Carte Bancaire */}
                 {(paymentMethod === 'CARD' ) && (
                 <div className="space-y-4">
-                  <p className="text-red-500 text-md">Les paiements par cartes sont momentanément indisponibles.</p>
+                  {/* <p className="text-red-500 text-md">Les paiements par cartes sont momentanément indisponibles.</p> */}
 
                   {/* Formulaire pour Carte Bancaire */}
                   <div className="grid grid-cols-2 gap-4">
