@@ -66,7 +66,7 @@ function App() {
   mode="LIVE"
 
   // Montant de la transaction en XOF
-  amount={100}
+  amount={10}
 
   // Description affichée dans la modale de paiement
   description={"Test Payment ()"}
@@ -106,6 +106,9 @@ function App() {
     // if(response.status === 'SUCCESSFUL') {
     //  window.location.href = "https://example.com/callback";
     // }
+    // if(response.status === 'FAILED') {
+    //   window.location.href = "https://example.com/callback/error";
+    // }
   }}
 
   // Texte du bouton (optionnel si tu veux un texte personnalisé)
@@ -117,7 +120,7 @@ function App() {
   // custom_button={true}
 
   // Type de paiement : MOBILE, CARD, WALLET(Laisser vide pour afficher les trois)
-  case=''
+  case='MOBILE'
 
   // Devise utilisée pour la transaction (ex: XOF, USD, CAD, XAF)
   currency='XOF'

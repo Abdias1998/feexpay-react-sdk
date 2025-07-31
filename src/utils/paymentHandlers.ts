@@ -134,6 +134,38 @@ export const handlePaymentSubmit = async (
       }
       return;
     } 
+
+    else if(response.statusCode === "37") {
+      // Code 37: Transaction annulée
+      setPaymentStatus('FAILED');
+      setStatusMessage('Le montant est inférieur au minimum autorisé par l\'opérateur.');
+      setStatusModalOpen(true);
+      setIsLoading(false);
+      
+      // Appeler la fonction de callback si fournie
+      if (paymentConfig.callback) {
+        paymentConfig.callback({
+          reference: response.reference,
+          status: 'FAILED',
+          phoneNumber: formattedPhoneNumber,
+          reseau: network,
+          callback_info: paymentConfig.callback_info || {},
+          description: paymentConfig.description,
+          transaction_id: response.reference,
+          message:"Le montant est inférieur au minimum autorisé par l'opérateur.",
+          amount: paymentConfig.amount,
+          currency: paymentConfig.currency || "XOF",
+          first_name: fullName,
+          email: email,
+        });
+      }
+      
+      // Rediriger vers l'URL d'erreur si fournie
+      if (paymentConfig.error_callback_url) {
+        window.location.href = `${paymentConfig.error_callback_url}?ref=${response.reference}`;
+      }
+      return;
+    }
     else if (response.statusCode === "92") {
       // Code 92: Transaction annulée
       setPaymentStatus('FAILED');
@@ -253,6 +285,7 @@ export const startStatusCheck = (ref: string, props: PaymentHandlerProps, networ
         handleFinalStatus('INSUFFICIENT_FUNDS', 'Fonds insuffisants. Veuillez vérifier votre solde et réessayer.', 'FAILED');
         return;
       } 
+
       else if (status.reason === "PAYER NOT FOUND" || status.reason === "PAYER_NOT_FOUND") {
         handleFinalStatus('FAILED', 'Numéro de téléphone non trouvé. Veuillez vérifier le numéro et réessayer.', 'FAILED');
         return;
