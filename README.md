@@ -74,17 +74,17 @@ export default App;
 | Prop                 | Type       | Requis   | Description                                  |                        |
 | -------------------- | ---------- | -------- | -------------------------------------------- | ---------------------- |
 | `amount`             | `number`   | ✅        | Montant à payer                              |                        |
-| `description`        | `string`   | ✅        | Description du paiement                      |                        |
+| `description`        | `string`   | ✅        | Description du paiement Ne pas mettre de caractères spéciaux                     |                        |
 | `id`               | `string`   | ✅        | ID du id fourni par FeexPay                |                        |
 | `token`           | `string`   | ✅        | Token API d'authentification                 |                        |
 | `customId`           | `string`   | ✅        | ID personnalisé de la transaction            |                        |
 | `callback_url`        | `string`   | ✅        | URL de redirection post-paiement             |                        |
 | `callback_info`      | `object`   | ✅        | Infos utilisateur (nom, email, téléphone...) |                        |
 | `mode`               | \`"LIVE"   | "SANDBOX"\` | ✅                                            | Mode de fonctionnement |
-| `currency`           | `string`   | ✅        | Devise (`XOF`, `USD`, etc.)                  |                        |
+| `currency`           | `string`   | ❌       | Devise (`XOF`, `USD`, etc.)                  |                        |
 | `buttonClass`        | `string`   | ❌        | Classe CSS personnalisée pour le bouton      |                        |
 | `buttonText`         | `string`   | ❌        | Texte personnalisé du bouton                 |                        |
-| `fields_to_hide`     | `string[]` | ❌        | Champs à masquer (`"email"`, `"name"`, etc.) |                        |
+| `fields_to_hide`     | `string[]` | ❌        | Champs à masquer (`"email"`, `"name"`) |                        |
 | `callback`           | `function` | ❌        | Callback JavaScript à la fin du paiement     |                        |
 | `error_callback_url` | `string`   | ❌        | URL de redirection en cas d'erreur           |                        |
 

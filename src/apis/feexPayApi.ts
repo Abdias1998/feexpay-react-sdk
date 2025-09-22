@@ -93,6 +93,11 @@ const getClientIP = async (): Promise<string> => {
 };
 
 export const requestToPay = async (params: RequestToPayParams): Promise<TransactionResponse> => {
+
+
+
+
+
   if (params.mode === 'SANDBOX') {
    
     return {
@@ -102,6 +107,11 @@ export const requestToPay = async (params: RequestToPayParams): Promise<Transact
       reference: "ref_c36484845FDVvgDFEGEGEGE_REACT",
     } as TransactionResponse;
   }
+
+  if (params.mode == "LIVE" && !params.token.startsWith('fp_')) {
+    throw new Error('Invalid token');
+     }
+    
   const networkApiCode = getNetworkApiCode(params.country, params.network);
   const apiUrl = `https://api.feexpay.me/api/transactions/requesttopay/integration`;
 

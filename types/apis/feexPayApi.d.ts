@@ -1,5 +1,6 @@
 import { Network, Country, PaymentStatus, Currency } from '../types/index';
 interface RequestToPayParams {
+    mode?: 'SANDBOX' | 'LIVE';
     phoneNumber: string;
     amount: number;
     network: Network;
@@ -15,6 +16,7 @@ interface RequestToPayParams {
     otp?: string;
 }
 interface RequestWalletCorisParams {
+    mode?: 'SANDBOX' | 'LIVE';
     phoneNumber: string;
     amount: number;
     network: Network;

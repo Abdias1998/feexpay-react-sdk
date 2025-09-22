@@ -1,5 +1,5 @@
 import { jsxs as i, jsx as t, Fragment as Z } from "react/jsx-runtime";
-import { useEffect as W, useState as g, createContext as Fe, useContext as Te, useRef as ee, useCallback as te } from "react";
+import { useEffect as z, useState as g, createContext as Fe, useContext as Te, useRef as te, useCallback as re } from "react";
 const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { className: "relative", children: [
   /* @__PURE__ */ i(
     "select",
@@ -18,7 +18,7 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
     }
   ),
   /* @__PURE__ */ t("div", { className: "absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none", children: /* @__PURE__ */ t("svg", { className: "w-4 h-4 text-gray-400", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg", children: /* @__PURE__ */ t("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M19 9l-7 7-7-7" }) }) })
-] }), Q = {
+] }), ee = {
   MTN: ["0142", "0146", "0150", "0151", "0152", "0153", "0154", "0156", "0157", "0159", "0161", "0162", "0166", "0167", "0169", "0190", "0191", "0192", "0193", "0196", "0197"],
   MOOV: ["0145", "0155", "0158", "0160", "0163", "0164", "0165", "0168", "0194", "0195", "0198", "0199"],
   CELTIIS: ["0140", "0141", "0143", "0144", "0147"]
@@ -81,7 +81,7 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
     TOGOCOM: "TOGOCOM TG",
     MOOV: "MOOV TG"
   }
-}, fe = (r, l) => me.MTN.includes(r) ? "MTN" : me.MOOV.includes(r) ? "MOOV" : Q.MTN.includes(r) ? "MTN" : Q.MOOV.includes(r) ? "MOOV" : Q.CELTIIS.includes(r) ? "CELTIIS" : null, re = (r) => {
+}, he = (r, l) => me.MTN.includes(r) ? "MTN" : me.MOOV.includes(r) ? "MOOV" : ee.MTN.includes(r) ? "MTN" : ee.MOOV.includes(r) ? "MOOV" : ee.CELTIIS.includes(r) ? "CELTIIS" : null, ne = (r) => {
   switch (r) {
     case "BENIN":
       return ["MTN", "MOOV", "CELTIIS"];
@@ -98,49 +98,49 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
     default:
       return ["MTN", "MOOV"];
   }
-}, Pe = (r, l, e, a, d) => {
-  if (a === "CARD" && (d === "VISA" || d === "MASTERCARD"))
+}, De = (r, l, e, s, d) => {
+  if (s === "CARD" && (d === "VISA" || d === "MASTERCARD"))
     return Math.ceil(r * 0.045);
-  const s = H[l];
+  const o = H[l];
   let y = 0;
-  s && s[e] && (y = s[e]);
-  const o = r * y;
-  return Math.ceil(o);
-}, ne = (r, l) => {
+  o && o[e] && (y = o[e]);
+  const a = r * y;
+  return Math.ceil(a);
+}, ae = (r, l) => {
   const e = Re[r];
   return e && e[l] ? e[l] : l.toLowerCase();
-}, Ve = ({
+}, Pe = ({
   selectedNetwork: r,
   onChange: l,
   country: e
 }) => {
-  const a = re(e);
-  return W(() => {
-    a.length > 0 && !a.includes(r) && l(a[0]);
-  }, [e, r, a, l]), /* @__PURE__ */ i("div", { className: "relative", children: [
+  const s = ne(e);
+  return z(() => {
+    s.length > 0 && !s.includes(r) && l(s[0]);
+  }, [e, r, s, l]), /* @__PURE__ */ i("div", { className: "relative", children: [
     /* @__PURE__ */ t(
       "select",
       {
         value: r,
         onChange: (d) => l(d.target.value),
         className: "block w-full px-2 py-2 pr-8 border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs",
-        children: a == null ? void 0 : a.map((d) => /* @__PURE__ */ t("option", { value: d, children: d.replace("_", " ") }, d))
+        children: s == null ? void 0 : s.map((d) => /* @__PURE__ */ t("option", { value: d, children: d.replace("_", " ") }, d))
       }
     ),
     /* @__PURE__ */ t("div", { className: "absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none", children: /* @__PURE__ */ t("svg", { className: "w-4 h-4 text-gray-400", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg", children: /* @__PURE__ */ t("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M19 9l-7 7-7-7" }) }) })
   ] });
-}, De = ({
+}, Ve = ({
   isOpen: r,
   onClose: l,
   status: e,
-  message: a
+  message: s
 }) => {
-  if (W(() => {
+  if (z(() => {
     if (e === "SUCCESSFUL" || e === "SUCCESS") {
-      const o = setTimeout(() => {
+      const a = setTimeout(() => {
         l();
       }, 5e3);
-      return () => clearTimeout(o);
+      return () => clearTimeout(a);
     }
   }, [e, l]), !r) return null;
   const d = () => {
@@ -160,7 +160,7 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
       default:
         return null;
     }
-  }, s = () => {
+  }, o = () => {
     switch (e) {
       case "SUCCESSFUL":
       case "SUCCESS":
@@ -187,19 +187,19 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
   return /* @__PURE__ */ t("div", { className: "fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50", children: /* @__PURE__ */ i("div", { className: "bg-white rounded-lg shadow-xl w-full max-w-sm p-6 text-center", children: [
     d(),
     /* @__PURE__ */ t("h3", { className: "text-xl font-bold mb-2", children: e === "SUCCESSFUL" ? "Paiement Réussi" : e === "FAILED" ? "Paiement Échoué" : e === "SUCCESS" ? "Paiement Réussi" : e === "PENDING" ? "Traitement en cours" : "Vérification expirée" }),
-    /* @__PURE__ */ t("p", { className: "text-gray-600 mb-6", children: a }),
+    /* @__PURE__ */ t("p", { className: "text-gray-600 mb-6", children: s }),
     /* @__PURE__ */ t(
       "button",
       {
         onClick: l,
         className: `w-full ${y()} text-white font-bold py-3 px-4 rounded-md transition-colors duration-300`,
-        children: s()
+        children: o()
       }
     )
   ] }) });
-}, Be = ({ isOpen: r, onClose: l, onSubmit: e }) => {
-  const [a, d] = g(""), [s, y] = g(!1), o = (m) => {
-    m.preventDefault(), y(!0), e(a);
+}, Ue = ({ isOpen: r, onClose: l, onSubmit: e }) => {
+  const [s, d] = g(""), [o, y] = g(!1), a = (f) => {
+    f.preventDefault(), y(!0), e(s);
   };
   return r ? /* @__PURE__ */ t("div", { className: "fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 overflow-hidden", children: /* @__PURE__ */ i("div", { className: "bg-white rounded-lg shadow-xl w-full max-w-md relative", children: [
     /* @__PURE__ */ i("div", { className: "flex justify-between items-center border-b p-4", children: [
@@ -215,15 +215,15 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
     ] }),
     /* @__PURE__ */ i("div", { className: "p-6", children: [
       /* @__PURE__ */ t("p", { className: "text-sm text-gray-600 mb-4", children: "Un code de confirmation a été envoyé à votre téléphone. Veuillez le saisir ci-dessous pour finaliser votre paiement." }),
-      /* @__PURE__ */ i("form", { onSubmit: o, children: [
+      /* @__PURE__ */ i("form", { onSubmit: a, children: [
         /* @__PURE__ */ i("div", { className: "mb-4", children: [
           /* @__PURE__ */ t("label", { className: "block text-sm font-medium text-gray-700 mb-1", children: "Code OTP" }),
           /* @__PURE__ */ t(
             "input",
             {
               type: "text",
-              value: a,
-              onChange: (m) => d(m.target.value),
+              value: s,
+              onChange: (f) => d(f.target.value),
               placeholder: "Entrez le code reçu par SMS",
               className: "w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange",
               required: !0
@@ -234,47 +234,56 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
           "button",
           {
             type: "submit",
-            disabled: s,
+            disabled: o,
             className: "w-full bg-primary-orange text-white py-2 px-4 rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-orange disabled:opacity-50",
-            children: s ? "Traitement en cours..." : "Confirmer le paiement"
+            children: o ? "Traitement en cours..." : "Confirmer le paiement"
           }
         )
       ] })
     ] })
   ] }) }) : null;
-}, ge = Fe(void 0), ye = () => {
-  const r = Te(ge);
+}, ye = Fe(void 0), Ne = () => {
+  const r = Te(ye);
   if (!r)
     throw new Error("useFeexPay must be used within a FeexPayProvider");
   return r;
-}, Ue = {
+}, Be = {
   amount: 0,
   description: "",
   id: "",
   token: "",
   mode: "SANDBOX"
 }, He = ({ children: r }) => {
-  const [l, e] = g(Ue);
-  return /* @__PURE__ */ t(ge.Provider, { value: { paymentConfig: l, setPaymentConfig: e }, children: r });
+  const [l, e] = g(Be);
+  return /* @__PURE__ */ t(ye.Provider, { value: { paymentConfig: l, setPaymentConfig: e }, children: r });
 }, ze = async () => {
   try {
     return (await (await fetch("https://api.ipify.org?format=json")).json()).ip;
   } catch {
     return "unknown";
   }
-}, Ne = async (r) => {
-  const l = ne(r.country, r.network), e = "https://api.feexpay.me/api/transactions/requesttopay/integration";
-  let a = r.phoneNumber.replace(/\+/g, "");
-  if (a.length >= 8) {
-    const d = a.slice(0, 3);
-    a.startsWith(d + d) && (a = a.slice(d.length));
+}, be = async (r) => {
+  if (r.mode === "SANDBOX")
+    return {
+      status: "SUCCESSFUL",
+      message: "Payment successful (SANDBOX MODE)",
+      transaction_id: "ref_c36484845FDVvgDFEGEGEGE_REACT",
+      reference: "ref_c36484845FDVvgDFEGEGEGE_REACT"
+    };
+  if (r.mode == "LIVE" && !r.token.startsWith("fp_"))
+    throw new Error("Invalid token");
+  const l = ae(r.country, r.network), e = "https://api.feexpay.me/api/transactions/requesttopay/integration";
+  let s = r.phoneNumber.replace(/\+/g, "");
+  if (s.length >= 8) {
+    const d = s.slice(0, 3);
+    s.startsWith(d + d) && (s = s.slice(d.length));
   }
   try {
-    const d = window.location.origin, s = await ze();
+    const d = window.location.origin, o = await ze();
     let y = r.description;
     r.network === "MTN" && (y = y.replace(/[^a-zA-Z0-9 ]/g, ""));
-    const o = {
-      phoneNumber: a,
+    const a = {
+      phoneNumber: s,
       amount: r.amount,
       reseau: l,
       description: y,
@@ -282,28 +291,28 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
       shop: r.id,
       token: r.token,
       merchant_domain: d,
-      merchant_ip: s,
+      merchant_ip: o,
       payment_interface: "REACT",
       callback_info: r.callback_info || {},
       currency: r.currency || "XOF",
       first_name: r.first_name,
       email: r.email,
       otp: r.otp || ""
-    }, m = await fetch(e, {
+    }, f = await fetch(e, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${r.token}`
       },
-      body: JSON.stringify(o)
+      body: JSON.stringify(a)
     });
-    if (!m.ok)
+    if (!f.ok)
       throw new Error("Payment request failed");
-    return await m.json();
+    return await f.json();
   } catch (d) {
     throw console.error("Payment request error:", d), d;
   }
-}, We = async (r) => {
+}, Ge = async (r) => {
   const l = `https://api.feexpay.me/api/transactions/getrequesttopay/integration/${r}`;
   try {
     const e = await fetch(l);
@@ -313,11 +322,11 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
   } catch (e) {
     throw console.error("Status check error:", e), e;
   }
-}, Ge = async (r) => {
+}, We = async (r) => {
   const l = "https://api.feexpay.me/api/transactions/details";
   try {
-    const a = {
-      network: ne(r.country, r.network),
+    const s = {
+      network: ae(r.country, r.network),
       amount: r.amount,
       shop: r.id
     }, d = await fetch(l, {
@@ -326,7 +335,7 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
         "Content-Type": "application/json",
         Authorization: `Bearer ${r.token}`
       },
-      body: JSON.stringify(a)
+      body: JSON.stringify(s)
     });
     if (!d.ok)
       throw new Error("Failed to get transaction details");
@@ -347,7 +356,7 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
       type_card: r.type_card,
       currency: "XOF"
       // La devise est toujours XOF pour FeexPay
-    }, a = await fetch(l, {
+    }, s = await fetch(l, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -355,22 +364,32 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
       },
       body: JSON.stringify(e)
     });
-    if (!a.ok)
+    if (!s.ok)
       throw new Error("Card payment request failed");
-    return await a.json();
+    return await s.json();
   } catch (e) {
     throw console.error("Card payment request error:", e), e;
   }
-}, he = async (r) => {
+}, pe = async (r) => {
+  if (r.mode === "SANDBOX")
+    return {
+      status: "SUCCESSFUL",
+      message: "Payment successful (SANDBOX MODE)",
+      transaction_id: "sandbox-tx-id-" + (/* @__PURE__ */ new Date()).getTime(),
+      reference: r.customId || "sandbox-ref-" + (/* @__PURE__ */ new Date()).getTime()
+      // Remplissez les autres champs de TransactionResponse avec des données factices si nécessaire
+    };
   const l = "https://api.feexpay.me/api/transactions/requesttopay/integration";
+  let e = r.description;
+  r.network === "MTN" && (e = e.replace(/[^a-zA-Z0-9 ]/g, ""));
   try {
-    const e = "229", a = r.phoneNumber.startsWith("+229") ? r.phoneNumber.substring(4) : r.phoneNumber.startsWith("229") ? r.phoneNumber.substring(3) : r.phoneNumber, d = {
-      phoneNumber: `229${a}`,
-      country: e,
-      phoneNumberRight: a,
-      amount: r.amount.toString(),
+    const s = "229", d = r.phoneNumber.startsWith("+229") ? r.phoneNumber.substring(4) : r.phoneNumber.startsWith("229") ? r.phoneNumber.substring(3) : r.phoneNumber, o = {
+      phoneNumber: `229${d}`,
+      country: s,
+      phoneNumberRight: d,
+      amount: r.amount,
       currency: "XOF",
-      description: r.description || "Paiement via FeexPay",
+      description: e,
       email: r.email,
       first_name: r.first_name,
       otp: r.otp || "",
@@ -378,21 +397,21 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
       shop: r.id,
       token: r.token,
       callback_info: r.callback_info || {}
-    }, s = await fetch(l, {
+    }, y = await fetch(l, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(d)
+      body: JSON.stringify(o)
     });
     return {
-      ...await s.json(),
-      statusCode: s.status.toString()
+      ...await y.json(),
+      statusCode: y.status.toString()
     };
-  } catch (e) {
-    throw console.error("Wallet Coris payment request error:", e), e;
+  } catch (s) {
+    throw console.error("Wallet Coris payment request error:", s), s;
   }
-}, xe = async (r) => {
+}, Ee = async (r) => {
   const l = `https://api.feexpay.me/api/shop/${r}/get_shop`;
   try {
     const e = await fetch(l);
@@ -402,127 +421,162 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
   } catch (e) {
     throw console.error("Shop retrieval error:", e), e;
   }
-}, pe = async (r, l, e, a) => {
+}, ge = async (r, l, e, s) => {
   if (r.preventDefault(), !e())
     return;
   const {
     baseAmount: d,
-    network: s,
+    network: o,
     country: y,
-    paymentConfig: o,
-    generateRandomId: m,
-    fullName: f,
+    paymentConfig: a,
+    generateRandomId: f,
+    fullName: h,
     email: _,
-    setStateCallbacks: N
+    setStateCallbacks: b
   } = l, {
-    setTransactionReference: F,
-    setPaymentStatus: x,
-    setStatusMessage: T,
+    setTransactionReference: T,
+    setPaymentStatus: N,
+    setStatusMessage: F,
     setStatusModalOpen: L,
     setIsLoading: E
-  } = N;
+  } = b;
   E(!0);
   try {
-    const O = a(), h = await Ne({
-      phoneNumber: O,
+    const x = s(), m = await be({
+      mode: a.mode,
+      phoneNumber: x,
       amount: d,
       // Envoyer le montant sans frais
-      network: s,
+      network: o,
       country: y,
       // Ajout du paramètre country
-      description: o.description,
-      customId: o.customId || m(),
-      id: o.id,
-      token: o.token,
-      currency: o.currency || "XOF",
-      callback_info: o.callback_info || {},
-      first_name: f,
+      description: a.description,
+      customId: a.customId || f(),
+      id: a.id,
+      token: a.token,
+      currency: a.currency || "XOF",
+      callback_info: a.callback_info || {},
+      first_name: h,
       email: _
     });
-    if (h.statusCode === "10") {
-      x("INSUFFICIENT_FUNDS"), T("Fonds insuffisants. Veuillez vérifier votre solde et réessayer."), L(!0), E(!1), o.callback && o.callback({
-        reference: h.reference,
-        status: "FAILED",
-        phoneNumber: O,
-        reseau: s,
-        callback_info: o.callback_info || {},
-        description: o.description,
-        transaction_id: h.reference,
-        message: "Le paiement a échoué. Veuillez vérifier votre solde et réessayer.",
-        amount: o.amount,
-        currency: o.currency || "XOF",
-        first_name: f,
-        email: _
-      }), o.error_callback_url && (window.location.href = `${o.error_callback_url}?ref=${h.reference}`);
-      return;
-    } else if (h.statusCode === "92") {
-      x("FAILED"), T("La transaction a été annulée. Veuillez réessayer."), L(!0), E(!1), o.callback && o.callback({
-        reference: h.reference,
-        status: "FAILED",
-        phoneNumber: O,
-        reseau: s,
-        callback_info: o.callback_info || {},
-        description: o.description,
-        transaction_id: h.reference,
-        message: "La transaction a été annulée. Veuillez réessayer.",
-        amount: o.amount,
-        first_name: f,
-        email: _,
-        currency: o.currency || "XOF"
-      }), o.error_callback_url && (window.location.href = `${o.error_callback_url}?ref=${h.reference}`);
+    if (m.status === "SUCCESSFUL") {
+      N("SUCCESSFUL"), E(!1), a.callback && a.callback({
+        ...m,
+        status: "SUCCESSFUL",
+        message: m.message ?? "Payment successful (SANDBOX)",
+        transaction_id: m.transaction_id ?? `sandbox-tx-${Date.now()}`,
+        reference: m.reference ?? "",
+        reseau: o,
+        phoneNumber: x,
+        amount: d,
+        currency: a.currency || "XOF",
+        description: a.description || "",
+        callback_info: a.callback_info || {},
+        first_name: h || "",
+        email: _ || ""
+      });
       return;
     }
-    return F(h.reference), be(h.reference, l, s, a), { reference: h.reference };
-  } catch (O) {
-    console.error("Payment error:", O), x("FAILED"), T("Le paiement a échoué. Veuillez réessayer."), L(!0), E(!1);
+    if (m.statusCode === "10") {
+      N("INSUFFICIENT_FUNDS"), F("Fonds insuffisants. Veuillez vérifier votre solde et réessayer."), L(!0), E(!1), a.callback && a.callback({
+        reference: m.reference,
+        status: "FAILED",
+        phoneNumber: x,
+        reseau: o,
+        callback_info: a.callback_info || {},
+        description: a.description,
+        transaction_id: m.reference,
+        message: "Le paiement a échoué. Veuillez vérifier votre solde et réessayer.",
+        amount: a.amount,
+        currency: a.currency || "XOF",
+        first_name: h,
+        email: _
+      }), a.error_callback_url && (window.location.href = `${a.error_callback_url}?ref=${m.reference}`);
+      return;
+    } else if (m.statusCode === "37") {
+      N("FAILED"), F("Le montant est inférieur au minimum autorisé par l'opérateur."), L(!0), E(!1), a.callback && a.callback({
+        reference: m.reference,
+        status: "FAILED",
+        phoneNumber: x,
+        reseau: o,
+        callback_info: a.callback_info || {},
+        description: a.description,
+        transaction_id: m.reference,
+        message: "Le montant est inférieur au minimum autorisé par l'opérateur.",
+        amount: a.amount,
+        currency: a.currency || "XOF",
+        first_name: h,
+        email: _
+      }), a.error_callback_url && (window.location.href = `${a.error_callback_url}?ref=${m.reference}`);
+      return;
+    } else if (m.statusCode === "92") {
+      N("FAILED"), F("La transaction a été annulée. Veuillez réessayer."), L(!0), E(!1), a.callback && a.callback({
+        reference: m.reference,
+        status: "FAILED",
+        phoneNumber: x,
+        reseau: o,
+        callback_info: a.callback_info || {},
+        description: a.description,
+        transaction_id: m.reference,
+        message: "La transaction a été annulée. Veuillez réessayer.",
+        amount: a.amount,
+        first_name: h,
+        email: _,
+        currency: a.currency || "XOF"
+      }), a.error_callback_url && (window.location.href = `${a.error_callback_url}?ref=${m.reference}`);
+      return;
+    }
+    return T(m.reference), xe(m.reference, l, o, s), { reference: m.reference };
+  } catch (x) {
+    console.error("Payment error:", x), N("FAILED"), F("Le paiement a échoué. Veuillez réessayer."), L(!0), E(!1);
   }
-}, be = (r, l, e, a) => {
+}, xe = (r, l, e, s) => {
   let d = 0;
-  const s = 12;
-  let y = !1, o = null;
+  const o = 12;
+  let y = !1, a = null;
   const {
-    paymentConfig: m,
-    setStateCallbacks: f,
+    paymentConfig: f,
+    setStateCallbacks: h,
     fullName: _,
-    email: N
+    email: b
   } = l, {
-    setPaymentStatus: F,
-    setStatusMessage: x,
-    setStatusModalOpen: T,
+    setPaymentStatus: T,
+    setStatusMessage: N,
+    setStatusModalOpen: F,
     setIsLoading: L
-  } = f, E = (h, R, M) => {
+  } = h, E = (m, R, M) => {
     if (l.isCallbackCalledRef.current) return;
-    l.isCallbackCalledRef.current = !0, o && clearTimeout(o), F(h), x(R), T(!0), L(!1);
-    const B = {
+    l.isCallbackCalledRef.current = !0, a && clearTimeout(a), T(m), N(R), F(!0), L(!1);
+    const U = {
       reference: r,
       status: M,
-      phoneNumber: a(),
+      phoneNumber: s(),
       reseau: e,
-      callback_info: m.callback_info || {},
-      description: m.description,
+      callback_info: f.callback_info || {},
+      description: f.description,
       transaction_id: r,
       message: R,
-      amount: m.amount,
-      currency: m.currency || "XOF",
+      amount: f.amount,
+      currency: f.currency || "XOF",
       first_name: _,
-      email: N
+      email: b
     };
-    m.callback && m.callback(B);
-    const P = M === "SUCCESSFUL" || M === "SUCCESS";
-    P && m.callback_url ? window.location.href = `${m.callback_url}?ref=${r}` : !P && m.error_callback_url && (window.location.href = `${m.error_callback_url}?ref=${r}`);
-  }, O = async () => {
+    f.callback && f.callback(U);
+    const D = M === "SUCCESSFUL" || M === "SUCCESS";
+    D && f.callback_url ? window.location.href = `${f.callback_url}?ref=${r}` : !D && f.error_callback_url && (window.location.href = `${f.error_callback_url}?ref=${r}`);
+  }, x = async () => {
     if (!y) {
       d++;
       try {
-        const h = await We(r);
-        if (h.reason === "LOW_BALANCE_OR_PAYEE_LIMIT_REACHED_OR_NOT_ALLOWED") {
+        const m = await Ge(r);
+        if (m.reason === "LOW_BALANCE_OR_PAYEE_LIMIT_REACHED_OR_NOT_ALLOWED") {
           E("INSUFFICIENT_FUNDS", "Fonds insuffisants. Veuillez vérifier votre solde et réessayer.", "FAILED");
           return;
-        } else if (h.reason === "PAYER NOT FOUND" || h.reason === "PAYER_NOT_FOUND") {
+        } else if (m.reason === "PAYER NOT FOUND" || m.reason === "PAYER_NOT_FOUND") {
           E("FAILED", "Numéro de téléphone non trouvé. Veuillez vérifier le numéro et réessayer.", "FAILED");
           return;
         }
-        const R = h.status.toUpperCase();
+        const R = m.status.toUpperCase();
         switch (R) {
           case "SUCCESSFUL":
           case "SUCCESS":
@@ -538,29 +592,29 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
             E("TIMEOUT", "La vérification du paiement a expiré.", "TIMEOUT");
             break;
           case "PENDING":
-            d >= s ? E("TIMEOUT", "La vérification du paiement a expiré. Veuillez vérifier votre compte.", "TIMEOUT") : o = setTimeout(O, 1e4);
+            d >= o ? E("TIMEOUT", "La vérification du paiement a expiré. Veuillez vérifier votre compte.", "TIMEOUT") : a = setTimeout(x, 1e4);
             break;
           default:
-            d >= s && E("TIMEOUT", "Statut de transaction inconnu après plusieurs tentatives.", "TIMEOUT");
+            d >= o && E("TIMEOUT", "Statut de transaction inconnu après plusieurs tentatives.", "TIMEOUT");
             break;
         }
-      } catch (h) {
-        console.error(`Status check failed for ref ${r}:`, h), d >= s && E("TIMEOUT", "La vérification du paiement a échoué après plusieurs tentatives.", "TIMEOUT");
+      } catch (m) {
+        console.error(`Status check failed for ref ${r}:`, m), d >= o && E("TIMEOUT", "La vérification du paiement a échoué après plusieurs tentatives.", "TIMEOUT");
       }
     }
   };
-  return O(), () => {
-    o && clearTimeout(o), y = !0;
+  return x(), () => {
+    a && clearTimeout(a), y = !0;
   };
 }, $e = ({ id: r, onClose: l }) => {
-  const [e, a] = g(null);
-  return W(() => {
+  const [e, s] = g(null);
+  return z(() => {
     (async () => {
       try {
-        const s = await xe(r);
-        a(s);
-      } catch (s) {
-        console.error("Erreur de récupération du id :", s);
+        const o = await Ee(r);
+        s(o);
+      } catch (o) {
+        console.error("Erreur de récupération du id :", o);
       }
     })();
   }, [r]), /* @__PURE__ */ i("div", { className: "flex items-center justify-between px-4 py-2 border-b border-gray-200", children: [
@@ -585,115 +639,122 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
     )
   ] });
 }, Xe = ({ isOpen: r, onClose: l }) => {
-  var de;
-  const { paymentConfig: e } = ye(), [a, d] = g(() => e.case && ["MOBILE", "CARD", "WALLET"].includes(e.case) ? e.case : "MOBILE"), [s, y] = g("BENIN"), [o, m] = g("MTN"), [f, _] = g(""), [N, F] = g(""), [x, T] = g(""), [L, E] = g("VISA"), [O, h] = g(0), [R, M] = g(0), [B, P] = g(0), [G, V] = g(0), [z, U] = g(""), [Ee, b] = g(!1), [Ce, k] = g("PENDING"), [ve, C] = g(""), [K, S] = g(!1), [Oe, j] = g(!1), [Ie, we] = g(""), [ae, se] = g(null), $ = ee(!1), oe = ee(null), J = te((n, c, p, I) => {
-    const v = Pe(n, c, p, I || a, L);
-    if (P(v), M(n + v), h(n), a === "CARD" && (L === "VISA" || L === "MASTERCARD"))
-      V(4.5);
+  var fe;
+  const { paymentConfig: e } = Ne(), [s, d] = g(() => e.case && ["MOBILE", "CARD", "WALLET"].includes(e.case) ? e.case : "MOBILE"), [o, y] = g("BENIN"), [a, f] = g("MTN"), [h, _] = g(""), [b, T] = g(""), [N, F] = g(""), [L, E] = g("VISA"), [x, m] = g(0), [R, M] = g(0), [U, D] = g(0), [j, P] = g(0), [G, B] = g(""), [Ce, C] = g(!1), [K, k] = g("PENDING"), [ve, v] = g(""), [J, S] = g(!1), [Oe, X] = g(!1), [Se, we] = g(""), [se, oe] = g(null), W = te(!1), ie = te(null), Y = re((n, u, p, w) => {
+    const O = De(n, u, p, w || s, L);
+    if (D(O), M(n + O), m(n), s === "CARD" && (L === "VISA" || L === "MASTERCARD"))
+      P(4.5);
     else {
-      const D = H[c];
-      D && D[p] ? V(D[p] * 100) : V(0);
+      const V = H[u];
+      V && V[p] ? P(V[p] * 100) : P(0);
     }
-  }, [a, L]), A = te(async (n, c, p, I) => {
+  }, [s, L]), A = re(async (n, u, p, w) => {
     try {
-      const u = I || a, v = await Ge({
+      const c = w || s, O = await We({
         network: p,
-        country: c,
+        country: u,
         amount: n,
         id: e.id,
         token: e.token
       });
-      if (v && v.iffees) {
-        let D = !1;
+      if (O && O.iffees) {
+        let V = !1;
         if (n <= 30) {
-          const w = H[c];
-          w && w[p] && w[p] > 0 && (P(1), M(n + 1), V(w[p] * 100), D = !0);
+          const I = H[u];
+          I && I[p] && I[p] > 0 && (D(1), M(n + 1), P(I[p] * 100), V = !0);
         }
-        if (!D) {
-          if (v.total !== void 0) {
-            const w = v.total - n;
-            P(w), M(v.total);
+        if (!V) {
+          if (O.total !== void 0) {
+            const I = O.total - n;
+            D(I), M(O.total);
           } else
-            J(n, c, p, u);
-          if (u === "CARD")
-            V(4.5);
+            Y(n, u, p, c);
+          if (c === "CARD")
+            P(4.5);
           else {
-            const w = H[c];
-            w && w[p] ? V(w[p] * 100) : V(0);
+            const I = H[u];
+            I && I[p] ? P(I[p] * 100) : P(0);
           }
         }
       } else
-        P(0), M(n), V(0);
-      h(n);
-    } catch (u) {
-      console.error("Erreur lors de la récupération des détails de transaction:", u), J(n, c, p, I);
+        D(0), M(n), P(0);
+      m(n);
+    } catch (c) {
+      console.error("Erreur lors de la récupération des détails de transaction:", c), Y(n, u, p, w);
     }
-  }, [a, e.id, e.token, J]);
-  W(() => {
-    e.amount && (h(e.amount), A(e.amount, s, o));
-  }, [e, s, o, A]), W(() => {
-    a === "WALLET" && (s === "BENIN" ? (m("CORIS"), e.amount && A(e.amount, s, "CORIS", a)) : s === "COTE_D_IVOIRE" ? (m("WAVE"), e.amount && A(e.amount, s, "WAVE", a)) : (y("BENIN"), m("CORIS"), e.amount && A(e.amount, "BENIN", "CORIS", a)));
-  }, []);
-  const ie = (n) => {
-    m(n), e.amount && A(e.amount, s, n);
-  }, Se = () => {
-    F(""), T(""), _(""), E("VISA");
+  }, [s, e.id, e.token, Y]);
+  z(() => {
+    e.amount && (m(e.amount), A(e.amount, o, a));
+  }, [e, o, a, A]), z(() => {
+    s === "WALLET" && (o === "BENIN" ? (f("CORIS"), e.amount && A(e.amount, o, "CORIS", s)) : o === "COTE_D_IVOIRE" ? (f("WAVE"), e.amount && A(e.amount, o, "WAVE", s)) : (y("BENIN"), f("CORIS"), e.amount && A(e.amount, "BENIN", "CORIS", s)));
+  }, []), z(() => {
+    if (K === "SUCCESSFUL") {
+      const n = setTimeout(() => {
+        l();
+      }, 1500);
+      return () => clearTimeout(n);
+    }
+  }, [K, l]);
+  const le = (n) => {
+    f(n), e.amount && A(e.amount, o, n);
+  }, Ie = () => {
+    T(""), F(""), _(""), E("VISA");
   }, ke = (n) => {
-    if (Se(), P(0), M(e.amount || 0), V(0), d(n), n === "WALLET")
-      s === "BENIN" ? (m("CORIS"), e.amount && A(e.amount, s, "CORIS", n)) : s === "COTE_D_IVOIRE" ? (m("WAVE"), e.amount && A(e.amount, s, "WAVE", n)) : (y("BENIN"), m("CORIS"), e.amount && A(e.amount, "BENIN", "CORIS", n));
+    if (Ie(), D(0), M(e.amount || 0), P(0), d(n), n === "WALLET")
+      o === "BENIN" ? (f("CORIS"), e.amount && A(e.amount, o, "CORIS", n)) : o === "COTE_D_IVOIRE" ? (f("WAVE"), e.amount && A(e.amount, o, "WAVE", n)) : (y("BENIN"), f("CORIS"), e.amount && A(e.amount, "BENIN", "CORIS", n));
     else if (n === "MOBILE") {
-      const c = re(s);
-      c.length > 0 && (c.includes(o) || m(c[0]), e.amount && A(e.amount, s, o, n));
-    } else n === "CARD" && e.amount && A(e.amount, s, o, n);
-  }, le = (n) => {
-    if (y(n), a === "WALLET")
-      n === "BENIN" ? (m("CORIS"), e.amount && A(e.amount, n, "CORIS")) : n === "COTE_D_IVOIRE" && (m("WAVE"), e.amount && A(e.amount, n, "WAVE"));
-    else {
-      const c = re(n);
-      m(c[0]), e.amount && A(e.amount, n, c[0]);
-    }
+      const u = ne(o);
+      u.length > 0 && (u.includes(a) || f(u[0]), e.amount && A(e.amount, o, a, n));
+    } else n === "CARD" && e.amount && A(e.amount, o, a, n);
   }, ce = (n) => {
-    const c = n.target.value;
-    if (a === "WALLET") {
-      _(c);
+    if (y(n), s === "WALLET")
+      n === "BENIN" ? (f("CORIS"), e.amount && A(e.amount, n, "CORIS")) : n === "COTE_D_IVOIRE" && (f("WAVE"), e.amount && A(e.amount, n, "WAVE"));
+    else {
+      const u = ne(n);
+      f(u[0]), e.amount && A(e.amount, n, u[0]);
+    }
+  }, ue = (n) => {
+    const u = n.target.value;
+    if (s === "WALLET") {
+      _(u);
       return;
     }
-    if (s === "COTE_D_IVOIRE") {
-      if (c.length >= 2) {
-        const p = c.substring(0, 2), I = fe(p);
-        console.log(`[DEBUG] CIV Prefix: ${p}, Detected Network: ${I}`), I && m(I);
+    if (o === "COTE_D_IVOIRE") {
+      if (u.length >= 2) {
+        const p = u.substring(0, 2), w = he(p);
+        console.log(`[DEBUG] CIV Prefix: ${p}, Detected Network: ${w}`), w && f(w);
       }
-    } else if (s === "BENIN" && c.length >= 4) {
-      const p = c.substring(0, 4), I = fe(p);
-      I && m(I);
+    } else if (o === "BENIN" && u.length >= 4) {
+      const p = u.substring(0, 4), w = he(p);
+      w && f(w);
     }
-    _(c);
-  }, X = () => {
-    if (!f) return f;
-    let n = f.replace(/[^0-9]/g, ""), c = "";
-    switch (s) {
+    _(u);
+  }, $ = () => {
+    if (!h) return h;
+    let n = h.replace(/[^0-9]/g, ""), u = "";
+    switch (o) {
       case "BENIN":
-        c = "229";
+        u = "229";
         break;
       case "COTE_D_IVOIRE":
-        c = "225";
+        u = "225";
         break;
       case "BURKINA_FASO":
-        c = "226";
+        u = "226";
         break;
       case "CONGO_BRAZZAVILLE":
-        c = "242";
+        u = "242";
         break;
       case "SENEGAL":
-        c = "221";
+        u = "221";
         break;
       case "TOGO":
-        c = "228";
+        u = "228";
         break;
       default:
         return n;
     }
-    return n.startsWith(c + c) && (n = n.slice(c.length)), n.startsWith(c) ? n : c + n;
+    return n.startsWith(u + u) && (n = n.slice(u.length)), n.startsWith(u) ? n : u + n;
   }, Le = (n) => {
     switch (n) {
       case "BENIN":
@@ -711,218 +772,237 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
       default:
         return "";
     }
-  }, Ae = async (n) => {
-    var I;
-    if (n.preventDefault(), !Y())
+  }, _e = async (n) => {
+    var w;
+    if (n.preventDefault(), !Q())
       return;
-    $.current = !1, S(!0);
-    const c = ["MOOV CI", "ORANGE CI", "MOOV BF", "ORANGE BF", "FREE SN", "WAVE CI", "ORANGE SN"], p = ne(s, o);
-    if (c.includes(p)) {
+    W.current = !1, S(!0);
+    const u = ["MOOV CI", "ORANGE CI", "MOOV BF", "ORANGE BF", "FREE SN", "WAVE CI", "ORANGE SN"], p = ae(o, a);
+    if (u.includes(p)) {
       try {
-        const u = await Ne({
-          phoneNumber: X(),
-          amount: O,
-          network: o,
-          country: s,
+        const c = await be({
+          mode: e.mode,
+          // Ajout du mode ici
+          phoneNumber: $(),
+          amount: x,
+          network: a,
+          country: o,
           description: e.description || "Payment",
           customId: e.customId || "",
           id: e.id,
           token: e.token,
           currency: e.currency || "XOF",
           callback_info: e.callback_info || {},
-          first_name: N || "",
-          email: x || "",
-          otp: ((I = oe.current) == null ? void 0 : I.value) || ""
+          first_name: b || "",
+          email: N || "",
+          otp: ((w = ie.current) == null ? void 0 : w.value) || ""
         });
-        if (u.payment_url && se(u.payment_url), u.reference)
-          U(u.reference), q(u.reference);
-        else if (!u.payment_url)
+        if (c.status === "SUCCESSFUL") {
+          e.callback && !W.current && (e.callback({
+            ...c,
+            transaction_id: c.transaction_id ?? "sandbox-tx-id",
+            message: c.message ?? "Payment successful",
+            status: "SUCCESSFUL",
+            reseau: a,
+            phoneNumber: $(),
+            amount: x,
+            currency: e.currency || "XOF",
+            description: e.description || "Payment",
+            callback_info: e.callback_info || {},
+            first_name: b || "",
+            email: N || ""
+          }), W.current = !0), S(!1), k("SUCCESSFUL");
+          return;
+        }
+        if (c.payment_url && oe(c.payment_url), c.reference)
+          B(c.reference), q(c.reference);
+        else if (!c.payment_url)
           throw new Error("La réponse de paiement est invalide.");
-      } catch (u) {
-        console.error("Payment error:", u), k("FAILED"), C("Le paiement a échoué. Veuillez réessayer."), b(!0);
+      } catch (c) {
+        console.error("Payment error:", c), k("FAILED"), v("Le paiement a échoué. Veuillez réessayer."), C(!0);
       } finally {
         S(!1);
       }
       return;
     }
     try {
-      if (a === "CARD") {
-        const u = N.split(" "), v = u[0] || "", D = u.slice(1).join(" ") || "", w = await je({
-          phone: f,
-          amount: O,
+      if (s === "CARD") {
+        const c = b.split(" "), O = c[0] || "", V = c.slice(1).join(" ") || "", I = await je({
+          phone: h,
+          amount: x,
           id: e.id,
-          first_name: v,
-          last_name: D,
-          email: x,
+          first_name: O,
+          last_name: V,
+          email: N,
           type_card: L,
           token: e.token,
           currency: e.currency || "XOF"
         });
-        w && w.reference ? (U(w.reference), q(w.reference)) : (k("FAILED"), C("La demande de paiement par carte a échoué. Veuillez réessayer."), b(!0), S(!1));
-      } else if (a === "MOBILE") {
-        const u = await pe(
+        I && I.reference ? (B(I.reference), q(I.reference)) : (k("FAILED"), v("La demande de paiement par carte a échoué. Veuillez réessayer."), C(!0), S(!1));
+      } else if (s === "MOBILE") {
+        const c = await ge(
           n,
           {
-            phoneNumber: f,
-            baseAmount: O,
-            network: o,
-            country: s,
+            phoneNumber: h,
+            baseAmount: x,
+            network: a,
+            country: o,
             paymentConfig: e,
-            transactionReference: z,
-            fullName: N,
-            email: x,
-            generateRandomId: ue,
-            isCallbackCalledRef: $,
+            transactionReference: G,
+            fullName: b,
+            email: N,
+            generateRandomId: de,
+            isCallbackCalledRef: W,
             setStateCallbacks: {
-              setTransactionReference: U,
+              setTransactionReference: B,
               setPaymentStatus: k,
-              setStatusMessage: C,
-              setStatusModalOpen: b,
+              setStatusMessage: v,
+              setStatusModalOpen: C,
               setIsLoading: S
             }
           },
-          Y,
-          X
+          Q,
+          $
         );
-        u && u.reference && q(u.reference);
-      } else if (a === "WALLET")
-        if (s === "BENIN" && o === "CORIS")
+        c && c.reference && q(c.reference);
+      } else if (s === "WALLET")
+        if (o === "BENIN" && a === "CORIS")
           try {
-            const v = N.split(" ")[0] || "", D = f.startsWith("+229") ? f : `+229${f}`, w = await he({
-              phoneNumber: D,
-              amount: O,
+            const O = b.split(" ")[0] || "", V = h.startsWith("+229") ? h : `+229${h}`, I = await pe({
+              phoneNumber: V,
+              amount: x,
               id: e.id,
-              email: x,
-              first_name: v,
+              email: N,
+              first_name: O,
               description: "Paiement via FeexPay",
               token: e.token,
               currency: e.currency || "XOF",
               callback_info: e.callback_info || {},
-              network: o,
-              country: s,
+              network: a,
+              country: o,
               customId: e.customId || ""
             });
-            w.statusCode === "201" ? (we(w.reference), j(!0), S(!1)) : (k("FAILED"), C("La demande de paiement a échoué. Veuillez réessayer."), b(!0), S(!1));
-          } catch (u) {
-            console.error("Error in Coris Wallet payment:", u), k("FAILED"), C("Une erreur est survenue lors du traitement du paiement. Veuillez réessayer."), b(!0), S(!1);
+            I.statusCode === "201" ? (we(I.reference), X(!0), S(!1)) : (k("FAILED"), v("La demande de paiement a échoué. Veuillez réessayer."), C(!0), S(!1));
+          } catch (c) {
+            console.error("Error in Coris Wallet payment:", c), k("FAILED"), v("Une erreur est survenue lors du traitement du paiement. Veuillez réessayer."), C(!0), S(!1);
           }
         else {
-          const v = await pe(n, {
-            phoneNumber: f,
-            baseAmount: O,
-            network: o,
-            country: s,
+          const O = await ge(n, {
+            phoneNumber: h,
+            baseAmount: x,
+            network: a,
+            country: o,
             paymentConfig: e,
-            transactionReference: z,
-            generateRandomId: ue,
-            fullName: N,
-            email: x,
-            isCallbackCalledRef: $,
+            transactionReference: G,
+            generateRandomId: de,
+            fullName: b,
+            email: N,
+            isCallbackCalledRef: W,
             setStateCallbacks: {
-              setTransactionReference: U,
+              setTransactionReference: B,
               setPaymentStatus: k,
-              setStatusMessage: C,
-              setStatusModalOpen: b,
+              setStatusMessage: v,
+              setStatusModalOpen: C,
               setIsLoading: S
             }
-          }, Y, X);
-          v && v.reference && q(v.reference);
+          }, Q, $);
+          O && O.reference && q(O.reference);
         }
-    } catch (u) {
-      console.error("Error in payment submission:", u), k("FAILED"), C("Une erreur est survenue lors du traitement du paiement. Veuillez réessayer."), b(!0), S(!1);
+    } catch (c) {
+      console.error("Error in payment submission:", c), k("FAILED"), v("Une erreur est survenue lors du traitement du paiement. Veuillez réessayer."), C(!0), S(!1);
     }
-  }, Y = () => {
+  }, Q = () => {
     const n = e.fields_to_hide || [];
-    if (a === "MOBILE" || a === "WALLET") {
-      if (!n.includes("name") && !N.trim())
-        return C("Veuillez entrer votre nom complet"), b(!0), !1;
-      if (!n.includes("email") && (!x.trim() || !x.includes("@")))
-        return C("Veuillez entrer une adresse email valide"), b(!0), !1;
-      if (!f.trim() || f.length < 8)
-        return C("Veuillez entrer un numéro de téléphone valide"), b(!0), !1;
-      if (a === "WALLET" && s !== "BENIN" && s !== "COTE_D_IVOIRE")
-        return C("Seuls le Bénin (Coris) et la Côte d'Ivoire (Wave) sont supportés pour les paiements Wallet"), b(!0), !1;
-    } else if (a === "CARD") {
-      if (!N || N.trim().split(" ").length < 2)
-        return C("Veuillez entrer votre nom et prénom complets"), k("FAILED"), b(!0), !1;
-      if (!x || !x.includes("@"))
-        return C("Veuillez entrer une adresse email valide"), k("FAILED"), b(!0), !1;
-      if (!f)
-        return C("Veuillez entrer un numéro de téléphone valide"), k("FAILED"), b(!0), !1;
+    if (s === "MOBILE" || s === "WALLET") {
+      if (!n.includes("name") && !b.trim())
+        return v("Veuillez entrer votre nom complet"), C(!0), !1;
+      if (!n.includes("email") && (!N.trim() || !N.includes("@")))
+        return v("Veuillez entrer une adresse email valide"), C(!0), !1;
+      if (!h.trim() || h.length < 8)
+        return v("Veuillez entrer un numéro de téléphone valide"), C(!0), !1;
+      if (s === "WALLET" && o !== "BENIN" && o !== "COTE_D_IVOIRE")
+        return v("Seuls le Bénin (Coris) et la Côte d'Ivoire (Wave) sont supportés pour les paiements Wallet"), C(!0), !1;
+    } else if (s === "CARD") {
+      if (!b || b.trim().split(" ").length < 2)
+        return v("Veuillez entrer votre nom et prénom complets"), k("FAILED"), C(!0), !1;
+      if (!N || !N.includes("@"))
+        return v("Veuillez entrer une adresse email valide"), k("FAILED"), C(!0), !1;
+      if (!h)
+        return v("Veuillez entrer un numéro de téléphone valide"), k("FAILED"), C(!0), !1;
     }
     return !0;
-  }, ue = () => `TRX-${Math.random().toString(36).substring(2, 10).toUpperCase()}`, _e = async (n) => {
+  }, de = () => `TRX-${Math.random().toString(36).substring(2, 10).toUpperCase()}`, Ae = async (n) => {
     S(!0);
     try {
-      const p = N.split(" ")[0] || "", I = f.startsWith("+229") ? f : `+229${f}`, u = await he({
-        phoneNumber: I,
-        amount: O,
+      const p = b.split(" ")[0] || "", w = h.startsWith("+229") ? h : `+229${h}`, c = await pe({
+        phoneNumber: w,
+        amount: x,
         id: e.id,
-        email: x,
+        email: N,
         first_name: p,
         description: "Paiement via FeexPay",
         otp: n,
         token: e.token,
         currency: e.currency || "XOF",
         callback_info: e.callback_info || {},
-        network: o,
-        country: s,
+        network: a,
+        country: o,
         customId: e.customId || ""
       });
-      if (j(!1), u.status === "FAILED") {
-        k("FAILED"), C(u.message ?? "Le paiement a échoué."), b(!0), S(!1), e.callback && e.callback({
-          reference: u.reference ?? "",
+      if (X(!1), c.status === "FAILED") {
+        k("FAILED"), v(c.message ?? "Le paiement a échoué."), C(!0), S(!1), e.callback && e.callback({
+          reference: c.reference ?? "",
           status: "FAILED",
-          phoneNumber: I,
-          reseau: o,
+          phoneNumber: w,
+          reseau: a,
           callback_info: e.callback_info || {},
           description: e.description ?? "",
-          transaction_id: u.reference ?? "",
-          message: u.message ?? "Le paiement a échoué.",
+          transaction_id: c.reference ?? "",
+          message: c.message ?? "Le paiement a échoué.",
           amount: e.amount,
           currency: e.currency || "XOF",
-          first_name: N,
-          email: x
-        }), e.error_callback_url && (window.location.href = `${e.error_callback_url}?ref=${u.reference}`);
+          first_name: b,
+          email: N
+        }), e.error_callback_url && (window.location.href = `${e.error_callback_url}?ref=${c.reference}`);
         return;
       }
-      if (u.reference)
-        u.status && (u.status.toUpperCase() === "SUCCESSFUL" || u.status.toUpperCase() === "SUCCESS") ? (k("SUCCESSFUL"), C("Paiement effectué avec succès!"), b(!0), S(!1), e.onPaymentSuccess && e.onPaymentSuccess({ status: "SUCCESSFUL", reference: u.reference, message: "Paiement effectué avec succès!" }), e.callback_url && setTimeout(() => {
-          window.location.href = `${e.callback_url}?ref=${u.reference}`;
-        }, 2e3)) : (k("FAILED"), C(u.message || "La transaction a échoué. Veuillez réessayer."), b(!0), S(!1), e.onPaymentFailure && e.onPaymentFailure({ status: "FAILED", reference: u.reference, message: u.message || "La transaction a échoué. Veuillez réessayer." }), e.error_callback_url && setTimeout(() => {
-          window.location.href = `${e.error_callback_url}?ref=${u.reference}`;
+      if (c.reference)
+        c.status && (c.status.toUpperCase() === "SUCCESSFUL" || c.status.toUpperCase() === "SUCCESS") ? (k("SUCCESSFUL"), v("Paiement effectué avec succès!"), C(!0), S(!1), e.onPaymentSuccess && e.onPaymentSuccess({ status: "SUCCESSFUL", reference: c.reference, message: "Paiement effectué avec succès!" }), e.callback_url && setTimeout(() => {
+          window.location.href = `${e.callback_url}?ref=${c.reference}`;
+        }, 2e3)) : (k("FAILED"), v(c.message || "La transaction a échoué. Veuillez réessayer."), C(!0), S(!1), e.onPaymentFailure && e.onPaymentFailure({ status: "FAILED", reference: c.reference, message: c.message || "La transaction a échoué. Veuillez réessayer." }), e.error_callback_url && setTimeout(() => {
+          window.location.href = `${e.error_callback_url}?ref=${c.reference}`;
         }, 2e3));
       else {
-        const v = u.message || "La confirmation du paiement a échoué. Veuillez réessayer.";
-        k("FAILED"), C(v), b(!0), S(!1), e.onPaymentFailure && e.onPaymentFailure({ status: "FAILED", message: v });
+        const O = c.message || "La confirmation du paiement a échoué. Veuillez réessayer.";
+        k("FAILED"), v(O), C(!0), S(!1), e.onPaymentFailure && e.onPaymentFailure({ status: "FAILED", message: O });
       }
-    } catch (c) {
-      console.error("Error in OTP submission:", c);
+    } catch (u) {
+      console.error("Error in OTP submission:", u);
       const p = "Une erreur est survenue lors de la confirmation du paiement. Veuillez réessayer.";
-      k("FAILED"), C(p), b(!0), S(!1), j(!1), e.onPaymentFailure && e.onPaymentFailure({ status: "FAILED", message: p });
+      k("FAILED"), v(p), C(!0), S(!1), X(!1), e.onPaymentFailure && e.onPaymentFailure({ status: "FAILED", message: p });
     }
   }, q = (n) => {
-    be(n, {
+    xe(n, {
       paymentConfig: e,
-      fullName: N,
-      email: x,
-      isCallbackCalledRef: $,
+      fullName: b,
+      email: N,
+      isCallbackCalledRef: W,
       setStateCallbacks: {
-        setTransactionReference: U,
+        setTransactionReference: B,
         setPaymentStatus: k,
-        setStatusMessage: C,
-        setStatusModalOpen: b,
+        setStatusMessage: v,
+        setStatusModalOpen: C,
         setIsLoading: S
       }
-    }, o, X);
+    }, a, $);
   };
   return r ? /* @__PURE__ */ i("div", { className: "fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 overflow-hidden", children: [
     /* @__PURE__ */ i("div", { className: "bg-white rounded-lg shadow-xl w-full max-w-md relative max-h-[90vh] flex flex-col", children: [
-      ae && /* @__PURE__ */ i("div", { className: "absolute inset-0 bg-white z-10 rounded-lg overflow-hidden", children: [
+      se && /* @__PURE__ */ i("div", { className: "absolute inset-0 bg-white z-10 rounded-lg overflow-hidden", children: [
         /* @__PURE__ */ t(
           "button",
           {
-            onClick: () => se(null),
+            onClick: () => oe(null),
             className: "absolute top-2 right-2 z-20 bg-gray-200 text-gray-800 rounded-full p-1 hover:bg-gray-300 focus:outline-none",
             "aria-label": "Fermer la passerelle de paiement",
             children: /* @__PURE__ */ t("svg", { className: "w-6 h-6", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg", children: /* @__PURE__ */ t("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M6 18L18 6M6 6l12 12" }) })
@@ -931,7 +1011,7 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
         /* @__PURE__ */ t(
           "iframe",
           {
-            src: ae,
+            src: se,
             className: "w-full h-full border-0",
             title: "Payment Gateway",
             allow: "payment"
@@ -951,20 +1031,20 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
             /* @__PURE__ */ t("path", { fillRule: "evenodd", d: "M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z", clipRule: "evenodd" })
           ] }) },
           { label: "Wallet", value: "WALLET", icon: /* @__PURE__ */ t("svg", { xmlns: "http://www.w3.org/2000/svg", className: "h-5 w-5", viewBox: "0 0 20 20", fill: "currentColor", children: /* @__PURE__ */ t("path", { fillRule: "evenodd", d: "M10 2a1 1 0 00-1 1v1a1 1 0 002 0V3a1 1 0 00-1-1zM4 4h3a3 3 0 006 0h3a2 2 0 012 2v9a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm2.5 7a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm2.45 4a2.5 2.5 0 10-4.9 0h4.9zM12 9a1 1 0 100 2h3a1 1 0 100-2h-3zm-1 4a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1z", clipRule: "evenodd" }) }) }
-        ].map(({ label: n, value: c, icon: p }) => /* @__PURE__ */ i(
+        ].map(({ label: n, value: u, icon: p }) => /* @__PURE__ */ i(
           "div",
           {
-            className: `flex flex-col items-center px-4 py-2 cursor-pointer rounded border ${a === c ? "bg-[#fff7ed] border-[#D45D00]" : "bg-white border-[#D45D00]"}`,
-            onClick: () => ke(c),
+            className: `flex flex-col items-center px-4 py-2 cursor-pointer rounded border ${s === u ? "bg-[#fff7ed] border-[#D45D00]" : "bg-white border-[#D45D00]"}`,
+            onClick: () => ke(u),
             children: [
               /* @__PURE__ */ t("div", { className: "w-8 h-8 rounded-full flex items-center justify-center mb-1", children: p }),
               /* @__PURE__ */ t("span", { className: "text-xs font-medium", children: n })
             ]
           },
-          c
+          u
         )) }),
         /* @__PURE__ */ i("div", { className: "space-y-6", children: [
-          !((e.fields_to_hide || []).includes("email") && (e.fields_to_hide || []).includes("name")) && a !== "CARD" ? /* @__PURE__ */ i("div", { className: "space-y-4", children: [
+          !((e.fields_to_hide || []).includes("email") && (e.fields_to_hide || []).includes("name")) && s !== "CARD" ? /* @__PURE__ */ i("div", { className: "space-y-4", children: [
             /* @__PURE__ */ i("h2", { className: "font-bold text-gray-800 mb-2 flex items-center", children: [
               /* @__PURE__ */ t("span", { className: "bg-gray-800 text-white rounded-full w-5 h-5 inline-flex items-center justify-center text-xs mr-2", children: "1" }),
               "Informations Personnelles"
@@ -975,8 +1055,8 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
                 type: "text",
                 placeholder: "Nom et Prénoms",
                 className: "w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs",
-                value: N,
-                onChange: (n) => F(n.target.value)
+                value: b,
+                onChange: (n) => T(n.target.value)
               }
             ) }),
             !(e.fields_to_hide || []).includes("email") && /* @__PURE__ */ t("div", { children: /* @__PURE__ */ t(
@@ -985,53 +1065,53 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
                 type: "email",
                 placeholder: "Email",
                 className: "w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs",
-                value: x,
-                onChange: (n) => T(n.target.value)
+                value: N,
+                onChange: (n) => F(n.target.value)
               }
             ) })
           ] }) : null,
           /* @__PURE__ */ i("div", { className: "space-y-4", children: [
             /* @__PURE__ */ i("h2", { className: "font-bold text-gray-800 mb-2 flex items-center", children: [
-              /* @__PURE__ */ t("span", { className: "bg-gray-800 text-white rounded-full w-5 h-5 inline-flex items-center justify-center text-xs mr-2", children: a === "CARD" || (e.fields_to_hide || []).includes("email") && (e.fields_to_hide || []).includes("name") ? "1" : "2" }),
-              a === "CARD" ? "Paiement par Carte Bancaire" : "Méthodes de paiement"
+              /* @__PURE__ */ t("span", { className: "bg-gray-800 text-white rounded-full w-5 h-5 inline-flex items-center justify-center text-xs mr-2", children: s === "CARD" || (e.fields_to_hide || []).includes("email") && (e.fields_to_hide || []).includes("name") ? "1" : "2" }),
+              s === "CARD" ? "Méthode de paiement" : "Méthodes de paiement"
             ] }),
-            a === "MOBILE" && /* @__PURE__ */ i(Z, { children: [
+            s === "MOBILE" && /* @__PURE__ */ i(Z, { children: [
               /* @__PURE__ */ i("div", { className: "grid grid-cols-2 gap-4", children: [
                 /* @__PURE__ */ t("div", { children: /* @__PURE__ */ t(
                   Me,
                   {
-                    selectedCountry: s,
-                    onChange: le
+                    selectedCountry: o,
+                    onChange: ce
                   }
                 ) }),
                 /* @__PURE__ */ t("div", { children: /* @__PURE__ */ t(
-                  Ve,
+                  Pe,
                   {
-                    selectedNetwork: o,
-                    onChange: ie,
-                    country: s
+                    selectedNetwork: a,
+                    onChange: le,
+                    country: o
                   }
                 ) })
               ] }),
               /* @__PURE__ */ i("div", { className: "flex", children: [
-                /* @__PURE__ */ t("div", { className: "bg-gray-100 px-3 py-2 border border-r-0 rounded-l-md flex items-center justify-center", children: /* @__PURE__ */ t("span", { className: "text-gray-600 text-xs", children: Le(s) }) }),
+                /* @__PURE__ */ t("div", { className: "bg-gray-100 px-3 py-2 border border-r-0 rounded-l-md flex items-center justify-center", children: /* @__PURE__ */ t("span", { className: "text-gray-600 text-xs", children: Le(o) }) }),
                 /* @__PURE__ */ t(
                   "input",
                   {
                     type: "tel",
                     placeholder: "Numéro de téléphone sans indicatif",
                     className: "flex-1 px-2 py-2 border rounded-r-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs",
-                    value: f,
-                    onChange: ce
+                    value: h,
+                    onChange: ue
                   }
                 )
               ] }),
-              s === "SENEGAL" && o === "ORANGE" && /* @__PURE__ */ i(Z, { children: [
+              o === "SENEGAL" && a === "ORANGE" && /* @__PURE__ */ i(Z, { children: [
                 /* @__PURE__ */ t(
                   "input",
                   {
                     type: "text",
-                    ref: oe,
+                    ref: ie,
                     id: "otp",
                     placeholder: "L’otp de validation",
                     className: "w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs"
@@ -1040,8 +1120,7 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
                 /* @__PURE__ */ t("span", { className: "text-xs text-gray-900", children: "L’otp de validation de la transaction obtenu en tapant #144#391# sur votre téléphone" })
               ] })
             ] }),
-            a === "CARD" && /* @__PURE__ */ i("div", { className: "space-y-4", children: [
-              /* @__PURE__ */ t("p", { className: "text-red-500 text-md", children: "Les paiements par cartes sont momentanément indisponibles." }),
+            s === "CARD" && /* @__PURE__ */ i("div", { className: "space-y-4", children: [
               /* @__PURE__ */ i("div", { className: "grid grid-cols-2 gap-4", children: [
                 /* @__PURE__ */ i("div", { children: [
                   /* @__PURE__ */ t("label", { className: "block text-sm font-medium text-gray-700 mb-1", children: "Prénom" }),
@@ -1051,10 +1130,10 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
                       type: "text",
                       placeholder: "Prénom",
                       className: "w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs",
-                      value: N.split(" ")[0] || "",
+                      value: b.split(" ")[0] || "",
                       onChange: (n) => {
-                        const c = N.split(" ").slice(1).join(" ");
-                        F(`${n.target.value} ${c}`.trim());
+                        const u = b.split(" ").slice(1).join(" ");
+                        T(`${n.target.value} ${u}`.trim());
                       }
                     }
                   )
@@ -1067,10 +1146,10 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
                       type: "text",
                       placeholder: "Nom",
                       className: "w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs",
-                      value: N.split(" ").slice(1).join(" ") || "",
+                      value: b.split(" ").slice(1).join(" ") || "",
                       onChange: (n) => {
-                        const c = N.split(" ")[0] || "";
-                        F(`${c} ${n.target.value}`.trim());
+                        const u = b.split(" ")[0] || "";
+                        T(`${u} ${n.target.value}`.trim());
                       }
                     }
                   )
@@ -1084,8 +1163,8 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
                     type: "email",
                     placeholder: "exemple@email.com",
                     className: "w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs",
-                    value: x,
-                    onChange: (n) => T(n.target.value)
+                    value: N,
+                    onChange: (n) => F(n.target.value)
                   }
                 )
               ] }),
@@ -1097,7 +1176,7 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
                     type: "tel",
                     placeholder: "Numéro de téléphone avec indicatif",
                     className: "w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs",
-                    value: f,
+                    value: h,
                     onChange: (n) => _(n.target.value)
                   }
                 )
@@ -1118,15 +1197,15 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
                 )
               ] })
             ] }),
-            a === "WALLET" && /* @__PURE__ */ i(Z, { children: [
+            s === "WALLET" && /* @__PURE__ */ i(Z, { children: [
               /* @__PURE__ */ i("div", { className: "grid grid-cols-2 gap-4", children: [
                 /* @__PURE__ */ i("div", { children: [
                   /* @__PURE__ */ t("label", { className: "block text-sm font-medium text-gray-700 mb-1", children: "Pays" }),
                   /* @__PURE__ */ i(
                     "select",
                     {
-                      value: s,
-                      onChange: (n) => le(n.target.value),
+                      value: o,
+                      onChange: (n) => ce(n.target.value),
                       className: "block w-full px-2 py-2 pr-8 border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs",
                       children: [
                         /* @__PURE__ */ t("option", { value: "BENIN", children: "🇧🇯 Bénin" }),
@@ -1140,28 +1219,28 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
                   /* @__PURE__ */ i(
                     "select",
                     {
-                      value: o,
-                      onChange: (n) => ie(n.target.value),
+                      value: a,
+                      onChange: (n) => le(n.target.value),
                       className: "block w-full px-2 py-2 pr-8 border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs",
                       disabled: !0,
                       children: [
-                        s === "BENIN" && /* @__PURE__ */ t("option", { value: "CORIS", children: "CORIS" }),
-                        s === "COTE_D_IVOIRE" && /* @__PURE__ */ t("option", { value: "WAVE", children: "WAVE" })
+                        o === "BENIN" && /* @__PURE__ */ t("option", { value: "CORIS", children: "CORIS" }),
+                        o === "COTE_D_IVOIRE" && /* @__PURE__ */ t("option", { value: "WAVE", children: "WAVE" })
                       ]
                     }
                   )
                 ] })
               ] }),
               /* @__PURE__ */ i("div", { className: "flex", children: [
-                /* @__PURE__ */ t("div", { className: "bg-gray-100 px-3 py-2 border border-r-0 rounded-l-md flex items-center justify-center", children: /* @__PURE__ */ t("span", { className: "text-gray-600 text-sm", children: s === "BENIN" ? "+229" : s === "COTE_D_IVOIRE" ? "+225" : "" }) }),
+                /* @__PURE__ */ t("div", { className: "bg-gray-100 px-3 py-2 border border-r-0 rounded-l-md flex items-center justify-center", children: /* @__PURE__ */ t("span", { className: "text-gray-600 text-sm", children: o === "BENIN" ? "+229" : o === "COTE_D_IVOIRE" ? "+225" : "" }) }),
                 /* @__PURE__ */ t(
                   "input",
                   {
                     type: "tel",
                     placeholder: "Numéro de téléphone sans indicatif",
                     className: "flex-1 px-2 py-2 border rounded-r-md focus:outline-none focus:ring-2 focus:ring-primary-orange text-xs",
-                    value: f,
-                    onChange: ce
+                    value: h,
+                    onChange: ue
                   }
                 )
               ] })
@@ -1170,14 +1249,14 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
               /* @__PURE__ */ i("div", { className: "flex justify-between mb-1", children: [
                 /* @__PURE__ */ t("span", { className: "text-sm text-gray-600", children: "Montant :" }),
                 /* @__PURE__ */ i("span", { className: "text-sm font-medium", children: [
-                  (de = e.amount) == null ? void 0 : de.toLocaleString("fr-FR"),
+                  (fe = e.amount) == null ? void 0 : fe.toLocaleString("fr-FR"),
                   " ",
                   e.currency
                 ] })
               ] }),
               /* @__PURE__ */ i("div", { className: "flex justify-between mb-1", children: [
                 /* @__PURE__ */ t("span", { className: "text-sm text-gray-600", children: "Frais* :" }),
-                /* @__PURE__ */ t("span", { className: "text-sm font-medium", children: B > 0 ? `${B.toLocaleString("fr-FR")} ${e.currency}` : `0 ${e.currency}` })
+                /* @__PURE__ */ t("span", { className: "text-sm font-medium", children: U > 0 ? `${U.toLocaleString("fr-FR")} ${e.currency}` : `0 ${e.currency}` })
               ] }),
               /* @__PURE__ */ i("div", { className: "flex justify-between font-bold", children: [
                 /* @__PURE__ */ t("span", { children: "Montant Total à payer :" }),
@@ -1187,7 +1266,7 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
                   e.currency
                 ] })
               ] }),
-              /* @__PURE__ */ t("p", { className: "text-xs text-gray-500 mt-2", children: B > 0 ? `*Les frais de transaction sont de ${G.toFixed(1).replace(".", ",")}% du montant.` : "*Aucun frais de transaction applicable pour cette transaction." })
+              /* @__PURE__ */ t("p", { className: "text-xs text-gray-500 mt-2", children: U > 0 ? `*Les frais de transaction sont de ${j.toFixed(1).replace(".", ",")}% du montant.` : "*Aucun frais de transaction applicable pour cette transaction." })
             ] }),
             /* @__PURE__ */ t("div", { className: "pt-2", children: /* @__PURE__ */ i("div", { className: "flex space-x-2", children: [
               /* @__PURE__ */ t(
@@ -1201,11 +1280,11 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
               /* @__PURE__ */ i(
                 "button",
                 {
-                  onClick: Ae,
-                  disabled: K,
-                  className: `w-2/3 bg-primary-orange hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-md transition-colors duration-300 flex items-center justify-center ${K ? "opacity-70 cursor-not-allowed" : ""}`,
+                  onClick: _e,
+                  disabled: J,
+                  className: `w-2/3 bg-primary-orange hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-md transition-colors duration-300 flex items-center justify-center ${J ? "opacity-70 cursor-not-allowed" : ""}`,
                   children: [
-                    K ? /* @__PURE__ */ i("svg", { className: "animate-spin -ml-1 mr-2 h-4 w-4 text-white", xmlns: "http://www.w3.org/2000/svg", fill: "none", viewBox: "0 0 24 24", children: [
+                    J ? /* @__PURE__ */ i("svg", { className: "animate-spin -ml-1 mr-2 h-4 w-4 text-white", xmlns: "http://www.w3.org/2000/svg", fill: "none", viewBox: "0 0 24 24", children: [
                       /* @__PURE__ */ t("circle", { className: "opacity-25", cx: "12", cy: "12", r: "10", stroke: "currentColor", strokeWidth: "4" }),
                       /* @__PURE__ */ t("path", { className: "opacity-75", fill: "currentColor", d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" })
                     ] }) : null,
@@ -1229,23 +1308,23 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
       ] })
     ] }),
     /* @__PURE__ */ t(
-      De,
+      Ve,
       {
-        isOpen: Ee,
-        onClose: () => b(!1),
-        status: Ce,
+        isOpen: Ce,
+        onClose: () => C(!1),
+        status: K,
         message: ve
       }
     ),
     /* @__PURE__ */ t(
-      Be,
+      Ue,
       {
         isOpen: Oe,
         onClose: () => {
-          j(!1), S(!1);
+          X(!1), S(!1);
         },
-        onSubmit: _e,
-        reference: Ie
+        onSubmit: Ae,
+        reference: Se
       }
     )
   ] }) : null;
@@ -1253,79 +1332,79 @@ const Me = ({ selectedCountry: r, onChange: l }) => /* @__PURE__ */ i("div", { c
   amount: r,
   description: l,
   id: e,
-  token: a,
+  token: s,
   callback_url: d,
-  mode: s = "LIVE",
+  mode: o = "LIVE",
   customId: y,
-  fields_to_hide: o,
-  callback: m,
-  currency: f = "XOF",
+  fields_to_hide: a,
+  callback: f,
+  currency: h = "XOF",
   case: _,
-  callback_info: N,
-  error_callback_url: F,
+  callback_info: b,
+  error_callback_url: T,
   // custom_button = false,
-  buttonText: x = `Payer ${r} ${f}`,
-  buttonClass: T
+  buttonText: N = `Payer ${r} ${h}`,
+  buttonClass: F
 }) => {
-  const [L, E] = g(!1), { setPaymentConfig: O } = ye(), h = ee(null), [R, M] = g(!1), [B, P] = g(null);
-  W(() => {
+  const [L, E] = g(!1), { setPaymentConfig: x } = Ne(), m = te(null), [R, M] = g(!1), [U, D] = g(null);
+  z(() => {
     (async () => {
       try {
-        await xe(e), M(!0);
+        await Ee(e), M(!0);
       } catch {
-        P("Veuillez vérifier vos identifiants de boutique (ID et token) et rester en mode LIVE.");
+        D("Veuillez vérifier vos identifiants de boutique (ID et token) et rester en mode LIVE.");
       }
     })();
   }, [e]);
-  const G = te(() => {
-    O({
+  const j = re(() => {
+    x({
       amount: r,
       description: l,
       id: e,
-      token: a,
+      token: s,
       callback_url: d,
-      mode: s,
+      mode: o,
       customId: y,
-      fields_to_hide: o,
-      callback: m,
-      currency: f,
+      fields_to_hide: a,
+      callback: f,
+      currency: h,
       case: _,
-      callback_info: N,
-      error_callback_url: F
+      callback_info: b,
+      error_callback_url: T
     }), E(!0);
   }, [
     r,
     l,
     e,
-    a,
-    d,
     s,
-    y,
+    d,
     o,
-    m,
+    y,
+    a,
     f,
+    h,
     _,
-    N,
-    F,
-    O
+    b,
+    T,
+    x
   ]);
-  return W(() => {
-    const z = h.current;
-    if (!z) return;
-    const U = () => {
-      G();
+  return z(() => {
+    const G = m.current;
+    if (!G) return;
+    const B = () => {
+      j();
     };
-    return z.addEventListener("feexpay:trigger", U), () => {
-      z.removeEventListener("feexpay:trigger", U);
+    return G.addEventListener("feexpay:trigger", B), () => {
+      G.removeEventListener("feexpay:trigger", B);
     };
-  }, [G]), /* @__PURE__ */ i("div", { ref: h, children: [
-    B ? /* @__PURE__ */ t("p", { className: "text-red-600 text-sm mb-2", children: B }) : R && // !custom_button &&
+  }, [j]), /* @__PURE__ */ i("div", { ref: m, children: [
+    U ? /* @__PURE__ */ t("p", { className: "text-red-600 text-sm mb-2", children: U }) : R && // !custom_button &&
     /* @__PURE__ */ t(
       "button",
       {
-        onClick: G,
-        className: T || "bg-primary-orange hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 flex items-center justify-center",
-        children: x
+        onClick: j,
+        className: F || "bg-primary-orange hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 flex items-center justify-center",
+        children: N
       }
     ),
     L && /* @__PURE__ */ t(
